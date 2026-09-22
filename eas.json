@@ -46,7 +46,7 @@
       },
       "channel": "preview",
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://staging2-api.zapcash.in",
+        "EXPO_PUBLIC_API_URL": "https://api-staging.rupyaa.com",
         "EXPO_PUBLIC_NGROK_API_URL": "https://pestiferous-oestrous-queen.ngrok-free.dev",
         "EXPO_PUBLIC_APP_ENV": "development",
         "EXPO_PUBLIC_SSL_PINNING_ENABLED": "false",
@@ -71,7 +71,7 @@
       "distribution": "store",
       "channel": "development",
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://staging2-api.zapcash.in",
+        "EXPO_PUBLIC_API_URL": "https://api-staging.rupyaa.com",
         "EXPO_PUBLIC_APP_ENV": "development",
         "EXPO_PUBLIC_SSL_PINNING_ENABLED": "false",
         "EXPO_PUBLIC_API_ENCRYPTION_SECRET": "276(Y(BN(UG(UB(UG(*)N((*HN9832428272bwig78fsbfu34igh87bveiub8G^%R*&Y^&R)))))))",
@@ -92,7 +92,7 @@
       "channel": "production",
       "releaseChannel": "production",
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.zapcash.in",
+        "EXPO_PUBLIC_API_URL": "https://api.rupyaa.com",
         "EXPO_PUBLIC_APP_ENV": "production",
         "EXPO_PUBLIC_SSL_PINNING_ENABLED": "true",
         "EXPO_PUBLIC_API_ENCRYPTION_SECRET": "276(Y(BN(UG(UB(UG(*)N((*HN9832428272bwig78fsbfu34igh87bveiub8G^%R*&Y^&R)))))))",

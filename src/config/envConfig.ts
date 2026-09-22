@@ -23,7 +23,7 @@ function resolveIsDevelopment(): boolean {
 function resolveApiUrl(): string {
   // Local development / Expo Go / dev client
   if (__DEV__) {
-    return process.env.EXPO_PUBLIC_API_URL ?? 'https://staging2-api.zapcash.in';
+    return process.env.EXPO_PUBLIC_API_URL ?? 'https://api-staging.rupyaa.com';
   }
 
   const channel = Updates.channel;
@@ -32,15 +32,15 @@ function resolveApiUrl(): string {
 
   switch (channel) {
     case 'production':
-      return 'https://api.zapcash.in';
+      return 'https://api.rupyaa.com';
 
     case 'preview':
-      return 'https://staging2-api.zapcash.in';
+      return 'https://api-staging.rupyaa.com';
 
     default:
       // unknown or missing channel in release build
       console.warn('[resolveApiUrl] Unknown channel, using staging fallback:', channel);
-      return 'https://staging2-api.zapcash.in';
+      return 'https://api-staging.rupyaa.com';
   }
 }
 
@@ -55,8 +55,8 @@ export const envConfig = {
   apiUrl: resolveApiUrl(),
   ngrokApiUrl: resolveNgrokApiUrl(),
   amanNgrokApiUrl: 'https://grimy-victoria-uninduced.ngrok-free.dev',
-  staging2ApiUrl:'https://staging2-api.zapcash.in',
-  stagingApiUrl: 'https://staging-api.zapcash.in',
+  staging2ApiUrl:'https://api-staging.rupyaa.com',
+  stagingApiUrl: 'https://api-staging.rupyaa.com',
   isDevelopment: resolveIsDevelopment(),
   adjustAppToken: process.env.EXPO_PUBLIC_ADJUST_APP_TOKEN ?? '',
   fbAppId: process.env.EXPO_PUBLIC_FB_APP_ID ?? '',
