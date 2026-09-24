@@ -57,7 +57,8 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/splash.png",
-          "resizeMode": "cover",
+          "imageWidth": 280,
+          "resizeMode": "contain",
           "backgroundColor": "#FFFCF4"
         }
       ],
@@ -84,7 +85,7 @@
       "otaUpdateNumberDev": "8",
       "otaUpdateNumberProd": "2",
       "versionDev": "1.0.2",
-      "versionProd": "1.0.1",
+      "versionProd": "1.0.2",
       "versionProdIos": "1.0.0",
       "isDevelopment": true,
       "otaUpdateNumber": "1",
