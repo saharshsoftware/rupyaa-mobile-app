@@ -20,7 +20,7 @@ import {
 } from '@expo-google-fonts/noto-sans-devanagari';
 import * as SplashScreen from 'expo-splash-screen';
 import '@/src/services/i18n';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppStartup } from '@/hooks/useAppStartup';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
@@ -40,7 +40,6 @@ import { UpdateModal } from '@/src/components/UpdateModal';
 import { DeviceSecurityOverlay } from '@/src/components/DeviceSecurityOverlay';
 import {
   ScreenBackground,
-  AppLaunchSplash,
   SecurityErrorScreen,
 } from '@/src/components';
 import {
@@ -56,8 +55,6 @@ import {
 } from '@/src/security/sslPinning';
 
 SplashScreen.preventAutoHideAsync();
-
-const MIN_LAUNCH_SPLASH_DURATION_MS = 1800;
 
 const transparentNavigationTheme = {
   ...DefaultTheme,
@@ -151,7 +148,6 @@ function AppBootstrap({ shouldEnableFreeRasp }: { shouldEnableFreeRasp: boolean 
 export default function RootLayout() {
   const [securityReady, setSecurityReady] = useState(false);
   const [securityFailed, setSecurityFailed] = useState(false);
-  const [launchSplashComplete, setLaunchSplashComplete] = useState(false);
   const [securityErrorMessage, setSecurityErrorMessage] = useState(
     'Secure connection could not be verified. Please try again.',
   );
@@ -176,6 +172,16 @@ export default function RootLayout() {
   useEffect(() => {
     setupGlobalErrorHandlers();
   }, []);
+
+  useEffect(() => {
+    if (!fontsLoaded) {
+      return;
+    }
+    if (!securityReady && !securityFailed) {
+      return;
+    }
+    void SplashScreen.hideAsync();
+  }, [fontsLoaded, securityReady, securityFailed]);
 
   useEffect(() => {
     let cancelled = false;
@@ -214,17 +220,6 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    if (!fontsLoaded) return;
-
-    void SplashScreen.hideAsync();
-    const timeoutId = setTimeout(() => {
-      setLaunchSplashComplete(true);
-    }, MIN_LAUNCH_SPLASH_DURATION_MS);
-
-    return () => clearTimeout(timeoutId);
-  }, [fontsLoaded]);
-
-  useEffect(() => {
     if (!__DEV__ || Platform.OS === 'web') {
       return;
     }
@@ -238,29 +233,15 @@ export default function RootLayout() {
     };
   }, []);
 
-  const renderRootContent = (): ReactNode => {
-    if (!fontsLoaded) {
-      return null;
-    }
-
-    if (!launchSplashComplete) {
-      return <AppLaunchSplash />;
-    }
-
-    if (securityFailed) {
-      return <SecurityErrorScreen message={securityErrorMessage} />;
-    }
-
-    if (!securityReady) {
-      return <AppLaunchSplash />;
-    }
-
-    return <AppBootstrap shouldEnableFreeRasp={shouldEnableFreeRasp} />;
-  };
-
+  if (!fontsLoaded || (!securityReady && !securityFailed)) {
+    return null;
+  }
+  if (securityFailed) {
+    return <SecurityErrorScreen message={securityErrorMessage} />;
+  }
   return (
     <ScreenBackground>
-      {renderRootContent()}
+      <AppBootstrap shouldEnableFreeRasp={shouldEnableFreeRasp} />
     </ScreenBackground>
   );
 }

@@ -57,9 +57,8 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/splash.png",
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
-          "imageWidth": 220
+          "resizeMode": "cover",
+          "backgroundColor": "#FFFCF4"
         }
       ],
       [
@@ -82,14 +81,14 @@
       "typedRoutes": true
     },
     "extra": {
-      "otaUpdateNumberDev": "1",
+      "otaUpdateNumberDev": "8",
       "otaUpdateNumberProd": "2",
       "versionDev": "1.0.2",
-      "versionProd": "1.0.0",
+      "versionProd": "1.0.1",
       "versionProdIos": "1.0.0",
       "isDevelopment": true,
       "otaUpdateNumber": "1",
-      "environment": "production",    
+      "environment": "production",
       "disableCrashlytics": false,
       "router": {},
       "version": "1.0.38",

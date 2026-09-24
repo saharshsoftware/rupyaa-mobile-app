@@ -159,11 +159,11 @@ export function ApplyForLoanHomeView({
               Limited Offer
             </AppText>
           </View>
-          <SvgUri
-            uri={Image.resolveAssetSource(IMAGES.HOME_CREDIT_SCORE).uri}
-            width={80}
-            height={80}
+          <Image
+            source={IMAGES.HOME_CREDIT_SCORE}
             style={styles.creditImage}
+            resizeMode="contain"
+            accessibilityLabel="Check credit score"
           />
           <AppText style={styles.whiteText} variant="caption" weight="semiBold">
             Check Credit Score

@@ -76,7 +76,6 @@ export function useGoogleAuth() {
     let accessToken: string | null = null;
     let idToken: string | null = null;
     let tokenError: unknown = null;
-
     try {
       if (SIMULATE_TOKEN_FAILURE) {
         throw new Error("[DEV] Simulated getTokens failure");

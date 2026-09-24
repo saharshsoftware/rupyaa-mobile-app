@@ -7,7 +7,6 @@ import {
 } from '@/src/services/navigation';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import { colors } from '@/src/theme';
-import { ZapcashLoading } from '@/src/components';
 import { appConfig } from '@/src/config/appConfig';
 
 export default function IndexScreen() {
@@ -45,20 +44,12 @@ export default function IndexScreen() {
     };
   }, [router]);
 
-  return (
-    <View style={styles.container}>
-      <ZapcashLoading
-        visible={true}
-      />
-    </View>
-  );
+  return <View style={styles.container} />;
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.transparent,
+    backgroundColor: colors.background.cream,
   },
 });
