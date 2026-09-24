@@ -59,6 +59,7 @@ export function mapPersonalDetailsToApi(form: PersonalDetails): PostPersonalDeta
     pan: form.pan.toUpperCase().replace(/\s/g, ''),
     pincode: form.pincode.trim(),
     salary: parseNumericString(form.salary),
+    purposeOfLoan: form.purposeOfLoan?.trim() || undefined,
   };
 }
 
@@ -93,7 +94,7 @@ export function mapEmploymentDetailsToApi(
       // organization: details.businessName.trim(),
       // designation: details.designation.trim(),
       // monthlySalary: parseNumericString(details.netMonthlyIncome),
-      // declaredSalaryDay: details.declaredSalaryDay,
+      declaredSalaryDay: details.declaredSalaryDay,
     };
   }
   // Unemployed
@@ -194,6 +195,7 @@ export function mapPersonalDetailsFromApi(
     pan: (data.pan ?? '').toUpperCase().replace(/\s/g, ''),
     pincode: (data.pincode ?? '').trim(),
     salary: formatNumericString(data.salary),
+    purposeOfLoan: data.purposeOfLoan?.trim() ?? '',
   };
 }
 

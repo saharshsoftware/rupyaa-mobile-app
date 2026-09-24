@@ -41,3 +41,12 @@ export const BUSINESS_DOMAIN_OPTIONS = [
   'Real Estate',
   'Other',
 ] as const;
+
+export const PURPOSE_OF_LOAN_OPTIONS = [
+  'Medical Emergency',
+  'Debt Repayment',
+  'Rent Payment',
+  'Home Expense',
+  'Education Expenses',
+  'Other Personal Expense',
+].map((purpose) => ({ label: purpose, value: purpose }));

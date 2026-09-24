@@ -63,7 +63,7 @@ import rupyaaLogo from '@/assets/images/rupyaa-logo.svg';
 import enachShield from '@/assets/images/enach-shield.svg';
 import esignVerification from '@/assets/images/esign-verification.svg';
 import faceKycIntro from '@/assets/images/face-kyc-intro.svg';
-import homeCreditScore from '@/assets/images/home-credit-score.svg';
+import homeCreditScore from '@/assets/images/home-credit-score.png';
 import finalDisbursementReview from '@/assets/images/final-disbursement-review.svg';
 import supportAgent from '@/assets/images/support-agent.png';
 import assuranceCheckbox from '@/assets/images/assurance-checkbox.svg';

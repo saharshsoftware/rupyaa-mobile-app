@@ -138,7 +138,7 @@ export function AddressDetailsStep({ onNext, onPrev }: StepProps) {
       try {
         const result = await getCityStateFromPincode(trimmed, controller.signal);
         if (cancelled) return;
-        debugger
+        //debugger
 
         if (result.ok) {
           clearErrors('pinCode');
