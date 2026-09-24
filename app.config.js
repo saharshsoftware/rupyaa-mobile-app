@@ -81,7 +81,7 @@ export default ({ config }) => {
               // Required by freeRASP; also set in freerasp plugin config for prebuild.
               minSdkVersion: 24,
               enableMinifyInReleaseBuilds: true,
-              enableShrinkResourcesInReleaseBuilds: true,
+              enableShrinkResourcesInReleaseBuilds: false,
               enableBundleCompression: true,
               useLegacyPackaging: true,
               // R8 optimisation: flatten every class into the root package and let R8
