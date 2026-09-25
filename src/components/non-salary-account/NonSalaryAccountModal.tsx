@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Image,
   ScrollView,
   StyleSheet,
   View,
@@ -9,13 +8,13 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Clock, Star } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { SvgUri } from 'react-native-svg';
+import { SvgXml } from 'react-native-svg';
 import { AppText } from '../AppText';
 import { AuthHeader } from '../AuthHeader';
 import { Button } from '../Button';
 import { FullScreenModal } from '../FullScreenModal';
 import { CancellationCalloutBox } from '../loan-cancellation/CancellationCalloutBox';
-import { IMAGES } from '@/src/constants/images';
+import { SVG_ILLUSTRATIONS } from '@/src/constants/illustrations';
 import { colors, spacing, typography } from '@/src/theme';
 import { NonSalaryBenefitsGrid } from './NonSalaryBenefitsGrid';
 import { buildRecommendationMessage } from './formatSalarySuffixHint';
@@ -138,8 +137,8 @@ export function NonSalaryAccountModal({
 
           <View style={styles.illustrationWrap}>
             <View style={styles.illustrationFrame}>
-              <SvgUri
-                uri={Image.resolveAssetSource(IMAGES.NON_SALARY_ACCOUNT).uri}
+              <SvgXml
+                xml={SVG_ILLUSTRATIONS.NON_SALARY_ACCOUNT}
                 width="100%"
                 height="100%"
                 accessibilityLabel="Non-salary account warning"

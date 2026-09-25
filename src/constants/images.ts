@@ -55,16 +55,11 @@ import tiger from '@/assets/images/tiger.png';
 import letstalk from '@/assets/images/letstalk.png';
 import bigLogo from '@/assets/images/big-logo.png';
 import refresh from '@/assets/images/refresh.png';
-import nonSalaryAccount from '@/assets/images/non-salary-account.svg';
 import winStar from '@/assets/images/win-star.png';
 import paymentEmiBg from '@/assets/images/payment-emi-bg.png';
 import blurredPrice from '@/assets/images/blurred-price.png';
 import rupyaaLogo from '@/assets/images/rupyaa-logo.svg';
-import enachShield from '@/assets/images/enach-shield.svg';
-import esignVerification from '@/assets/images/esign-verification.svg';
-import faceKycIntro from '@/assets/images/face-kyc-intro.svg';
 import homeCreditScore from '@/assets/images/home-credit-score.png';
-import finalDisbursementReview from '@/assets/images/final-disbursement-review.svg';
 import supportAgent from '@/assets/images/support-agent.png';
 import assuranceCheckbox from '@/assets/images/assurance-checkbox.svg';
 import noPendingDocuments from '@/assets/images/no-pending-documents.png';
@@ -126,16 +121,11 @@ export const IMAGES = {
   LETSTALK: letstalk,
   BIG_LOGO: bigLogo,
   REFRESH: refresh,
-  NON_SALARY_ACCOUNT: nonSalaryAccount,
   WIN_STAR: winStar,
   PAYMENT_EMI_BG: paymentEmiBg,
   BLURRED_PRICE: blurredPrice,
   RUPYAA_LOGO: rupyaaLogo,
-  ENACH_SHIELD: enachShield,
-  ESIGN_VERIFICATION: esignVerification,
-  FACE_KYC_INTRO: faceKycIntro,
   HOME_CREDIT_SCORE: homeCreditScore,
-  FINAL_DISBURSEMENT_REVIEW: finalDisbursementReview,
   SUPPORT_AGENT: supportAgent,
   ASSURANCE_CHECKBOX: assuranceCheckbox,
   NO_PENDING_DOCUMENTS: noPendingDocuments,

@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { View, StyleSheet, ActivityIndicator, Image, ImageStyle } from 'react-native';
-import { SvgUri } from 'react-native-svg';
+import { SvgXml } from 'react-native-svg';
 import { AppText } from '../AppText';
 import { Button } from '../Button';
 import { FormLayout } from '../FormLayout';
@@ -9,6 +9,7 @@ import { StandardWebView } from '../StandardWebView';
 import type { StepProps } from '@/src/types/flow';
 import { colors, spacing, radius } from '@/src/theme';
 import { IMAGES } from '@/src/constants/images';
+import { SVG_ILLUSTRATIONS } from '@/src/constants/illustrations';
 import {
   generateAgreementAutomatic,
   importGoogleContacts,
@@ -387,8 +388,8 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
         <View style={styles.readyWrapper}>
           <View style={styles.verificationCard}>
             <View style={styles.verificationIconWrap}>
-              <SvgUri
-                uri={Image.resolveAssetSource(IMAGES.ESIGN_VERIFICATION).uri}
+              <SvgXml
+                xml={SVG_ILLUSTRATIONS.ESIGN_VERIFICATION}
                 width={styles.verificationImage.width}
                 height={styles.verificationImage.height}
               />

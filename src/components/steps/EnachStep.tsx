@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { View, StyleSheet, ActivityIndicator, Image } from 'react-native';
-import { SvgUri } from 'react-native-svg';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { SvgXml } from 'react-native-svg';
 import { AppText } from '../AppText';
 import { Button } from '../Button';
 import { FormLayout } from '../FormLayout';
@@ -24,6 +24,7 @@ import { useFlowStore } from '@/src/store/useFlowStore';
 import { devConfig } from '@/src/config/dev';
 import { useStepSimulation } from '@/src/hooks/useStepSimulation';
 import { IMAGES } from '@/src/constants/images';
+import { SVG_ILLUSTRATIONS } from '@/src/constants/illustrations';
 import { getApiErrorDisplayMessage, SUCCESS_MODAL_AUTO_NEXT_DELAY_MS } from '@/src/utils/common-helper';
 import ErrorContainer from '../ErrorContainer';
 import { ANALYTICS_EVENT, logAnalyticsEvent } from '@/src/services/analytics';
@@ -320,8 +321,8 @@ export function EnachStep({ onNext, onPrev }: StepProps): React.JSX.Element {
     >
       <View style={styles.content}>
         <View style={styles.iconWrapper}>
-          <SvgUri
-            uri={Image.resolveAssetSource(IMAGES.ENACH_SHIELD).uri}
+          <SvgXml
+            xml={SVG_ILLUSTRATIONS.ENACH_SHIELD}
             width={80}
             height={80}
             accessibilityLabel="Secure auto-payment"

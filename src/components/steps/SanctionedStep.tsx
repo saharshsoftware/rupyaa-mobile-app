@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { View, Image, StyleSheet, Linking, Pressable } from 'react-native';
-import { SvgUri } from 'react-native-svg';
+import { View, StyleSheet, Linking, Pressable } from 'react-native';
+import { SvgXml } from 'react-native-svg';
 import { useRouter } from 'expo-router';
 import { AppText } from '../AppText';
 import { Button } from '../Button';
@@ -10,7 +10,7 @@ import { LoanCancellationModal } from '../LoanCancellationModal';
 import type { StepProps } from '@/src/types/flow';
 import { colors, radius, spacing } from '@/src/theme';
 import { goHomeWithFallback } from '@/src/services/navigation/homeNavigation';
-import { IMAGES } from '@/src/constants/images';
+import { SVG_ILLUSTRATIONS } from '@/src/constants/illustrations';
 import { formatCurrency, resolveWhatsAppUrl } from '@/src/utils/common-helper';
 import {
   getCanCancelFromActiveLoanResponse,
@@ -155,8 +155,8 @@ export function SanctionedStep({
     >
       <View style={[styles.content, isModalPresentation && styles.contentModal]}>
         <View style={styles.illustration}>
-          <SvgUri
-            uri={Image.resolveAssetSource(IMAGES.FINAL_DISBURSEMENT_REVIEW).uri}
+          <SvgXml
+            xml={SVG_ILLUSTRATIONS.FINAL_DISBURSEMENT_REVIEW}
             width="100%"
             height="100%"
             accessibilityLabel="Final disbursement review"

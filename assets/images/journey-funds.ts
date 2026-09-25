@@ -1,0 +1,4 @@
+// Bundle the existing SVG markup so native builds do not fetch asset URIs.
+const xml = "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path d=\"M5 17V10H7V17H5ZM11 17V10H13V17H11ZM2 21V19H22V21H2ZM17 17V10H19V17H17ZM2 8V6L12 1L22 6V8H2ZM6.45 6H17.55L12 3.25L6.45 6Z\" fill=\"black\" fill-opacity=\"0.9\"/>\n</svg>\n";
+
+export default xml;

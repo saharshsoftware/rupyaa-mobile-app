@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { View, StyleSheet, ActivityIndicator, Image } from 'react-native';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { SvgUri } from 'react-native-svg';
+import { FaceKycIllustration } from '../FaceKycIllustration';
 import { AppText } from '../AppText';
 import { Button } from '../Button';
 import { FormLayout } from '../FormLayout';
@@ -619,10 +619,9 @@ export function FaceKycStep({ onNext, onPrev }: StepProps) {
         {/* Face scan illustration card */}
         <View style={styles.card}>
           <View style={styles.cardIconWrapper}>
-            <SvgUri
-              uri={Image.resolveAssetSource(IMAGES.FACE_KYC_INTRO).uri}
-              width="80%"
-              height="80%"
+            <FaceKycIllustration
+              width={108}
+              height={108}
               accessibilityLabel="Face verification"
             />
           </View>
@@ -707,8 +706,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
   cardIconWrapper: {
-    width: 80,
-    height: 80,
+    width: 108,
+    height: 108,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: spacing.md,

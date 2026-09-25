@@ -59,7 +59,7 @@
           "image": "./assets/images/splash.png",
           "imageWidth": 280,
           "resizeMode": "contain",
-          "backgroundColor": "#FFFCF4"
+          "backgroundColor": "#FFFFFF"
         }
       ],
       [
@@ -85,7 +85,7 @@
       "otaUpdateNumberDev": "8",
       "otaUpdateNumberProd": "2",
       "versionDev": "1.0.2",
-      "versionProd": "1.0.2",
+      "versionProd": "1.0.3",
       "versionProdIos": "1.0.0",
       "isDevelopment": true,
       "otaUpdateNumber": "1",
