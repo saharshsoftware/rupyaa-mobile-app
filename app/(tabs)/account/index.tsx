@@ -150,7 +150,7 @@ const debugSecondaryActions = [
 
 const contactsMenuItem = {
   id: 'contacts',
-  title: 'Contacts',
+  title: 'Refer',
   icon: Users,
   route: '/contacts',
 } as const;

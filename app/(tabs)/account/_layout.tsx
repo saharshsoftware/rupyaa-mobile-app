@@ -47,7 +47,7 @@ export default function AccountTabStackLayout() {
         }}
       />
       {/* <Stack.Screen name="my-profile" options={{ title: 'My Profile' }} /> */}
-      <Stack.Screen name="contacts" options={{ title: t('Contacts') }} />
+      <Stack.Screen name="contacts" options={{ title: t('Refer') }} />
       <Stack.Screen name="loan-agreement" options={{ title: t('Loan Agreement') }} />
       <Stack.Screen name="lending-partners" options={{ title: t('Trusted Lending Partners') }} />
       <Stack.Screen name="permissions" options={{ title: t('Permissions') }} />

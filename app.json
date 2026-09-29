@@ -19,7 +19,7 @@
         "FirebaseInAppMessagingDisplayEnabled": true,
         "NSCameraUsageDescription": "Rupyaa needs camera access to capture your selfie and scan documents for identity verification.",
         "NSLocationWhenInUseUsageDescription": "Rupyaa uses your location to verify serviceability and confirm your address during the KYC process.",
-        "NSContactsUsageDescription": "Rupyaa needs access to your device contacts so you can invite friends.",
+        "NSContactsUsageDescription": "Rupyaa requests read-only access to your Google contacts to help with your loan application.",
         "NSPhotoLibraryUsageDescription": "Rupyaa needs access to your photo library so you can upload documents for your loan application.",
         "NSUserTrackingUsageDescription": "We use this identifier to show you personalised offers and to measure the effectiveness of our ads.",
         "SKAdNetworkItems": [
@@ -81,7 +81,7 @@
       "typedRoutes": true
     },
     "extra": {
-      "otaUpdateNumberDev": "8",
+      "otaUpdateNumberDev": "9",
       "otaUpdateNumberProd": "2",
       "versionDev": "1.0.2",
       "versionProd": "1.0.1",
