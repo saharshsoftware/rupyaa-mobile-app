@@ -84,6 +84,7 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
 
   useEffect(() => {
     setIsOauthDone(personalDetails?.isOauthDone === true);
+    console.log('[EsignStep] useEffect: setIsOauthDone', isOauthDone);
   }, [personalDetails]);
   /**
    * On mount, check if esign is already completed (e.g. user signed via email and returned).
@@ -191,6 +192,8 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
   }, [isInitiating]);
 
   const handleVerifyGoogleAndProceed = useCallback(async (): Promise<void> => {
+    console.log('[EsignStep] handleVerifyGoogleAndProceed: isGoogleVerifying', isGoogleVerifying);
+    console.log('[EsignStep] handleVerifyGoogleAndProceed: isInitiating', isInitiating);
     if (isGoogleVerifying || isInitiating) return;
 
   
@@ -199,6 +202,8 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
 
     try {
       const result = await signInWithGoogle();
+      debugger;
+      console.log('[EsignStep] handleVerifyGoogleAndProceed: result', result);
       if (!isMountedRef.current) return;
 
       if (result?.type === 'cancelled') {
@@ -218,12 +223,13 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
 
       const accessToken = result?.accessToken;
       if (!accessToken) {
+        console.log('[EsignStep] handleVerifyGoogleAndProceed: !accessToken');
         pushLoanJourneyUnknownError(
           'esign google auth',
           new Error('Google verification was not completed. Please try again.')
         );
         setFailureMessage('Google verification was not completed. Please try again.');
-
+        console.log('[EsignStep] handleVerifyGoogleAndProceed: setFailureMessage', setFailureMessage);
         // setFailureMessage(
         //   `${JSON.stringify({resultError: result.error})}`
         // );
@@ -233,6 +239,7 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
 
       const importResponse = await importGoogleContacts(accessToken);
       if (!isMountedRef.current) return;
+      console.log('[EsignStep] handleVerifyGoogleAndProceed: importResponse', importResponse);
 
       const importSuccessful = importResponse.success;
 
@@ -302,10 +309,12 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
   // }, [onNext]);
 
   const handleCtaPress = useCallback(() => {
-    debugger;
+    console.log('[EsignStep] handleCtaPress: isOauthDone', isOauthDone);
     if (isOauthDone) {
+      console.log('[EsignStep] handleCtaPress: isOauthDone');
       void handleProceedToEsign();
     } else {
+      console.log('[EsignStep] handleCtaPress: !isOauthDone');
       void handleVerifyGoogleAndProceed();
     }
   }, [isOauthDone, handleProceedToEsign, handleVerifyGoogleAndProceed]);

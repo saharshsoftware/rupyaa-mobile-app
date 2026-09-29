@@ -2,7 +2,7 @@ import { LANGUAGE_LABELS } from "../config/languages";
 import { OnboardingLanguageOption } from "../types/common";
 
 export const STRING_DATA = {
-  APP_NAME: 'ZapCash',
+  APP_NAME: 'Rupyaa',
 };
 
 export const DEFAULT_ACTIVE_LOAN_AMOUNT = 500000;

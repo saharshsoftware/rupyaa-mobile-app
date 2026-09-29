@@ -25,11 +25,12 @@ export const deepLinkRoutes: DeepLinkRouteRule[] = [
   { pattern: /^privacy$/, link: '/privacy' },
   { pattern: /^terms$/, link: '/terms' },
 ];
+//TODO: Update the go.link to the new one---rupyaa.go.link
 
-const KNOWN_HTTPS_HOSTS = ['zapcash.in', 'www.zapcash.in', 'zapcash.go.link'];
+const KNOWN_HTTPS_HOSTS = ['rupyaa.com', 'www.rupyaa.com'];
 const NON_APP_DEEP_LINK_HOSTS = ['expo-development-client'];
 
-/**
+/** 
  * Extracts the navigable path from an expo-linking ParsedURL.
  *
  * Handles all deep link formats:

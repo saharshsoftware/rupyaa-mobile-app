@@ -1,4 +1,4 @@
-package com.zapcash.loan.smsotp
+package com.rupyaa.loan.smsotp
 
 import android.content.BroadcastReceiver
 import android.content.Context

@@ -50,7 +50,6 @@ export {
 } from './SecurityNoticeScreen';
 export { DeviceSecurityOverlay } from './DeviceSecurityOverlay';
 export { SecurityLoadingScreen } from './SecurityLoadingScreen';
-export { AppLaunchSplash } from './AppLaunchSplash';
 export { SecurityErrorScreen } from './SecurityErrorScreen';
 export { StickyFooter, STICKY_FOOTER_PADDING } from './StickyFooter';
 export { Button } from './Button';

@@ -8,6 +8,7 @@ export interface PersonalDetails {
   gender: 'male' | 'female' | 'others';
   pan: string;
   pincode: string;
+  purposeOfLoan?: string;
   salary: string; // stored as string in form, converted to number for API
 }
 
@@ -62,6 +63,7 @@ export interface PostPersonalDetailsRequest {
   pan: string;
   pincode: string;
   salary: number;
+  purposeOfLoan?: string;
 }
 
 /** Request body for POST /user/post-employment-details */
@@ -84,6 +86,7 @@ export interface GetPersonalDetailsResponse {
   pan?: string;
   pincode?: string;
   salary?: number | string;
+  purposeOfLoan?: string;
   phoneNumber?: string;
   employmentMode?: string;
   organization?: string;

@@ -27,7 +27,7 @@ import {
 } from '@/src/services/registration';
 import { devLog } from '@/src/utils';
 import { getApiErrorDisplayMessage, getRejectionMessage } from '@/src/utils/common-helper';
-import { GENDER_OPTIONS, EMPLOYMENT_OPTIONS } from '@/src/data/registration';
+import { GENDER_OPTIONS, EMPLOYMENT_OPTIONS, PURPOSE_OF_LOAN_OPTIONS } from '@/src/data/registration';
 import type {
   PersonalDetails,
   PostPersonalDetailsRequest,
@@ -82,6 +82,7 @@ const FIELD_ORDER: (keyof MergedFormData)[] = [
   'dob',
   'gender',
   'salary',
+  'purposeOfLoan',
   'employmentMode',
   'primaryField',
   'declaredSalaryDay',
@@ -124,6 +125,7 @@ const mapPersonalDetailsToConfirmationFields = (data: PersonalDetails): Confirma
   { label: 'Date of Birth', value: data.dob || '-' },
   { label: 'Gender', value: formatGenderLabel(data.gender) || '-' },
   { label: 'Monthly Income', value: formatCurrencyINR(data.salary) || '-' },
+  { label: 'Purpose of Loan', value: data.purposeOfLoan || '-' },
 ];
 
 // [single-screen-merge] Extra confirmation rows for employment.
@@ -136,6 +138,9 @@ const mapEmploymentToConfirmationFields = (
   if ('companyName' in details) {
     rows.push({ label: 'Company Name', value: details.companyName || '-' });
     rows.push({ label: 'Salary Credit Day', value: String(details.declaredSalaryDay) });
+  }
+  if (employmentMode === 'self_employed') {
+    rows.push({ label: 'EMI Date', value: String(details.declaredSalaryDay) });
   }
   return rows;
 };
@@ -229,6 +234,7 @@ export function PersonalDetailsStep({ onNext, onPrev }: StepProps) {
       pincode: appConfig.prefillPersonalWithPiyushData ? '311404' : '',
       pan: '',
       salary: appConfig.prefillPersonalWithPiyushData ? '51000' : '',
+      purposeOfLoan: '',
       employmentMode: undefined,
       primaryField: '',
       declaredSalaryDay: 1,
@@ -238,6 +244,7 @@ export function PersonalDetailsStep({ onNext, onPrev }: StepProps) {
   // Watch the in-form employment type to toggle the salaried work fields.
   const selectedMode = useWatch({ control, name: 'employmentMode' });
   const isSalaried = selectedMode === 'salaried';
+  const isSelfEmployed = selectedMode === 'self_employed';
 
   useEffect(() => {
     devLog.screenEnter('personal-details');
@@ -323,8 +330,10 @@ export function PersonalDetailsStep({ onNext, onPrev }: StepProps) {
     // Build employment details from the reused config (salaried) or minimal shape.
     const details: EmploymentDetails = mode === 'salaried'
       ? FORM_CONFIG_BY_MODE.salaried.buildDetails(data.primaryField ?? '', data.declaredSalaryDay ?? 1)
-      : MINIMAL_DETAILS_BY_MODE[mode as 'self_employed' | 'unemployed'];
-    devLog.formData('Personal + Employment Details', { personal, employmentMode: mode });
+      : {
+          ...MINIMAL_DETAILS_BY_MODE[mode as 'self_employed' | 'unemployed'],
+          declaredSalaryDay: data.declaredSalaryDay ?? 1,
+        };
     setPendingData({ personal, employmentMode: mode, details });
   };
 
@@ -452,6 +461,14 @@ export function PersonalDetailsStep({ onNext, onPrev }: StepProps) {
             returnKeyType="done"
           />
 
+          <ControlledDropdown
+            control={control}
+            name="purposeOfLoan"
+            label="Purpose of Loan (Optional)"
+            options={PURPOSE_OF_LOAN_OPTIONS}
+            placeholder="Select purpose of loan"
+          />
+
           {/* [single-screen-merge] Employment type + salaried work details, folded
               in from EmploymentTypeStep / EmploymentDetailsForm. */}
           <View style={styles.employmentSection}>
@@ -480,6 +497,19 @@ export function PersonalDetailsStep({ onNext, onPrev }: StepProps) {
                   placeholder="Select day"
                   required
                   helperText="The date your salary is usually credited to your bank account"
+                />
+              </View>
+            ) : null}
+            {isSelfEmployed ? (
+              <View style={styles.salariedFields}>
+                <ControlledDropdown
+                  control={control}
+                  name="declaredSalaryDay"
+                  label="Choose your EMI date"
+                  options={salaryDayOptions}
+                  placeholder="Select EMI date"
+                  required
+                  helperText="Day of the month when you prefer to pay your EMI"
                 />
               </View>
             ) : null}

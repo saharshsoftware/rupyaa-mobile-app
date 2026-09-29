@@ -32,7 +32,7 @@ const KOTLIN_FILES = ["SmsOtpRetrieverModule.kt", "SmsOtpRetrieverPackage.kt"];
 // new prebuild + native build — keep in lockstep with other GMS deps.
 const GMS_AUTH_API_PHONE = "com.google.android.gms:play-services-auth-api-phone:18.1.0";
 
-const PACKAGE_REGISTRATION_LINE = "add(com.zapcash.loan.smsotp.SmsOtpRetrieverPackage())";
+const PACKAGE_REGISTRATION_LINE = "add(com.rupyaa.loan.smsotp.SmsOtpRetrieverPackage())";
 
 /**
  * Copies bundled Kotlin sources into the generated Android project so
