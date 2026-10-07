@@ -282,6 +282,7 @@ export function EmploymentDetailsStep({ onNext, onPrev }: StepProps) {
   // Brief loading state while employmentMode is fetched from storage
   return (
     <FormLayout
+      showContactSupport
       safeAreaEdges={['bottom']}
       onBack={onPrev}
       footer={
@@ -331,6 +332,7 @@ function DirectEmploymentSubmit({
 
   return (
     <FormLayout
+      showContactSupport
       safeAreaEdges={['bottom']}
       onBack={onPrev}
       footer={
@@ -404,6 +406,7 @@ function EmploymentDetailsForm({ employmentMode, onNext, onPrev }: EmploymentSub
 
   return (
     <FormLayout
+      showContactSupport
       safeAreaEdges={['bottom']}
       onBack={onPrev}
       keyboardAwareFooter

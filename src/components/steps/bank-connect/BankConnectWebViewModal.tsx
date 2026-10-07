@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import type { BankStatementSuccessPayload } from '@/src/types/webview';
 import { BankConnectWebView } from '@/src/components/BankConnectWebView';
+import { ContactSupport } from '../../ContactSupport';
 import { FullScreenModal } from '@/src/components/FullScreenModal';
 import ErrorContainer from '@/src/components/ErrorContainer';
 
@@ -20,6 +21,7 @@ export function BankConnectWebViewModal({
 }: BankConnectWebViewModalProps): React.JSX.Element {
   return (
     <FullScreenModal
+      footer={<ContactSupport />}
       visible={visible}
       onClose={onClose}
       title="Bank Connect"

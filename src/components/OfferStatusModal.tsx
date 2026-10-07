@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFlowStore } from '@/src/store/useFlowStore';
 import { useCurrentOfferStore } from '@/src/store/useCurrentOfferStore';
 import { colors, spacing, typography } from '@/src/theme';
+import { ContactSupport } from './ContactSupport';
 import { AppText } from './AppText';
 import { Button } from './Button';
 import { IMAGES } from '@/src/constants/images';
@@ -236,6 +237,7 @@ export function OfferStatusModal({
           },
         ]}
       >
+        <ContactSupport />
         {footerAction}
       </View>
     </Animated.View>

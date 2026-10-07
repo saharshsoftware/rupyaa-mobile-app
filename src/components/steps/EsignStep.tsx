@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { View, StyleSheet, ActivityIndicator, Image, ImageStyle } from 'react-native';
 import { SvgUri } from 'react-native-svg';
+import { ContactSupport } from '../ContactSupport';
 import { AppText } from '../AppText';
 import { Button } from '../Button';
 import { FormLayout } from '../FormLayout';
@@ -60,6 +61,7 @@ function EsignFailureScreen({ onRetry }: EsignFailureScreenProps) {
       <AppText style={styles.failureSubtitle} variant="body">
         Please complete the e-sign from your email.
       </AppText>
+      <ContactSupport />
       <Button variant="primary" size="medium" fullWidth onPress={onRetry}>
         Try again
       </Button>
@@ -324,6 +326,7 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
     if (simulatedState === 'loading') {
       return (
         <FormLayout
+          showContactSupport
           safeAreaEdges={['bottom']}
           onBack={onPrev}
           footer={<></>}
@@ -369,6 +372,7 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
 
     return (
       <FormLayout
+        showContactSupport
         safeAreaEdges={['bottom']}
         onBack={onPrev}
         footer={
@@ -415,6 +419,7 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
         </View>
 
         <FullScreenModal
+          footer={<ContactSupport />}
           visible={isWebViewModalOpen}
           onClose={closeWebViewModal}
           title="E-Sign"
@@ -440,6 +445,7 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
   if (screen === 'polling') {
     return (
       <FormLayout
+        showContactSupport
         safeAreaEdges={['bottom']}
         onBack={onPrev}
         footer={<></>}
@@ -459,6 +465,7 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
   if (screen === 'pending') {
     return (
       <FormLayout
+        showContactSupport
         safeAreaEdges={['bottom']}
         onBack={onPrev}
         footer={
@@ -481,6 +488,7 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
         </View>
 
         <FullScreenModal
+          footer={<ContactSupport />}
           visible={isWebViewModalOpen}
           onClose={closeWebViewModal}
           title="E-Sign"

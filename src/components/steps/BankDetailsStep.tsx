@@ -316,6 +316,7 @@ export function BankDetailsStep({ onNext, onPrev }: StepProps) {
   return (
     <>
       <FormLayout
+        showContactSupport
         ref={scrollViewRef}
         safeAreaEdges={['bottom']}
         keyboardAwareFooter

@@ -16,7 +16,10 @@ import {
 import { colors, spacing } from "@/src/theme";
 import { useKeyboardHeight } from "@/src/hooks/useKeyboardHeight";
 
+import { ContactSupport } from "./ContactSupport";
+
 export interface FormLayoutProps {
+  showContactSupport?: boolean;
   children: ReactNode;
   /** Pass null to hide the fixed footer strip entirely. */
   footer?: ReactNode | null;
@@ -57,6 +60,7 @@ export const FormLayout = forwardRef<KeyboardAwareScrollView, FormLayoutProps>(
   function FormLayout(
     {
       children,
+      showContactSupport = false,
       footer,
       header,
       fixedHeader,
@@ -135,7 +139,7 @@ export const FormLayout = forwardRef<KeyboardAwareScrollView, FormLayoutProps>(
             {children}
           </KeyboardAwareScrollView>
 
-          {footer != null ? (
+          {footer != null || showContactSupport ? (
             <View
               style={[
                 styles.footer,
@@ -144,6 +148,7 @@ export const FormLayout = forwardRef<KeyboardAwareScrollView, FormLayoutProps>(
                 footerStyle,
               ]}
             >
+              {showContactSupport && <ContactSupport />}
               {footer}
             </View>
           ) : null}

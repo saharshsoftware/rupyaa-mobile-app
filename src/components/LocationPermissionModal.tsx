@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Animated, Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, spacing } from '@/src/theme';
+import { ContactSupport } from './ContactSupport';
 import { AppText } from './AppText';
 import { Button } from './Button';
 import { getByPassSmsPermission } from '@/src/config/resolvedAppConfig';
@@ -80,6 +81,7 @@ export function LocationPermissionModal({
           {message}
         </AppText>
         <View style={styles.footer}>
+          <ContactSupport />
           <Button
             variant="primary"
             size="large"

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import { useMutation } from '@tanstack/react-query';
+import { ContactSupport } from '../ContactSupport';
 import { AppText } from '../AppText';
 import { Button } from '../Button';
 import { FormLayout } from '../FormLayout';
@@ -189,7 +190,7 @@ export function DigilockerStep({ onNext, onPrev }: StepProps) {
   if (isSimulating) {
     if (simulatedState === 'loading') {
       return (
-        <FormLayout safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+        <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
           <View style={styles.loadingContainer}>
             <ZapcashLoading
               visible={true}
@@ -205,6 +206,7 @@ export function DigilockerStep({ onNext, onPrev }: StepProps) {
       return (
         <>
           <SuccessModal
+            showContactSupport
             visible={true}
             title="Completing Your Verification"
             message="We're securely confirming your Aadhaar details"
@@ -217,6 +219,7 @@ export function DigilockerStep({ onNext, onPrev }: StepProps) {
     if (simulatedState === 'error') {
       return (
         <FormLayout
+          showContactSupport
           safeAreaEdges={['bottom']}
           onBack={onPrev}
           footer={
@@ -238,7 +241,7 @@ export function DigilockerStep({ onNext, onPrev }: StepProps) {
 
   if (isRefreshingStatus) {
     return (
-      <FormLayout safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+      <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
         <View style={styles.loadingContainer}>
           <ZapcashLoading
             visible={true}
@@ -255,6 +258,7 @@ export function DigilockerStep({ onNext, onPrev }: StepProps) {
     return (
       <>
         <SuccessModal
+          showContactSupport
           visible={isAadhaarLinkedVerified}
           title="Completing Your Verification"
           message="We're securely confirming your Aadhaar details"
@@ -284,6 +288,7 @@ export function DigilockerStep({ onNext, onPrev }: StepProps) {
 
   return (
     <FormLayout
+      showContactSupport
       safeAreaEdges={['bottom']}
       onBack={onPrev}
       footer={(
@@ -327,6 +332,7 @@ export function DigilockerStep({ onNext, onPrev }: StepProps) {
         </View>
       </View>
       <FullScreenModal
+        footer={<ContactSupport />}
         visible={isWebViewOpen}
         onClose={handleCloseWebView}
         title="Digi Locker"
