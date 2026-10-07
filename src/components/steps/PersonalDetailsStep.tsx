@@ -376,6 +376,7 @@ export function PersonalDetailsStep({ onNext, onPrev }: StepProps) {
   return (
     <>
       <FormLayout
+        showContactSupport
         ref={scrollViewRef}
         safeAreaEdges={['bottom']}
         keyboardAwareFooter

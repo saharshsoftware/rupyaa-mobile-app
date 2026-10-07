@@ -52,6 +52,7 @@ export function EmploymentTypeStep({ onNext, onPrev }: StepProps) {
   return (
     <>
       <FormLayout
+        showContactSupport
         safeAreaEdges={['bottom']}
         onBack={onPrev}
         footer={

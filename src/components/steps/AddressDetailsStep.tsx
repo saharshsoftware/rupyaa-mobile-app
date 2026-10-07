@@ -233,6 +233,7 @@ export function AddressDetailsStep({ onNext, onPrev }: StepProps) {
   return (
     <>
       <FormLayout
+        showContactSupport
         ref={scrollViewRef}
         safeAreaEdges={['bottom']}
         onBack={onPrev}

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { View, StyleSheet, ActivityIndicator, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SvgUri } from 'react-native-svg';
+import { ContactSupport } from '../ContactSupport';
 import { AppText } from '../AppText';
 import { Button } from '../Button';
 import { FormLayout } from '../FormLayout';
@@ -381,6 +382,7 @@ export function FaceKycStep({ onNext, onPrev }: StepProps) {
 
   const faceKycModal = (
     <FullScreenModal
+      footer={<ContactSupport />}
       visible={isModalOpen}
       onClose={handleCloseModal}
       hideHeader={true}
@@ -522,7 +524,7 @@ export function FaceKycStep({ onNext, onPrev }: StepProps) {
   if (isSimulating) {
     if (simulatedState === 'loading') {
       return (
-        <FormLayout safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+        <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
           <View style={styles.loadingContainer}>
             {/* <View style={styles.centeredContainer}>
               <ActivityIndicator size="large" color={colors.primary.main} />
@@ -545,6 +547,7 @@ export function FaceKycStep({ onNext, onPrev }: StepProps) {
       return (
         <>
           <SuccessModal
+            showContactSupport
             visible={true}
             title="Identity Verified Successfully"
             message="Your KYC verification is complete"
@@ -558,6 +561,7 @@ export function FaceKycStep({ onNext, onPrev }: StepProps) {
       return (
         <>
           <ErrorModal
+            showContactSupport
             visible={true}
             title="Unable to start verification"
             message="An error occurred while loading the verification."
@@ -575,6 +579,7 @@ export function FaceKycStep({ onNext, onPrev }: StepProps) {
     return (
       <>
         <SuccessModal
+          showContactSupport
           visible={true}
           title="Identity Verified Successfully"
           message="Your KYC verification is complete"
@@ -589,6 +594,7 @@ export function FaceKycStep({ onNext, onPrev }: StepProps) {
   // ─── Intro / instructions screen (default) ─────────────────────
   return (
     <FormLayout
+      showContactSupport
       safeAreaEdges={['bottom']}
       onBack={onPrev}
       footer={

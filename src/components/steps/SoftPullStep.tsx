@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, ActivityIndicator, Image } from 'react-native';
 import { AppText } from '../AppText';
 import { Button } from '../Button';
+import { ContactSupport } from '../ContactSupport';
 import { FormLayout } from '../FormLayout';
 import ErrorContainer from '../ErrorContainer';
 import type { StepProps } from '@/src/types/flow';
@@ -162,7 +163,7 @@ export function SoftPullStep({ onNext, onPrev }: StepProps) {
   if (isSimulating) {
     if (simulatedState === 'loading') {
       return (
-        <FormLayout safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+        <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
           <View style={styles.content}>
             <AppText style={styles.title} variant="h3" weight="semiBold">
               Checking your eligibility
@@ -180,6 +181,7 @@ export function SoftPullStep({ onNext, onPrev }: StepProps) {
     if (simulatedState === 'error') {
       return (
         <FormLayout
+          showContactSupport
           safeAreaEdges={['bottom']}
           onBack={onPrev}
           footer={
@@ -219,6 +221,7 @@ export function SoftPullStep({ onNext, onPrev }: StepProps) {
 
   return (
     <FormLayout
+      showContactSupport={!hasError}
       safeAreaEdges={['bottom']}
       onBack={onPrev}
       footer={<View />}
@@ -233,6 +236,7 @@ export function SoftPullStep({ onNext, onPrev }: StepProps) {
             <AppText style={styles.errorMessage} variant="body">
               {errorMessage}
             </AppText>
+            <ContactSupport />
             {softPullError?.canRetry && (
               <Button
                 variant="primary"
