@@ -12,7 +12,10 @@ export const personalDetailsSchema = z.object({
     .string()
     .regex(/^\d{2}\/\d{2}\/\d{4}$/, 'Use dd/mm/yyyy format'),
   gender: z.enum(['male', 'female', 'others']),
-  pincode: z.string().length(6, 'Pincode must be 6 digits'),
+  pincode: z
+    .string()
+    .length(6, 'Pincode must be 6 digits')
+    .regex(/^[0-9]{6}$/, 'Pincode must be 6 digits'),
   pan: z
     .string()
     .transform((s) => s?.toUpperCase().replace(/\s/g, '') ?? '')
