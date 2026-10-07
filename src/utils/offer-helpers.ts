@@ -32,8 +32,7 @@ export interface EmiApprovedOfferDisplay {
 }
 
 /** True when current-offer loanType is EMI (case-insensitive). */
-export function isEmiLoanType(loanType: LoanType | undefined): boolean {
-return isEmiLoanTypeValue(loanType);
+export function isEmiLoanType(loanType: LoanType | undefined): boolean {return isEmiLoanTypeValue(loanType);
 }
 
 function parseFiniteNumber(value: unknown): number | undefined {
@@ -94,11 +93,15 @@ export function formatEmiDeductionDay(day: number): string {
 
 /** e.g. "3 x ₹17,108.33/month". */
 export function formatRepaymentPlan(months: number, emiAmount: number): string {
-  return `${Math.round(months)} x ${formatCurrency(emiAmount, true, CURRENCY_TWO_FRACTION)}/month`;
+  return `${Math.round(months)} x ${formatCurrency(emiAmount)}/month`;
 }
 
 function formatCurrencyWithDecimals(amount: number): string {
-  return formatCurrency(amount, true, CURRENCY_TWO_FRACTION);
+  const formatted = amount.toLocaleString('en-IN', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  return `₹${formatted}`;
 }
 
 /** Maps current-offer API fields to EMI approved-offer display strings. */

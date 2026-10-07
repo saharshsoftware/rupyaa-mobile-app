@@ -21,7 +21,7 @@ import { useFlowStore } from '@/src/store/useFlowStore';
 import { contactDetailsSchema } from '@/src/utils/validation/kycSchemas';
 import type { ContactDetails, PostContactDetailsRequest } from '@/src/types/kyc';
 import type { StepProps } from '@/src/types/flow';
-import { colors, radius, spacing } from '@/src/theme';
+import { colors, radius, spacing, typography } from '@/src/theme';
 import { useRegistrationSubmit } from '@/hooks/useRegistrationSubmit';
 import { useIneligibilityModal } from '@/hooks/useIneligibilityModal';
 import {
@@ -510,6 +510,9 @@ export function ContactDetailsStep({ onNext, onPrev }: StepProps) {
                 required={showOfficeEmail}
                 returnKeyType="done"
               />
+              <AppText variant="caption" style={styles.officeEmailHint}>
+                Verify your office email address to complete verification.
+              </AppText>
             </View>
           )}
         </View>
@@ -541,6 +544,11 @@ const styles = StyleSheet.create({
     paddingTop: spacing.base,
   },
   fieldBlock: {},
+  officeEmailHint: {
+    color: colors.text.secondary,
+    fontSize: typography.fontSize.sm,
+    marginTop: spacing.xs,
+  },
   verifyLink: {
     paddingVertical: spacing.xs,
     paddingHorizontal: spacing.sm,
