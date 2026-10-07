@@ -25,7 +25,7 @@ import {
   mapEmploymentDetailsFromPersonalDetailsApi,
   createRegistrationSubmit,
 } from '@/src/services/registration';
-import { devLog } from '@/src/utils';
+import { devLog, normalizePincode } from '@/src/utils';
 import { getApiErrorDisplayMessage, getRejectionMessage } from '@/src/utils/common-helper';
 import { GENDER_OPTIONS, EMPLOYMENT_OPTIONS, PURPOSE_OF_LOAN_OPTIONS } from '@/src/data/registration';
 import type {
@@ -426,6 +426,7 @@ export function PersonalDetailsStep({ onNext, onPrev }: StepProps) {
             name="pincode"
             label="Pincode"
             placeholder="Enter your pincode"
+            normalizeText={normalizePincode}
             keyboardType="number-pad"
             maxLength={6}
             required

@@ -1,3 +1,4 @@
+import { normalizePincode } from '@/src/utils';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { View, StyleSheet, TextInput } from 'react-native';
 import {
@@ -289,6 +290,7 @@ export function AddressDetailsStep({ onNext, onPrev }: StepProps) {
             name="pinCode"
             label="Pincode"
             placeholder="6-digit pincode"
+            normalizeText={normalizePincode}
             keyboardType="number-pad"
             maxLength={6}
             required
