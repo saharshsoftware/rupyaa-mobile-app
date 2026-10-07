@@ -9,6 +9,14 @@ import { formatCurrency } from '@/src/utils/common-helper';
 import { isEmiLoanTypeValue } from '@/src/utils/loan-helpers';
 
 const MISSING_VALUE = '—';
+const CURRENCY_NO_FRACTION = {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+} as const;
+const CURRENCY_TWO_FRACTION = {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+} as const;
 
 export interface EmiApprovedOfferDisplay {
   summaryLoanAmount: string;
@@ -24,8 +32,7 @@ export interface EmiApprovedOfferDisplay {
 }
 
 /** True when current-offer loanType is EMI (case-insensitive). */
-export function isEmiLoanType(loanType: LoanType | undefined): boolean {
-  return isEmiLoanTypeValue(loanType);
+export function isEmiLoanType(loanType: LoanType | undefined): boolean {return isEmiLoanTypeValue(loanType);
 }
 
 function parseFiniteNumber(value: unknown): number | undefined {
@@ -119,14 +126,19 @@ export function mapEmiApprovedOfferDisplay(
 
   return {
     summaryLoanAmount:
-      offerAmount != null ? formatCurrency(offerAmount, true) : MISSING_VALUE,
+      offerAmount != null
+        ? formatCurrency(offerAmount, true, CURRENCY_NO_FRACTION)
+        : MISSING_VALUE,
     summaryTenure:
       tenureMonths != null ? formatEmiTenureLabel(tenureMonths) : MISSING_VALUE,
     loanAmount:
       offerAmount != null ? formatCurrencyWithDecimals(offerAmount) : MISSING_VALUE,
     tenure:
       tenureMonths != null ? formatEmiTenureDetail(tenureMonths) : MISSING_VALUE,
-    monthlyEmi: emiAmount != null ? formatCurrency(emiAmount, true) : MISSING_VALUE,
+    monthlyEmi:
+      emiAmount != null
+        ? formatCurrency(emiAmount, true, CURRENCY_NO_FRACTION)
+        : MISSING_VALUE,
     repaymentPlan,
     interestRate:
       interestRate != null ? `${interestRate}% Per Year` : MISSING_VALUE,
@@ -135,7 +147,9 @@ export function mapEmiApprovedOfferDisplay(
         ? formatEmiDeductionDay(emiDeductionDay)
         : MISSING_VALUE,
     processingFee:
-      processingFee != null ? formatCurrency(processingFee, true) : MISSING_VALUE,
+      processingFee != null
+        ? formatCurrency(processingFee, true, CURRENCY_NO_FRACTION)
+        : MISSING_VALUE,
     totalPayable:
       payableAmount != null
         ? formatCurrencyWithDecimals(payableAmount)
@@ -150,7 +164,7 @@ export function mapPayDayUnlockAccordionItems(): EmiRepaymentAccordionItem[] {
     badgeLabel: String(loan.loanNumber),
     title: `Loan ${loan.loanNumber}`,
     dueLabel: loan.subtitle,
-    amount: `upto ${loan.moreLabel}`,
+    amount: `${loan.moreLabel} More`,
     locked: true,
     breakdownRows: [],
     totalLabel: 'Amount',
@@ -170,14 +184,17 @@ export function mapPayDayLoanDetailsAccordionItem(
     badgeLabel: '₹',
     title: 'Loan Details',
     dueLabel: `${offer.loanTenure} days tenure`,
-    amount: formatCurrency(offer.offerAmount ?? 0, true),
+    amount: formatCurrency(offer.offerAmount ?? 0, true, CURRENCY_NO_FRACTION),
     breakdownRows: [
-      { label: 'Loan Amount', value: formatCurrency(offer.offerAmount ?? 0, true) },
+      {
+        label: 'Loan Amount',
+        value: formatCurrency(offer.offerAmount ?? 0, true, CURRENCY_NO_FRACTION),
+      },
       { label: 'Repayment Period', value: `${offer.loanTenure} days` },
       { label: 'Interest Rate', value: `${offer.interestRate}% ${rateSuffix}` },
     ],
     totalLabel: 'Total Amount to Repay',
-    totalValue: formatCurrency(offer.payableAmount, true),
+    totalValue: formatCurrency(offer.payableAmount, true, CURRENCY_NO_FRACTION),
     defaultExpanded: false,
   };
 }

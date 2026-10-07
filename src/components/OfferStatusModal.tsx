@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   View,
@@ -6,41 +6,40 @@ import {
   Animated,
   ScrollView,
   Image,
+  type StyleProp,
+  type ViewStyle,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFlowStore } from '@/src/store/useFlowStore';
 import { useCurrentOfferStore } from '@/src/store/useCurrentOfferStore';
 import { colors, spacing, typography } from '@/src/theme';
+import { ContactSupport } from './ContactSupport';
 import { AppText } from './AppText';
 import { Button } from './Button';
-import { RupyaaLogo } from './RupyaaLogo';
 import { IMAGES } from '@/src/constants/images';
 import { consoleLogDev, formatCurrency } from '@/src/utils/common-helper';
-import { isCurrentOfferSuccess } from '@/src/types/offer';
-import { BadgeCheck } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { SvgUri } from 'react-native-svg';
+import { getOfferAmount } from '@/src/types/offer';
+import { isStarterTierVerifiedOffer } from './offer-status/verifiedOfferStatus.logic';
+
+export interface OfferStatusModalProps {
+  visible: boolean;
+  onCheckOffers: () => void;
+  onBackToHome: () => void;
+  isCheckingOffers?: boolean;
+}
+
+const VerifiedOfferStatusContent = React.lazy(() =>
+  import('./offer-status/VerifiedOfferStatusContent').then((module) => ({
+    default: module.VerifiedOfferStatusContent,
+  })),
+);
 
 const ANIMATION_DURATION = 280;
 const SLIDE_OFFSET = 32;
 const SPRING_TENSION = 70;
 const SPRING_FRICTION = 11;
 const ILLUSTRATION_SIZE = 200;
-const VERIFIED_BADGE_SIZE = 120;
-const VERIFIED_BADGE_IMAGE_SIZE = 120;
-const VERIFIED_ICON_SIZE = 12;
 const OVERLAY_Z_INDEX = 9999;
-
-export interface OfferStatusModalProps {
-  /** Controls whether the full-screen overlay is visible */
-  visible: boolean;
-  /** Called when user taps "Check Offers" (Verified state). Caller should close modal and navigate to approved-offer. */
-  onCheckOffers: () => void;
-  /** Called when user taps "Back to Home" (Pending/Rejected). Caller should close modal and go to home. */
-  onBackToHome: () => void;
-  /** True while the caller is still fetching user stage before it can navigate to approved-offer. */
-  isCheckingOffers?: boolean;
-}
 
 /**
  * Full-screen offer status overlay (Verified / Pending / Rejected), same rendering
@@ -53,6 +52,9 @@ export interface OfferStatusModalProps {
  * Flow: Modal is opened from BankConnectStep (or from bureau/SoftPull). User then
  * taps "Check Offers" (Verified) or "Back to Home" (Pending/Rejected); "Check Offers"
  * navigates to ApprovedOfferStep.
+ *
+ * VerifiedOfferStatusContent (tier unlock UI) is shown only for starter-tier offers
+ * of exactly ₹1,200; all other verified amounts keep the default congratulations UI.
  */
 export function OfferStatusModal({
   visible,
@@ -64,13 +66,9 @@ export function OfferStatusModal({
   const insets = useSafeAreaInsets();
   const variant = useFlowStore((s) => s.offerStatusVariant) ?? 'Verified';
   const lastResponse = useCurrentOfferStore((s) => s.lastResponse);
-  
-  // Get offer amount from store if available
-  const offerAmount = lastResponse?.success && 
-    lastResponse.data != null && 
-    isCurrentOfferSuccess(lastResponse.data)
-    ? lastResponse.data.offer?.offerAmount
-    : null;
+  const offerAmount = getOfferAmount(lastResponse) ?? null;
+  const showStarterTierVerified =
+    variant === 'Verified' && isStarterTierVerifiedOffer(offerAmount);
 
   if (visible) {
     consoleLogDev('[OfferStatusModal] Visible, variant:', variant);
@@ -100,36 +98,35 @@ export function OfferStatusModal({
 
   const renderBody = (): React.JSX.Element => {
     if (variant === 'Verified') {
-      const amountLabel = offerAmount != null ? formatCurrency(offerAmount) : 'Loan';
+      if (showStarterTierVerified) {
+        return (
+          <React.Suspense fallback={null}>
+            <VerifiedOfferStatusContent />
+          </React.Suspense>
+        );
+      }
+      const amountLabel =
+        offerAmount != null ? formatCurrency(offerAmount) : 'Loan';
       return (
         <>
-          <View style={styles.verifiedBadge}>
-            <SvgUri
-              uri={Image.resolveAssetSource(IMAGES.OFFER_CONGRATULATIONS).uri}
-              width={VERIFIED_BADGE_IMAGE_SIZE}
-              height={VERIFIED_BADGE_IMAGE_SIZE}
-              accessibilityLabel="Verified loan offer"
-            />
-          </View>
-          <AppText style={styles.verifiedTitle} variant="body" weight="medium">
-            Congratulations!
+          <Image
+            source={IMAGES.OFFER_STATUS_VERIFIED}
+            resizeMode="contain"
+            style={styles.illustration}
+            accessibilityLabel="Offer ready illustration"
+          />
+          <AppText style={styles.title} variant="h2" weight="semiBold">
+            Congratulations 🎉
           </AppText>
-          <AppText style={styles.verifiedSubtitle} variant="captionSmall">
-            You’re eligible for a loan offer of
-          </AppText>
-          <AppText style={styles.verifiedAmount} variant="h1" weight="semiBold">
+          <AppText style={styles.offerAmount} variant="h1" weight="semiBold">
             {amountLabel}
           </AppText>
-          <View style={styles.verifiedProfileRow}>
-            <BadgeCheck
-              size={VERIFIED_ICON_SIZE}
-              color={colors.text.secondary}
-              strokeWidth={1.8}
-            />
-            <AppText style={styles.verifiedProfileText} variant="captionExtraSmall">
-              Verified Credit Profile
-            </AppText>
-          </View>
+          <AppText style={styles.offerReadyAmount} variant="bodyLarge">
+            Loan Offer Ready
+          </AppText>
+          <AppText style={styles.subtitle} variant="bodyLarge">
+            Your loan has been approved. Please review the details to continue
+          </AppText>
         </>
       );
     }
@@ -146,7 +143,7 @@ export function OfferStatusModal({
             Your Application is Under Review
           </AppText>
           <AppText style={styles.subtitle} variant="caption">
-            We&apos;re verifying your details. This may take a few minutes — we&apos;ll notify you once it&apos;s done
+            {"We're verifying your details. This may take a few minutes — we'll notify you once it's done"}
           </AppText>
         </>
       );
@@ -176,6 +173,39 @@ export function OfferStatusModal({
   };
 
   const isVerified = variant === 'Verified';
+  let footerAction: ReactNode;
+  if (isVerified) {
+    footerAction = (
+      <Button
+        variant="primary"
+        size="large"
+        fullWidth
+        onPress={onCheckOffers}
+        disabled={isCheckingOffers}
+        loading={isCheckingOffers}
+        accessibilityLabel="Review Offer"
+      >
+        Review Offer
+      </Button>
+    );
+  } else {
+    footerAction = (
+      <Button
+        variant="primary"
+        size="large"
+        fullWidth
+        onPress={onBackToHome}
+        accessibilityLabel="Back to Home"
+      >
+        Back to Home
+      </Button>
+    );
+  }
+
+  let scrollContentStyle: StyleProp<ViewStyle> = styles.scrollContent;
+  if (showStarterTierVerified) {
+    scrollContentStyle = styles.scrollContentStarter;
+  }
 
   return (
     <Animated.View
@@ -184,28 +214,8 @@ export function OfferStatusModal({
         { paddingTop: insets.top, opacity: fadeAnim },
       ]}
     >
-      {isVerified ? (
-        <LinearGradient
-          pointerEvents="none"
-          colors={[
-            colors.primary.main,
-            colors.primary.lightest_3,
-            colors.background.primary,
-          ]}
-          locations={[0, 0.16, 0.32]}
-          style={StyleSheet.absoluteFill}
-        />
-      ) : null}
-      {isVerified ? (
-        <View style={styles.verifiedHeader}>
-          <RupyaaLogo size="sm" />
-        </View>
-      ) : null}
       <ScrollView
-        contentContainerStyle={[
-          styles.scrollContent,
-          isVerified && styles.verifiedScrollContent,
-        ]}
+        contentContainerStyle={scrollContentStyle}
         showsVerticalScrollIndicator={false}
         bounces={false}
       >
@@ -227,40 +237,8 @@ export function OfferStatusModal({
           },
         ]}
       >
-        {isVerified ? (
-          <>
-            <AppText
-              style={styles.verifiedFooterHint}
-              variant="captionExtraSmall"
-              onPress={onBackToHome}
-              accessibilityRole="link"
-              accessibilityLabel="Continue to Homepage"
-            >
-              Continue to Homepage
-            </AppText>
-            <Button
-              variant="primary"
-              size="large"
-              fullWidth
-              onPress={onCheckOffers}
-              disabled={isCheckingOffers}
-              loading={isCheckingOffers}
-              accessibilityLabel="Continue with Application"
-            >
-              Continue with Application
-            </Button>
-          </>
-        ) : (
-          <Button
-            variant="primary"
-            size="large"
-            fullWidth
-            onPress={onBackToHome}
-            accessibilityLabel="Back to Home"
-          >
-            Back to Home
-          </Button>
-        )}
+        <ContactSupport />
+        {footerAction}
       </View>
     </Animated.View>
   );
@@ -279,67 +257,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xl,
     paddingVertical: spacing['3xl'],
   },
-  verifiedHeader: {
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing.md,
-  },
-  verifiedScrollContent: {
-    justifyContent: 'flex-start',
-    paddingTop: spacing['5xl'],
-  },
-  offerAmountContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: spacing.md,
+  scrollContentStarter: {
+    flexGrow: 1,
+    paddingHorizontal: spacing.base,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing['2xl'],
   },
   body: {
     alignItems: 'center',
+    width: '100%',
   },
   illustration: {
     width: ILLUSTRATION_SIZE,
     height: ILLUSTRATION_SIZE,
     marginBottom: spacing.xl,
-  },
-  verifiedBadge: {
-    width: VERIFIED_BADGE_SIZE,
-    height: VERIFIED_BADGE_SIZE,
-    borderRadius: VERIFIED_BADGE_SIZE / 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: spacing['2xl'],
-  },
-  verifiedTitle: {
-    color: colors.text.primary,
-    fontSize: 24,
-    lineHeight: 36,
-    textAlign: 'center',
-    marginBottom: spacing.md,
-  },
-  verifiedSubtitle: {
-    color: colors.text.secondary,
-    fontSize: 16,
-    lineHeight: 24,
-    textAlign: 'center',
-    marginBottom: spacing.lg,
-  },
-  verifiedAmount: {
-    color: colors.text.primary,
-    fontSize: 60,
-    lineHeight: 72,
-    textAlign: 'center',
-    marginBottom: spacing.base,
-  },
-  verifiedProfileRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.xs,
-  },
-  verifiedProfileText: {
-    color: colors.text.secondary,
-    fontSize: 16,
-    lineHeight: 24,
   },
   title: {
     color: colors.text.primary,
@@ -390,10 +321,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xl,
     paddingTop: spacing.lg,
     backgroundColor: colors.background.primary,
-  },
-  verifiedFooterHint: {
-    color: colors.text.secondary,
-    textAlign: 'center',
-    marginBottom: spacing.lg,
   },
 });

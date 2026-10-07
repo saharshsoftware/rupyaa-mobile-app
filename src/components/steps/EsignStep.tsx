@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { View, StyleSheet, ActivityIndicator, Image, ImageStyle } from 'react-native';
 import { SvgUri } from 'react-native-svg';
+import { ContactSupport } from '../ContactSupport';
 import { AppText } from '../AppText';
 import { Button } from '../Button';
 import { FormLayout } from '../FormLayout';
@@ -60,6 +61,7 @@ function EsignFailureScreen({ onRetry }: EsignFailureScreenProps) {
       <AppText style={styles.failureSubtitle} variant="body">
         Please complete the e-sign from your email.
       </AppText>
+      <ContactSupport />
       <Button variant="primary" size="medium" fullWidth onPress={onRetry}>
         Try again
       </Button>
@@ -84,6 +86,7 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
 
   useEffect(() => {
     setIsOauthDone(personalDetails?.isOauthDone === true);
+    console.log('[EsignStep] useEffect: setIsOauthDone', isOauthDone);
   }, [personalDetails]);
   /**
    * On mount, check if esign is already completed (e.g. user signed via email and returned).
@@ -191,6 +194,8 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
   }, [isInitiating]);
 
   const handleVerifyGoogleAndProceed = useCallback(async (): Promise<void> => {
+    console.log('[EsignStep] handleVerifyGoogleAndProceed: isGoogleVerifying', isGoogleVerifying);
+    console.log('[EsignStep] handleVerifyGoogleAndProceed: isInitiating', isInitiating);
     if (isGoogleVerifying || isInitiating) return;
 
   
@@ -199,6 +204,8 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
 
     try {
       const result = await signInWithGoogle();
+      debugger;
+      console.log('[EsignStep] handleVerifyGoogleAndProceed: result', result);
       if (!isMountedRef.current) return;
 
       if (result?.type === 'cancelled') {
@@ -218,12 +225,13 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
 
       const accessToken = result?.accessToken;
       if (!accessToken) {
+        console.log('[EsignStep] handleVerifyGoogleAndProceed: !accessToken');
         pushLoanJourneyUnknownError(
           'esign google auth',
           new Error('Google verification was not completed. Please try again.')
         );
         setFailureMessage('Google verification was not completed. Please try again.');
-
+        console.log('[EsignStep] handleVerifyGoogleAndProceed: setFailureMessage', setFailureMessage);
         // setFailureMessage(
         //   `${JSON.stringify({resultError: result.error})}`
         // );
@@ -233,6 +241,7 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
 
       const importResponse = await importGoogleContacts(accessToken);
       if (!isMountedRef.current) return;
+      console.log('[EsignStep] handleVerifyGoogleAndProceed: importResponse', importResponse);
 
       const importSuccessful = importResponse.success;
 
@@ -302,10 +311,12 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
   // }, [onNext]);
 
   const handleCtaPress = useCallback(() => {
-    debugger;
+    console.log('[EsignStep] handleCtaPress: isOauthDone', isOauthDone);
     if (isOauthDone) {
+      console.log('[EsignStep] handleCtaPress: isOauthDone');
       void handleProceedToEsign();
     } else {
+      console.log('[EsignStep] handleCtaPress: !isOauthDone');
       void handleVerifyGoogleAndProceed();
     }
   }, [isOauthDone, handleProceedToEsign, handleVerifyGoogleAndProceed]);
@@ -315,6 +326,7 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
     if (simulatedState === 'loading') {
       return (
         <FormLayout
+          showContactSupport
           safeAreaEdges={['bottom']}
           onBack={onPrev}
           footer={<></>}
@@ -360,6 +372,7 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
 
     return (
       <FormLayout
+        showContactSupport
         safeAreaEdges={['bottom']}
         onBack={onPrev}
         footer={
@@ -406,6 +419,7 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
         </View>
 
         <FullScreenModal
+          footer={<ContactSupport />}
           visible={isWebViewModalOpen}
           onClose={closeWebViewModal}
           title="E-Sign"
@@ -431,6 +445,7 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
   if (screen === 'polling') {
     return (
       <FormLayout
+        showContactSupport
         safeAreaEdges={['bottom']}
         onBack={onPrev}
         footer={<></>}
@@ -450,6 +465,7 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
   if (screen === 'pending') {
     return (
       <FormLayout
+        showContactSupport
         safeAreaEdges={['bottom']}
         onBack={onPrev}
         footer={
@@ -472,6 +488,7 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
         </View>
 
         <FullScreenModal
+          footer={<ContactSupport />}
           visible={isWebViewModalOpen}
           onClose={closeWebViewModal}
           title="E-Sign"

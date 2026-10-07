@@ -173,8 +173,16 @@ export function getRejectionMessage(data: unknown): string {
 }
 
 /** Format number as Indian-style currency string (e.g. ₹70,000). */
-export const formatCurrency = (amount: number, showSymbol = true): string => {
-    return showSymbol ? `₹${amount.toLocaleString('en-IN')}` : amount.toLocaleString('en-IN');
+export function formatCurrency(
+  amount: number,
+  showSymbol: boolean = true,
+  fractionDigits: {
+    minimumFractionDigits?: number;
+    maximumFractionDigits?: number;
+  } = {},
+): string {
+  const formatted = amount.toLocaleString('en-IN', fractionDigits);
+  return showSymbol ? `₹${formatted}` : formatted;
 }
 
 /** Convert dd/mm/yyyy (form input) to yyyy-mm-dd (API format). */

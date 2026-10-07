@@ -9,3 +9,4 @@ export { ActiveLoanCardSection, type ActiveLoanCardSectionProps } from './Active
 export { LoanCardVariant1, type LoanCardVariant1Props } from './LoanCardVariant1';
 export { MyLoanCard, type MyLoanCardProps, type MyLoanCardVariant } from './MyLoanCard';
 export { LoanTabBar, type LoanTabBarProps, type LoanTabKey } from './LoanTabBar';
+export { EmiRepaymentAccordion } from './EmiRepaymentAccordion';

@@ -14,7 +14,7 @@ export interface ContactItem {
 
 /** Single contact from GET /user/google-contacts API. */
 export interface GoogleContact {
-  _id: string;
+  _id?: string;
   name: string;
   phone: string;
 }

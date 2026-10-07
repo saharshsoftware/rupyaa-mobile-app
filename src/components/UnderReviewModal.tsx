@@ -11,6 +11,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors, spacing } from '@/src/theme';
+import { ContactSupport } from './ContactSupport';
 import { AppText } from './AppText';
 import { Button } from './Button';
 import { RupyaaLogo } from './RupyaaLogo';
@@ -193,6 +194,7 @@ export function UnderReviewModal({
           },
         ]}
       >
+        <ContactSupport />
         <Button variant="primary" size="large" fullWidth onPress={onCtaPress}>
           {ctaLabel}
         </Button>

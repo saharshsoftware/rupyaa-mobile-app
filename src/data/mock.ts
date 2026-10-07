@@ -13,6 +13,7 @@ export const onboardingSlides: OnboardingSlide[] = [
   {
     id: '1',
     title: 'Apply in Just a\nFew Steps',
+    subtitle: '',
     description:
       'Complete your loan application online with minimal details and a simple digital process.',
     image: 'ONBOARDING_APPLY_STEPS',
@@ -20,6 +21,7 @@ export const onboardingSlides: OnboardingSlide[] = [
   {
     id: '2',
     title: 'Discover Loan Offer\nMade for You',
+    subtitle: '',
     description:
       'Check your eligibility and view loan offers that match your profile and financial needs.',
     image: 'ONBOARDING_LOAN_OFFER',
@@ -27,6 +29,7 @@ export const onboardingSlides: OnboardingSlide[] = [
   {
     id: '3',
     title: 'From Approval\nto Your Bank',
+    subtitle: '',
     description:
       'Complete verification, track your application and receive funds securely in your account.',
     image: 'ONBOARDING_APPROVAL_BANK',

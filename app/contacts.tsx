@@ -6,17 +6,14 @@ import {
   ListRenderItem,
   Share,
   Platform,
-  Linking,
 } from 'react-native';
-import * as Contacts from 'expo-contacts';
 import { Screen, AppText, Button, ZapcashLoading } from '@/src/components';
 import ErrorContainer from '@/src/components/ErrorContainer';
 import { colors, spacing, typography, radius } from '@/src/theme';
-import {
-  fetchDeviceContactsPage,
-  getDeviceContactsPermission,
-} from '@/src/services/contacts';
-import type { DeviceContactRow } from '@/src/types';
+import { getPersonalDetails, getGoogleContacts } from '@/src/services/registration/registrationApi';
+import { importGoogleContacts } from '@/src/services/registration/sanctionApi';
+import { useGoogleAuth } from '@/hooks/useGoogleAuth';
+import type { GoogleContact } from '@/src/types';
 import { appConfig } from '@/src/config/appConfig';
 
 const AVATAR_COLORS = [
@@ -26,6 +23,14 @@ const AVATAR_COLORS = [
   '#6A1B9A', // deep purple
   '#283593', // indigo
 ] as const;
+
+function getContactListKey(item: GoogleContact, index: number): string {
+  const id = item._id?.trim() ?? '';
+  const name = item.name?.trim().toLowerCase() ?? '';
+  const phone = item.phone?.trim() ?? '';
+  const identity = id || `${name}|${phone}`;
+  return `${identity}-${index}`;
+}
 
 function getAvatarColor(name: string | undefined): string {
   const safe = name?.trim();
@@ -41,8 +46,8 @@ function ContactCard({
   item,
   onSend,
 }: {
-  item: DeviceContactRow;
-  onSend: (contact: DeviceContactRow) => void;
+  item: GoogleContact;
+  onSend: (contact: GoogleContact) => void;
 }) {
   const initial = item.name?.trim().charAt(0).toUpperCase() ?? '?';
   const avatarColor = getAvatarColor(item.name);
@@ -76,27 +81,28 @@ function ContactCard({
   );
 }
 
-type ContactsFetchStatus = 'idle' | 'loading' | 'success' | 'error' | 'permission_denied';
-const PAGE_SIZE = 50;
+type OauthCheckStatus = 'loading' | 'not_done' | 'done' | 'error';
+type ContactsFetchStatus = 'idle' | 'loading' | 'success' | 'error';
 
 export default function ContactsScreen() {
+  const { promptAsync } = useGoogleAuth();
   const mountedRef = useRef(true);
 
-  const [contacts, setContacts] = useState<DeviceContactRow[]>([]);
-  const [contactsStatus, setContactsStatus] = useState<ContactsFetchStatus>('loading');
+  const [oauthCheckStatus, setOauthCheckStatus] = useState<OauthCheckStatus>('loading');
+  const [oauthCheckError, setOauthCheckError] = useState<string | null>(null);
+  const [contacts, setContacts] = useState<GoogleContact[]>([]);
+  const [contactsStatus, setContactsStatus] = useState<ContactsFetchStatus>('idle');
   const [contactsError, setContactsError] = useState<string | null>(null);
-  const [paginationOffset, setPaginationOffset] = useState(0);
-  const [hasNextPage, setHasNextPage] = useState(false);
-  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [connectInProgress, setConnectInProgress] = useState(false);
 
   const getReferralMessage = useCallback(() => {
-    const appName = appConfig.appName ?? 'Zapcash';
+    const appName = appConfig.appName ?? 'Rupyaa';
     const storeUrl = Platform.OS === 'android' ? appConfig.playStoreUrl : appConfig.appStoreUrl;
     return `Hey! I'm using ${appName} for instant personal loans. Check it out here: ${storeUrl}`;
   }, []);
 
   const handleSend = useCallback(
-    (_contact: DeviceContactRow) => {
+    (contact: GoogleContact) => {
       const message = getReferralMessage();
       // In future we can customize per-contact if needed; for now it’s a generic referral.
       Share.share({ message }).catch(() => undefined);
@@ -104,7 +110,7 @@ export default function ContactsScreen() {
     [getReferralMessage],
   );
 
-  const sortContactsByName = useCallback((list: DeviceContactRow[]): DeviceContactRow[] => {
+  const sortContactsByName = useCallback((list: GoogleContact[]): GoogleContact[] => {
     if (!Array.isArray(list) || list.length === 0) return [];
     // Sort by name (case-insensitive), fall back to phone when name missing.
     return [...list].sort((a, b) => {
@@ -121,78 +127,90 @@ export default function ContactsScreen() {
     });
   }, []);
 
-  const fetchFirstPage = useCallback(async () => {
-    setContactsStatus('loading');
-    setContactsError(null);
-    const permissionStatus = await getDeviceContactsPermission();
+  const loadPersonalDetails = useCallback(async () => {
+    setOauthCheckStatus('loading');
+    setOauthCheckError(null);
+    const res = await getPersonalDetails();
     if (!mountedRef.current) return;
-
-    if (permissionStatus !== Contacts.PermissionStatus.GRANTED) {
-      setContactsStatus('permission_denied');
+    if (!res.success) {
+      setOauthCheckStatus('error');
+      setOauthCheckError(res.error?.message ?? 'Failed to load');
       return;
     }
-
-    const page = await fetchDeviceContactsPage({
-      pageOffset: 0,
-      pageSize: PAGE_SIZE,
-    }).catch((error: unknown) => {
-      const message = error instanceof Error ? error.message : 'Failed to load contacts';
-      if (mountedRef.current) {
+    const isOauthDone = res.data?.isOauthDone === true;
+    setOauthCheckStatus(isOauthDone ? 'done' : 'not_done');
+    if (isOauthDone) {
+      setContactsStatus('loading');
+      setContactsError(null);
+      const contactsRes = await getGoogleContacts();
+      if (!mountedRef.current) return;
+      if (!contactsRes.success) {
         setContactsStatus('error');
-        setContactsError(message);
+        setContactsError(contactsRes.error?.message ?? 'Failed to load contacts');
+        return;
       }
-      return null;
-    });
-    if (!mountedRef.current) return;
-    if (!page) return;
-
-    setContacts(sortContactsByName(page.contacts));
-    setPaginationOffset(page.nextPageOffset);
-    setHasNextPage(page.hasNextPage);
-    setContactsStatus('success');
-  }, [sortContactsByName]);
-
-  const fetchMoreContacts = useCallback(async () => {
-    if (!hasNextPage || isFetchingMore || contactsStatus !== 'success') {
-      return;
+      const list = contactsRes.data?.contacts ?? [];
+      setContacts(sortContactsByName(list));
+      setContactsStatus('success');
     }
-
-    setIsFetchingMore(true);
-    const page = await fetchDeviceContactsPage({
-      pageOffset: paginationOffset,
-      pageSize: PAGE_SIZE,
-    }).catch(() => null);
-    if (!mountedRef.current) return;
-    setIsFetchingMore(false);
-    if (!page) return;
-
-    setContacts((previousContacts) => {
-      const mergedMap = new Map<string, DeviceContactRow>();
-      previousContacts.forEach((item) => mergedMap.set(item.id, item));
-      page.contacts.forEach((item) => mergedMap.set(item.id, item));
-      return sortContactsByName(Array.from(mergedMap.values()));
-    });
-    setPaginationOffset(page.nextPageOffset);
-    setHasNextPage(page.hasNextPage);
-  }, [contactsStatus, hasNextPage, isFetchingMore, paginationOffset, sortContactsByName]);
+  }, [sortContactsByName]);
 
   useEffect(() => {
     mountedRef.current = true;
-    fetchFirstPage();
+    loadPersonalDetails();
     return () => {
       mountedRef.current = false;
     };
-  }, [fetchFirstPage]);
+  }, [loadPersonalDetails]);
 
-  const handleOpenSettings = useCallback(() => {
-    Linking.openSettings().catch(() => undefined);
-  }, []);
+  const handleConnectGoogle = useCallback(async () => {
+    if (connectInProgress) return;
+    setConnectInProgress(true);
+    try {
+      const result = await promptAsync();
+      if (!mountedRef.current) return;
+      if (result?.type === 'cancelled') {
+        setConnectInProgress(false);
+        return;
+      }
+      const accessToken = result && 'accessToken' in result ? result.accessToken : null;
+      if (!accessToken) {
+        if (mountedRef.current) setConnectInProgress(false);
+        return;
+      }
+      const importRes = await importGoogleContacts(accessToken);
+      if (!mountedRef.current) return;
+      if (!importRes.success) {
+        setOauthCheckError(importRes.error?.message ?? 'Failed to import contacts');
+        setConnectInProgress(false);
+        return;
+      }
+      await loadPersonalDetails();
+    } finally {
+      if (mountedRef.current) setConnectInProgress(false);
+    }
+  }, [promptAsync, loadPersonalDetails, connectInProgress]);
 
-  const handleRetryContacts = useCallback(() => {
-    fetchFirstPage();
-  }, [fetchFirstPage]);
+  const handleRetryOauthCheck = useCallback(() => {
+    loadPersonalDetails();
+  }, [loadPersonalDetails]);
 
-  const renderItem: ListRenderItem<DeviceContactRow> = useCallback(
+  const fetchContacts = useCallback(async () => {
+    setContactsStatus('loading');
+    setContactsError(null);
+    const res = await getGoogleContacts();
+    if (!mountedRef.current) return;
+    if (!res.success) {
+      setContactsStatus('error');
+      setContactsError(res.error?.message ?? 'Failed to load contacts');
+      return;
+    }
+    const list = res.data?.contacts ?? [];
+    setContacts(sortContactsByName(list));
+    setContactsStatus('success');
+  }, [sortContactsByName]);
+
+  const renderItem: ListRenderItem<GoogleContact> = useCallback(
     ({ item }) => (
       <ContactCard
         item={item}
@@ -201,7 +219,51 @@ export default function ContactsScreen() {
     ),
     [handleSend],
   );
-  const keyExtractor = useCallback((item: DeviceContactRow) => item.id, []);
+  const keyExtractor = useCallback(
+    (item: GoogleContact, index: number) => getContactListKey(item, index),
+    [],
+  );
+
+  if (oauthCheckStatus === 'loading') {
+    return (
+      <Screen scroll={false} edges={[]} contentContainerStyle={styles.centered}>
+        <ZapcashLoading visible title="Loading..." />
+      </Screen>
+    );
+  }
+
+  if (oauthCheckStatus === 'error') {
+    return (
+      <Screen scroll={false} edges={[]} contentContainerStyle={styles.centered}>
+        <ErrorContainer responseError={oauthCheckError ?? 'Something went wrong'} />
+        <Button
+          title="Try again"
+          onPress={handleRetryOauthCheck}
+          style={styles.retryButton}
+        />
+      </Screen>
+    );
+  }
+
+  if (oauthCheckStatus === 'not_done') {
+    return (
+      <Screen scroll={false} edges={[]} contentContainerStyle={styles.centered}>
+        <AppText variant='caption' color='tertiary' style={styles.connectMessage}>
+          Connect your Google account to view contacts
+        </AppText>
+        <Button
+          title="Connect Google Account"
+          onPress={handleConnectGoogle}
+          loading={connectInProgress}
+          disabled={connectInProgress}
+          style={styles.connectButton}
+        />
+        {oauthCheckError ? (
+          <ErrorContainer responseError={oauthCheckError} />
+        ) : null}
+      </Screen>
+    );
+  }
 
   if (contactsStatus === 'loading') {
     return (
@@ -211,23 +273,11 @@ export default function ContactsScreen() {
     );
   }
 
-  if (contactsStatus === 'permission_denied') {
-    return (
-      <Screen scroll={false} edges={[]} contentContainerStyle={styles.centered}>
-        <AppText variant='caption' color='tertiary' style={styles.connectMessage}>
-          Enable contacts permission to view your device contacts.
-        </AppText>
-        <Button title="Open Settings" onPress={handleOpenSettings} style={styles.connectButton} />
-        <Button title="Try again" onPress={handleRetryContacts} style={styles.retryButton} />
-      </Screen>
-    );
-  }
-
   if (contactsStatus === 'error') {
     return (
       <Screen scroll={false} edges={[]} contentContainerStyle={styles.centered}>
         <ErrorContainer responseError={contactsError ?? 'Failed to load contacts'} />
-        <Button title="Try again" onPress={handleRetryContacts} style={styles.retryButton} />
+        <Button title="Try again" onPress={fetchContacts} style={styles.retryButton} />
       </Screen>
     );
   }
@@ -242,8 +292,7 @@ export default function ContactsScreen() {
         ListHeaderComponent={
           <View style={styles.header}>
             <AppText variant='captionSmall' weight='regular' color='textprimary' style={styles.headerTitle}>
-              Invite your friends to try the app. When they sign up and complete their first
-              action, you both earn rewards!
+            Invite your friends to try the app. When they sign up and complete their first action, you both earn rewards!
             </AppText>
           </View>
         }
@@ -251,15 +300,6 @@ export default function ContactsScreen() {
           <View style={styles.empty}>
             <AppText style={styles.emptyText}>No contacts</AppText>
           </View>
-        }
-        onEndReachedThreshold={0.5}
-        onEndReached={fetchMoreContacts}
-        ListFooterComponent={
-          isFetchingMore ? (
-            <View style={styles.footerLoading}>
-              <ZapcashLoading visible={true} />
-            </View>
-          ) : null
         }
       />
     </Screen>
@@ -280,7 +320,6 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: spacing.lg,
-    gap: spacing.base,
   },
   headerTitle: {
     color: colors.text.primary,
@@ -358,8 +397,5 @@ const styles = StyleSheet.create({
   },
   retryButton: {
     marginTop: spacing.base,
-  },
-  footerLoading: {
-    paddingVertical: spacing.base,
   },
 });

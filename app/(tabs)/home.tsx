@@ -3,6 +3,7 @@ import { StyleSheet, ScrollView } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import {
   FullScreenModal,
+  ContactSupport,
   LoanStatusCardSkeleton,
   StageCtaCardSection,
   ProductsGrid,
@@ -397,6 +398,7 @@ export default function HomeTab() {
           onCreditScorePress={handleCreditReportPress}
           onContactPress={() => router.push('/need-help')}
         />
+        <ContactSupport />
       </ScrollView>
     );
   }
@@ -437,6 +439,7 @@ export default function HomeTab() {
           onCreditScorePress={handleCreditReportPress}
           onContactPress={() => router.push('/need-help')}
         />
+        <ContactSupport />
       </ScrollView>
     </>
   );

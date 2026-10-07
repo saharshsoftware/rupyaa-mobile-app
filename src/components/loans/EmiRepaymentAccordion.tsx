@@ -217,6 +217,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     color: colors.text.primary,
     marginBottom: spacing.md,
+    marginTop: spacing.md,
   },
   card: {
     backgroundColor: colors.background.primary,

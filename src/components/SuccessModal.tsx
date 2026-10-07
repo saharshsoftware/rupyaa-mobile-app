@@ -10,12 +10,14 @@ import {
 } from 'react-native';
 import { CheckCircle2 } from 'lucide-react-native';
 import { colors, spacing, radius } from '@/src/theme';
+import { ContactSupport } from './ContactSupport';
 import { AppText } from './AppText';
 import { Button } from './Button';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { windowHeight } from '../utils/common-helper';
 
 interface SuccessModalProps {
+  showContactSupport?: boolean;
   visible: boolean;
   onClose?: () => void;
   /** Label for dismiss button when `onClose` is set (default: "OK"). */
@@ -37,6 +39,7 @@ const CENTERED_CARD_MAX_WIDTH = SCREEN_WIDTH - spacing.xl * 2;
 
 export function SuccessModal({
   visible,
+  showContactSupport = false,
   onClose,
   closeLabel = 'OK',
   title = 'Verified!',
@@ -129,6 +132,7 @@ export function SuccessModal({
           {message}
         </AppText>
 
+        {showContactSupport && <ContactSupport />}
         {onClose ? (
           <View style={styles.actions}>
             <Button

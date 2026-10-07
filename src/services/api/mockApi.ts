@@ -89,7 +89,7 @@ const handlers: MockHandler[] = [
         status: 'PENDING',
         document_requested: ['AADHAAR'],
         user_flow: 'signup',
-        redirect_url: 'https://www.zapcash.in/dashboard/loan-application/aadhaar-verification',
+        redirect_url: 'https://www.rupyaa.com/dashboard/loan-application/aadhaar-verification',
       }),
   },
   {

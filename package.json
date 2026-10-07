@@ -32,7 +32,7 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "deeplink:android": "adb shell am start -a android.intent.action.VIEW -d \"rupyaa://emi-calculator\" com.rupyaa.loan",
-    "deeplink:android:https": "adb shell am start -a android.intent.action.VIEW -d \"https://zapcash.in/emi-calculator\" com.rupyaa.loan"
+    "deeplink:android:https": "adb shell am start -a android.intent.action.VIEW -d \"https://rupyaa.com/emi-calculator\" com.rupyaa.loan"
   },
   "dependencies": {
     "@cashfreepayments/react-native-digilocker": "^0.1.4",

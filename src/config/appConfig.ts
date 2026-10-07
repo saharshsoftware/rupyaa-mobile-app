@@ -89,7 +89,7 @@ export const appConfig = {
   // TODO (iOS): Replace with the real App Store app ID once the app is registered on App Store Connect.
   // Find it at: App Store Connect → My Apps → [App Name] → App Information → Apple ID
   appStoreUrl: 'https://apps.apple.com/in/app/zapcash/id6666666666',
-  playStoreUrl: 'https://play.google.com/store/apps/details?id=com.zapcash.loan',
+  playStoreUrl: 'https://play.google.com/store/apps/details?id=com.rupyaa.loan',
 
   // Policy / legal (open in in-app webview)
   privacyPolicyUrl: 'https://www.rupyaa.com/privacy-policy?source=mobile',

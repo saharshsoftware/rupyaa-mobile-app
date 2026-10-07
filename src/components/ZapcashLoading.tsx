@@ -15,7 +15,7 @@ import { AnimatedLoader } from './AnimatedLoader';
 const OVERLAY_Z_INDEX = 9999;
 const LOG_PREFIX = '[ZapcashLoading]';
 const GIF_SIZE = 40;
-const SPINNER_SIZE = 32;
+const SPINNER_SIZE = GIF_SIZE + 25;
 
 export interface ZapcashLoadingProps {
   /** When true, the full-screen loading overlay is visible. */

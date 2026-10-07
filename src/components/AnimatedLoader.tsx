@@ -18,7 +18,7 @@ export interface AnimatedLoaderProps {
 }
 
 export function AnimatedLoader({
-  size = 48,
+  size = 64,
   color = colors.primary.main,
   style,
 }: AnimatedLoaderProps): React.JSX.Element {

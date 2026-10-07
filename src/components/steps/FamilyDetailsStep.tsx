@@ -123,6 +123,7 @@ export function FamilyDetailsStep({ onNext, onPrev }: StepProps) {
   return (
     <>
       <FormLayout
+        showContactSupport
         ref={scrollViewRef}
         safeAreaEdges={['bottom']}
         onBack={onPrev}

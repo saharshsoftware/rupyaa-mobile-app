@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import { ContactSupport } from '../ContactSupport';
 import { FormLayout } from '../FormLayout';
 import { SuccessModal } from '../SuccessModal';
 import { UnderReviewModal } from '../UnderReviewModal';
@@ -174,7 +175,7 @@ export function BankConnectStep({ onNext, onPrev }: StepProps) {
   if (isSimulating) {
     if (simulatedState === 'loading') {
       return (
-        <FormLayout safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+        <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
           <View style={styles.content}>
             <BankConnectFetchingContent />
           </View>
@@ -183,7 +184,7 @@ export function BankConnectStep({ onNext, onPrev }: StepProps) {
     }
     if (simulatedState === 'success') {
       return (
-        <FormLayout safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+        <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
           <View style={styles.content}>
             <BankStatementPendingContent
               isPolling={false}
@@ -196,7 +197,7 @@ export function BankConnectStep({ onNext, onPrev }: StepProps) {
     }
     if (simulatedState === 'error') {
       return (
-        <FormLayout safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+        <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
           <View style={styles.content}>
             <BankConnectMobileContent
               mobile=""
@@ -214,7 +215,7 @@ export function BankConnectStep({ onNext, onPrev }: StepProps) {
   // ═══════════════════════════════════════
   if (isInitialStatusLoading) {
     return (
-      <FormLayout safeAreaEdges={['bottom']} onBack={onBack} footer={<View />}>
+      <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onBack} footer={<View />}>
         <View style={styles.loadingContainer}>
           <ZapcashLoading
             visible={true}
@@ -228,7 +229,7 @@ export function BankConnectStep({ onNext, onPrev }: StepProps) {
 
   if (isResolvingWebViewStatus) {
     return (
-      <FormLayout safeAreaEdges={['bottom']} onBack={onBack} footer={<View />}>
+      <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onBack} footer={<View />}>
         <View style={styles.loadingContainer}>
           <ZapcashLoading
             visible={true}
@@ -245,7 +246,7 @@ export function BankConnectStep({ onNext, onPrev }: StepProps) {
   // ═══════════════════════════════════════
   return (
     <>
-      <FormLayout
+      <FormLayout showContactSupport={!mobileInlinePrimaryCta}
         safeAreaEdges={['bottom']}
         onBack={onBack}
         footer={
@@ -296,15 +297,18 @@ export function BankConnectStep({ onNext, onPrev }: StepProps) {
             }
             mobilePrimaryCta={
               mobileInlinePrimaryCta ? (
-                <BankConnectContinueSecurelyButton
-                  mobile={mobile}
-                  isConnectPending={isConnectPending}
-                  onPress={handleFetchBankDetails}
-                  matchManualUploadActionCardHeight={
-                    shouldShowOfferingContinueAction ||
-                    attemptState === 'aa-with-manual'
-                  }
-                />
+                <>
+                  <ContactSupport />
+                  <BankConnectContinueSecurelyButton
+                    mobile={mobile}
+                    isConnectPending={isConnectPending}
+                    onPress={handleFetchBankDetails}
+                    matchManualUploadActionCardHeight={
+                      shouldShowOfferingContinueAction ||
+                      attemptState === 'aa-with-manual'
+                    }
+                  />
+                </>
               ) : undefined
             }
             pendingActionCard={pendingActionCard}

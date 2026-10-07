@@ -12,12 +12,16 @@ export const personalDetailsSchema = z.object({
     .string()
     .regex(/^\d{2}\/\d{2}\/\d{4}$/, 'Use dd/mm/yyyy format'),
   gender: z.enum(['male', 'female', 'others']),
-  pincode: z.string().length(6, 'Pincode must be 6 digits'),
+  pincode: z
+    .string()
+    .length(6, 'Pincode must be 6 digits')
+    .regex(/^[0-9]{6}$/, 'Pincode must be 6 digits'),
   pan: z
     .string()
     .transform((s) => s?.toUpperCase().replace(/\s/g, '') ?? '')
     .refine((s) => panRegex.test(s), 'Invalid PAN format'),
   salary: z.string().min(1, 'Salary is required'),
+  purposeOfLoan: z.string().trim().optional(),
 });
 
 export const salariedSchema = z.object({
@@ -50,9 +54,8 @@ export const employmentDetailsFormSchema = z.object({
 
 /**
  * [single-screen-merge] Personal details + employment type + salaried work fields
- * in one schema for the merged PersonalDetailsStep. The salaried fields
- * (primaryField/declaredSalaryDay) are required only when employmentMode is
- * 'salaried' (mirrors employmentDetailsFormSchema).
+ * in one schema for the merged PersonalDetailsStep. Company is required for
+ * salaried users; a payment day is required for salaried and self-employed users.
  */
 export const personalWithEmploymentSchema = personalDetailsSchema
   .extend({
@@ -63,8 +66,8 @@ export const personalWithEmploymentSchema = personalDetailsSchema
     declaredSalaryDay: z.number().optional(),
   })
   .superRefine((data, ctx) => {
-    if (data.employmentMode !== 'salaried') return;
-    if (!data.primaryField || data.primaryField.trim().length < 2) {
+    if (data.employmentMode === 'unemployed') return;
+    if (data.employmentMode === 'salaried' && (!data.primaryField || data.primaryField.trim().length < 2)) {
       ctx.addIssue({
         code: 'custom',
         path: ['primaryField'],
@@ -72,7 +75,7 @@ export const personalWithEmploymentSchema = personalDetailsSchema
       });
     }
     const day = data.declaredSalaryDay;
-    if (day == null || day < 1 || day > 31) {
+    if (day == null || !Number.isInteger(day) || day < 1 || day > 31) {
       ctx.addIssue({
         code: 'custom',
         path: ['declaredSalaryDay'],

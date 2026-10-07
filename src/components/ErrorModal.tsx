@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { XCircle } from 'lucide-react-native';
 import { colors, spacing, radius } from '@/src/theme';
+import { ContactSupport } from './ContactSupport';
 import { AppText } from './AppText';
 import { Button } from './Button';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -17,6 +18,7 @@ import { windowHeight } from '@/src/utils/common-helper';
 import { IMAGES } from '../constants/images';
 
 export interface ErrorModalProps {
+  showContactSupport?: boolean;
   visible: boolean;
   onClose?: () => void;
   /** When provided, shows Retry button. Called when user taps Retry. */
@@ -37,6 +39,7 @@ const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export function ErrorModal({
   visible,
+  showContactSupport = false,
   onClose,
   onRetry,
   retryLabel = 'Retry',
@@ -117,6 +120,7 @@ export function ErrorModal({
         <AppText style={styles.message} variant="body">
           {message}
         </AppText>
+        {showContactSupport && <ContactSupport />}
         {(onRetry || onClose) && (
           <View style={styles.actions}>
             {onRetry && (
