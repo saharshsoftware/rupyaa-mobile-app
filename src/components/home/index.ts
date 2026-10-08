@@ -8,6 +8,7 @@ export { LoanStatusCardSection, type LoanStatusCardSectionProps } from './LoanSt
 export { PreOfferCard, type PreOfferCardProps } from './PreOfferCard';
 export { PostOfferCard, type PostOfferCardProps } from './PostOfferCard';
 export { ActiveLoanCard, type ActiveLoanCardProps } from './ActiveLoanCard';
+export { EmiHomePlanCard } from './EmiHomePlanCard';
 export { UnderReviewCard, type UnderReviewCardProps } from './UnderReviewCard';
 export { StatusStrip } from './StatusStrip';
 export { StageCtaCardSection, type StageCtaCardSectionProps } from './StageCtaCardSection';

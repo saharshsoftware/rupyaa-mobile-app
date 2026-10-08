@@ -112,7 +112,7 @@ export default function OfferForeclosuerScreen() {
 
   if (isLoading) {
     return (
-      <Screen scroll={false} edges={['top', 'bottom']}>
+      <Screen scroll={false} edges={['top', 'bottom']} style={styles.plainScreen}>
         <Header title={t('Foreclose Your Loan')} showBack onBackPress={() => router.back()} />
         <View style={styles.centered}>
           <ActivityIndicator size="large" color={colors.primary.main} />
@@ -126,7 +126,7 @@ export default function OfferForeclosuerScreen() {
 
   if (error) {
     return (
-      <Screen scroll={false} edges={['top', 'bottom']}>
+      <Screen scroll={false} edges={['top', 'bottom']} style={styles.plainScreen}>
         <Header title={t('Foreclose Your Loan')} showBack onBackPress={() => router.back()} />
         <View style={styles.centered}>
           <AppText variant="body" color="error" style={styles.message}>
@@ -139,7 +139,7 @@ export default function OfferForeclosuerScreen() {
 
   if (!loan) {
     return (
-      <Screen scroll={false} edges={['top', 'bottom']}>
+      <Screen scroll={false} edges={['top', 'bottom']} style={styles.plainScreen}>
         <Header title={t('Foreclose Your Loan')} showBack onBackPress={() => router.back()} />
         <View style={styles.centered}>
           <AppText variant="body" style={styles.message}>
@@ -153,7 +153,7 @@ export default function OfferForeclosuerScreen() {
   const remainingBalance = Math.max(0, foreclosureAmount - paidAmount);
 
   return (
-    <Screen scroll={false} edges={['top', 'bottom']}>
+    <Screen scroll={false} edges={['top', 'bottom']} style={styles.plainScreen}>
       <Header title={t('Foreclose Your Loan')} showBack onBackPress={() => router.back()} />
       {isVerifyingPayment ? (
         <View style={styles.centered}>
@@ -186,6 +186,9 @@ export default function OfferForeclosuerScreen() {
 }
 
 const styles = StyleSheet.create({
+  plainScreen: {
+    backgroundColor: colors.background.primary,
+  },
   cardWrap: {
     flex: 1,
     paddingHorizontal: spacing.base,

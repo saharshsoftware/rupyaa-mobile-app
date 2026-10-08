@@ -257,12 +257,16 @@ export interface EmiRepaymentAccordionProps {
   title?: string;
   items: EmiRepaymentAccordionItem[];
   allowToggle?: boolean;
+  compact?: boolean;
+  showExpandIndicator?: boolean;
 }
 
 export interface EmiRepaymentAccordionCardProps {
   item: EmiRepaymentAccordionItem;
   isExpanded: boolean;
   allowToggle: boolean;
+  compact: boolean;
+  showExpandIndicator: boolean;
   onToggle: () => void;
 }
 

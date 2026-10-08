@@ -147,7 +147,7 @@ export default function HomeTab() {
     // debugger;
     const screenType = resolveActiveLoanScreenType(loan);
     // const screenType = 'payment';
-    if (screenType === 'payment') {
+    if (screenType === 'payment' || screenType === 'payment-emi') {
       router.push('/payment');
     } else if (screenType === 'foreclosure') {
       router.push('/offercard/foreclosuer');
@@ -350,6 +350,7 @@ export default function HomeTab() {
         <StageCtaCardSection
           userStage={userStage as UserStagesInBackend}
           {...buildLoanStatusCardProps()}
+          loan={activeLoanQuery.data?.loan ?? null}
           tenure={postOfferTenure}
           totalPayable={postOfferTotalPayable}
           amountDue={activeLoanAmountDue}

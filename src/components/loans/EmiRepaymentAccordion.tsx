@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { ChevronDown, ChevronUp, Lock } from 'lucide-react-native';
 import Animated, { FadeInDown, FadeOutUp, LinearTransition } from 'react-native-reanimated';
@@ -14,6 +14,12 @@ import type {
 const CARD_LAYOUT = LinearTransition.duration(260);
 const BREAKDOWN_ENTERING = FadeInDown.duration(180);
 const BREAKDOWN_EXITING = FadeOutUp.duration(120);
+const COMPACT_BADGE_SIZE = spacing.xl + spacing.xs;
+
+function getDefaultExpandedId(items: EmiRepaymentAccordionItem[]): string | null {
+  const defaultItem = items.find((item) => item.defaultExpanded === true && item.locked !== true);
+  return defaultItem?.id ?? null;
+}
 
 function getStatusStyle(item: EmiRepaymentAccordionItem) {
   if (item.statusVariant === 'paid') return styles.statusPaid;
@@ -47,11 +53,13 @@ function EmiRepaymentAccordionCard({
   item,
   isExpanded,
   allowToggle,
+  compact,
+  showExpandIndicator,
   onToggle,
 }: EmiRepaymentAccordionCardProps) {
   const statusStyle = getStatusStyle(item);
   const pressDisabled = item.locked === true || !allowToggle;
-  const showExpandIndicator = !pressDisabled;
+  const canShowExpandIndicator = showExpandIndicator && !pressDisabled;
   const breakdownRows = item.breakdownRows.map((row) => (
     <BreakdownRow
       key={`${item.id}-${row.label}`}
@@ -66,7 +74,7 @@ function EmiRepaymentAccordionCard({
     badgeContent = <Lock size={16} color={colors.text.secondary} />;
   } else {
     badgeContent = (
-      <AppText style={styles.badgeText} variant="caption" weight="bold">
+      <AppText style={styles.badgeText} variant={compact ? 'captionSmall' : 'caption'} weight="bold">
         {item.badgeLabel}
       </AppText>
     );
@@ -96,7 +104,7 @@ function EmiRepaymentAccordionCard({
   }
 
   let expandIndicatorNode: React.ReactNode = null;
-  if (showExpandIndicator) {
+  if (canShowExpandIndicator) {
     expandIndicatorNode = isExpanded ? (
       <ChevronUp size={18} color={colors.primary.main} />
     ) : (
@@ -110,7 +118,7 @@ function EmiRepaymentAccordionCard({
       <Animated.View
         entering={BREAKDOWN_ENTERING}
         exiting={BREAKDOWN_EXITING}
-        style={styles.breakdown}
+        style={[styles.breakdown, compact ? styles.breakdownCompact : null]}
       >
         {breakdownRows}
         <View style={styles.breakdownDivider} />
@@ -128,12 +136,14 @@ function EmiRepaymentAccordionCard({
         onPress={onToggle}
         style={({ pressed }) => [
           styles.card,
+          compact ? styles.cardCompact : null,
           item.locked === true ? styles.cardLocked : null,
+          isExpanded ? styles.cardExpanded : null,
           pressed ? styles.cardPressed : null,
         ]}
       >
-        <View style={styles.header}>
-          <View style={[styles.badge, item.locked === true ? styles.badgeLocked : null]}>
+        <View style={[styles.header, compact ? styles.headerCompact : null]}>
+          <View style={[styles.badge, compact ? styles.badgeCompact : null, item.locked === true ? styles.badgeLocked : null]}>
             {badgeContent}
           </View>
           <View style={styles.titleWrap}>
@@ -165,45 +175,54 @@ export function EmiRepaymentAccordion({
   title,
   items,
   allowToggle = true,
+  compact = false,
+  showExpandIndicator = true,
 }: EmiRepaymentAccordionProps): React.ReactElement {
-  const initialExpandedItems = useMemo(() => {
-    return items.reduce<Record<string, boolean>>((acc, item) => {
-      if (item.defaultExpanded === true && item.locked !== true) {
-        acc[item.id] = true;
-      }
-      return acc;
-    }, {});
-  }, [items]);
-  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(initialExpandedItems);
+  const defaultExpandedId = useMemo(() => getDefaultExpandedId(items), [items]);
+  const [expandedId, setExpandedId] = useState<string | null>(defaultExpandedId);
+  const scheduleKey = items.map((item) => `${item.id}:${item.locked === true}`).join('|');
+
+  useEffect(() => {
+    setExpandedId((current) => {
+      if (current == null) return null;
+      const currentItem = items.find((item) => item.id === current);
+      if (currentItem != null && currentItem.locked !== true) return current;
+      return getDefaultExpandedId(items);
+    });
+  }, [items, scheduleKey]);
 
   const toggleItem = useCallback((id: string) => {
-    setExpandedItems((current) => ({
-      ...current,
-      [id]: !current[id],
-    }));
+    setExpandedId((current) => (current === id ? null : id));
   }, []);
 
-  const cards = items.map((item) => (
-    <EmiRepaymentAccordionCard
-      key={item.id}
-      item={item}
-      isExpanded={expandedItems[item.id] === true}
-      allowToggle={allowToggle}
-      onToggle={() => toggleItem(item.id)}
-    />
-  ));
+  const cards = items.map((item) => {
+    const isExpanded = allowToggle
+      ? expandedId === item.id && item.locked !== true
+      : item.defaultExpanded === true && item.locked !== true;
+    return (
+      <EmiRepaymentAccordionCard
+        key={item.id}
+        item={item}
+        isExpanded={isExpanded}
+        allowToggle={allowToggle}
+        compact={compact}
+        showExpandIndicator={showExpandIndicator}
+        onToggle={() => toggleItem(item.id)}
+      />
+    );
+  });
 
   let titleNode: React.ReactNode = null;
   if (title) {
     titleNode = (
-      <AppText style={styles.sectionTitle} variant="body" weight="semiBold">
+      <AppText style={[styles.sectionTitle, compact ? styles.sectionTitleCompact : null]} variant="body" weight="semiBold">
         {title}
       </AppText>
     );
   }
 
   return (
-    <View style={styles.section}>
+    <View style={[styles.section, compact ? styles.sectionCompact : null]}>
       {titleNode}
       {cards}
     </View>
@@ -219,33 +238,55 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     marginTop: spacing.md,
   },
+  sectionCompact: {
+    marginBottom: spacing.sm,
+  },
+  sectionTitleCompact: {
+    marginTop: spacing.base,
+    marginBottom: spacing.sm,
+  },
   card: {
     backgroundColor: colors.background.primary,
     borderWidth: 1,
-    borderColor: colors.border.main,
+    borderColor: colors.border.light,
     borderRadius: radius.md,
     marginBottom: spacing.sm,
     overflow: 'hidden',
   },
+  cardCompact: {
+    marginBottom: spacing.sm,
+    borderRadius: radius.lg,
+  },
   cardLocked: {
-    backgroundColor: colors.background.secondary,
+    backgroundColor: colors.background.primary,
+  },
+  cardExpanded: {
+    borderColor: colors.primary.main,
   },
   cardPressed: {
     backgroundColor: colors.background.secondary,
   },
   header: {
     flexDirection: 'row',
-    // alignItems: 'center',
     padding: spacing.base,
   },
+  headerCompact: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+  },
   badge: {
-    width: 36,
-    height: 36,
+    width: spacing['2xl'],
+    height: spacing['2xl'],
     borderRadius: radius.full,
     backgroundColor: colors.primary.main,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: spacing.md,
+  },
+  badgeCompact: {
+    width: COMPACT_BADGE_SIZE,
+    height: COMPACT_BADGE_SIZE,
+    marginRight: spacing.sm,
   },
   badgeLocked: {
     backgroundColor: colors.border.light,
@@ -284,22 +325,26 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   statusPaid: {
-    backgroundColor: colors.success.main,
+    backgroundColor: colors.emi.paid,
   },
   statusDue: {
-    backgroundColor: colors.warning.light,
+    backgroundColor: colors.emi.due,
   },
   statusOverdue: {
     backgroundColor: colors.error.overdue,
   },
   statusText: {
-    color: colors.primary.contrast,
+    color: colors.text.inverse,
   },
   breakdown: {
     borderTopWidth: 1,
     borderStyle: 'dashed',
     borderTopColor: colors.border.light,
     padding: spacing.base,
+  },
+  breakdownCompact: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
   },
   breakdownRow: {
     flexDirection: 'row',
