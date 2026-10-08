@@ -1,8 +1,8 @@
-import type { Router } from 'expo-router';
+import type { ImperativeRouter } from 'expo-router';
 import { goBackWithFallback } from './goBackWithFallback';
 import { useAuthStore } from '../../store/useAuthStore';
 
-type HomeRouter = Pick<Router, 'canGoBack' | 'back' | 'replace'>;
+type HomeRouter = Pick<ImperativeRouter, 'canGoBack' | 'back' | 'replace'>;
 
 export const HOME_ROUTE = '/(tabs)/home' as const;
 

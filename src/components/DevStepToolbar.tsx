@@ -17,7 +17,10 @@ const SIM_STATES: { key: SimulatedStepState; label: string }[] = [
  * Renders only in __DEV__. Auto-clears simulation when step changes.
  */
 export function DevStepToolbar() {
-  if (!__DEV__) return null;
+  return __DEV__ ? <DevStepToolbarContent /> : null;
+}
+
+function DevStepToolbarContent() {
 
   const phaseIndex = useFlowStore((s) => s.phaseIndex);
   const substepIndex = useFlowStore((s) => s.substepIndex);

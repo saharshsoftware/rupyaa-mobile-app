@@ -2,8 +2,7 @@ import { setupGlobalErrorHandlers } from '@/src/utils/setupGlobalErrorHandlers';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Stack } from 'expo-router';
-import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import {
@@ -137,7 +136,7 @@ function AppBootstrap({ shouldEnableFreeRasp }: { shouldEnableFreeRasp: boolean 
                 <Stack.Screen name="+not-found" />
               </Stack>
             </ThemeProvider>
-            <StatusBar style="dark" translucent backgroundColor="transparent" />
+            <StatusBar style="dark" />
           </GestureHandlerRootView>
         </QueryProvider>
       </SafeAreaProvider>

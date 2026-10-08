@@ -155,7 +155,7 @@ export function IneligibilityModal({
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: colors.background.primary,
     // Ensure this renders above the step form content within the same screen.
     zIndex: OVERLAY_Z_INDEX,

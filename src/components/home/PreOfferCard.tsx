@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   gridBackground: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     opacity: 0.08,
   },
   content: {

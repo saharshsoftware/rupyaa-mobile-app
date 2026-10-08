@@ -5,6 +5,7 @@
  * Compatible with backend encryptApiPayload / decryptApiPayload.
  */
 
+import { Buffer } from 'buffer';
 import { gcm } from '@noble/ciphers/aes.js';
 import * as ExpoCrypto from 'expo-crypto';
 import { getEncryptionSecret } from '@/src/config/resolvedAppConfig';

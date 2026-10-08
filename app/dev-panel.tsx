@@ -746,7 +746,7 @@ export default function DevPanelScreen() {
               Status: {bankFetchFailureEnabled ? 'Enabled' : 'Disabled'}
             </AppText>
             <AppText variant="caption" style={styles.simulationHint}>
-              When enabled, clicking "Connect Bank" after entering mobile number will simulate API failure and show the manual upload flow instead of auto-linking.
+              When enabled, clicking &quot;Connect Bank&quot; after entering mobile number will simulate API failure and show the manual upload flow instead of auto-linking.
             </AppText>
           </View>
         </View>

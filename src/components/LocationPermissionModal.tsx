@@ -100,7 +100,7 @@ export function LocationPermissionModal({
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
     zIndex: OVERLAY_Z_INDEX,
     elevation: OVERLAY_Z_INDEX,

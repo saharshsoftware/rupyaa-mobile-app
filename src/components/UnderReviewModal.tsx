@@ -205,7 +205,7 @@ export function UnderReviewModal({
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: colors.background.primary,
     zIndex: OVERLAY_Z_INDEX,
     elevation: OVERLAY_Z_INDEX,
