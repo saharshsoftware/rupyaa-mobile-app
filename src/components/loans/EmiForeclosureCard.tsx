@@ -15,6 +15,40 @@ function DetailRow({ label, value }: DetailRowProps) {
   </View>;
 }
 
+function isPresentAmount(value: number | null | undefined): value is number {
+  return typeof value === 'number' && Number.isFinite(value);
+}
+
+function pushAmountRow(rows: DetailRowProps[], label: string, amount: number | null | undefined): void {
+  if (!isPresentAmount(amount) || amount === 0) return;
+  rows.push({ label, value: formatCurrency(amount, true) });
+}
+
+function buildDetailRows(loan: ForeclosureCardProps['loan']): DetailRowProps[] {
+  const summary = loan.emiRepayment?.summary;
+  const breakdown = loan.emiRepayment?.foreclosure;
+  const rows: DetailRowProps[] = [];
+  const summaryLoanAmount = summary?.loanAmount;
+  pushAmountRow(rows, 'Loan Amount', isPresentAmount(summaryLoanAmount) ? summaryLoanAmount : loan.amount);
+  if (summary != null && isPresentAmount(summary.tenureMonths) && summary.tenureMonths !== 0) rows.push({ label: 'Tenure Plan', value: `${summary.tenureMonths} months` });
+  if (summary != null && isPresentAmount(summary.emisPaid) && isPresentAmount(summary.totalEmis) && summary.totalEmis !== 0) rows.push({ label: 'EMI Paid', value: `${summary.emisPaid} of ${summary.totalEmis}` });
+  pushAmountRow(rows, 'Outstanding Principal', breakdown?.outstandingPrincipal);
+  pushAmountRow(rows, 'Interest till closure date', breakdown?.interestTillClosure);
+  pushAmountRow(rows, 'Penal charge (only if applicable)', breakdown?.penalCharge);
+  pushAmountRow(rows, 'Bounce charge (only if applicable)', breakdown?.bounceCharge);
+  pushAmountRow(rows, 'Foreclosure fee', breakdown?.foreclosureFee);
+  const gstParts = [breakdown?.gstOnForeclosureFee, breakdown?.gstOnPenal, breakdown?.gstOnBounce].filter(isPresentAmount);
+  if (gstParts.length > 0) {
+    const gst = gstParts.reduce((total, part) => total + part, 0);
+    pushAmountRow(rows, 'GST on charges', gst);
+  }
+  return rows;
+}
+
+function renderDetailRows(rows: readonly DetailRowProps[]): React.ReactNode {
+  return rows.map((row) => <DetailRow key={row.label} label={row.label} value={row.value} />);
+}
+
 function formatFinalAmount(amount: number | undefined): string {
   const value = amount ?? 0;
   const formatted = value.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -22,10 +56,8 @@ function formatFinalAmount(amount: number | undefined): string {
 }
 
 export function EmiForeclosureCard({ loan, foreclosureAmount, onForeclosePress, ctaLoading = false, ctaError }: ForeclosureCardProps) {
-  const summary = loan.emiRepayment?.summary;
   const breakdown = loan.emiRepayment?.foreclosure;
-  const money = (amount: number | undefined) => formatCurrency(amount ?? 0, true);
-  const gst = breakdown == null ? 0 : breakdown.gstOnForeclosureFee + breakdown.gstOnPenal + breakdown.gstOnBounce;
+  const detailRows = buildDetailRows(loan);
   const statusLabel = (loan.status ?? '').trim();
   const isOverdue = statusLabel.toLowerCase() === 'overdue';
   let errorNode: React.ReactNode = null;
@@ -43,15 +75,7 @@ export function EmiForeclosureCard({ loan, foreclosureAmount, onForeclosePress, 
         <AppText variant="caption" weight="medium" style={styles.applicationId}>{getApplicationDisplay(loan)}</AppText>
         {statusNode}
       </View>
-      <DetailRow label="Loan Amount" value={money(summary?.loanAmount ?? loan.amount)} />
-      <DetailRow label="Tenure Plan" value={summary ? `${summary.tenureMonths} months` : '—'} />
-      <DetailRow label="EMI Paid" value={summary ? `${summary.emisPaid} of ${summary.totalEmis}` : '—'} />
-      <DetailRow label="Outstanding Principal" value={money(breakdown?.outstandingPrincipal)} />
-      <DetailRow label="Interest till closure date" value={money(breakdown?.interestTillClosure)} />
-      <DetailRow label="Penal charge (only if applicable)" value={money(breakdown?.penalCharge)} />
-      <DetailRow label="Bounce charge (only if applicable)" value={money(breakdown?.bounceCharge)} />
-      <DetailRow label="Foreclosure fee" value={money(breakdown?.foreclosureFee)} />
-      <DetailRow label="GST on charges" value={money(gst)} />
+      {renderDetailRows(detailRows)}
       <View style={styles.total}>
         <AppText variant="caption" weight="bold" style={styles.totalLabel}>Final foreclosure amount</AppText>
         <AppText variant="caption" weight="bold" style={styles.totalValue}>{formatFinalAmount(breakdown?.total ?? foreclosureAmount)}</AppText>

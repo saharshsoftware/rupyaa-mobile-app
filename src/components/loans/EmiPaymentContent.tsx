@@ -1,6 +1,5 @@
 import React from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Banknote, ChevronRight, CreditCard } from 'lucide-react-native';
 import { AppText, Button } from '@/src/components';
 import type { EmiPaymentContentProps } from '@/src/types';
@@ -13,8 +12,8 @@ import { EmiRepaymentAccordion } from './EmiRepaymentAccordion';
 interface SummaryMetricProps { label: string; value: string; }
 function SummaryMetric({ label, value }: SummaryMetricProps) {
   return <View style={styles.metric}>
-    <AppText variant="captionExtraSmall" style={styles.metricLabel}>{label}</AppText>
-    <AppText variant="body" weight="bold" style={styles.metricValue}>{value}</AppText>
+    <AppText variant="caption" style={styles.metricLabel}>{label}</AppText>
+    <AppText variant="bodyLarge" weight="bold" style={styles.metricValue}>{value}</AppText>
   </View>;
 }
 
@@ -24,12 +23,16 @@ export function EmiPaymentContent({ loan, onPayPress, onForeclosePress, ctaLoadi
   const items = buildEmiScheduleItems(loan);
   const progress = summary && summary.totalPayable > 0 ? Math.min(1, Math.max(0, summary.totalPaid / summary.totalPayable)) : 0;
   const closed = loan.emiRepayment?.isClosed || decision.state === 'all_paid' || decision.state === 'foreclosed';
-  const disabled = ctaLoading || decision.disabled || decision.nextActionBlock?.isLocked === true;
+  const disabled = closed || ctaLoading || decision.disabled || decision.nextActionBlock?.isLocked === true;
+  const scheduleKey = `${loan._id}:${items.find((item) => item.defaultExpanded)?.id ?? 'none'}`;
+  const progressMarkers = items.slice(1).map((item, index) => (
+    <View key={item.id} style={[styles.progressMarker, { left: `${((index + 1) / items.length) * 100}%` }]} />
+  ));
   let summaryNode: React.ReactNode = null;
   if (summary) {
     const nextDue = summary.nextDueDate ? formatLoanDueDate(summary.nextDueDate) : '—';
-    summaryNode = <LinearGradient colors={[colors.primary.main, colors.emi.gradientMid, colors.background.cream]} style={styles.summary}>
-      <AppText variant="captionSmall" weight="medium" style={styles.summaryTitle}>{`Loan amount ${formatCurrency(summary.loanAmount, true)} · ${summary.tenureMonths}-month plan`}</AppText>
+    summaryNode = <View style={styles.summary}>
+      <AppText variant="caption" weight="semiBold" style={styles.summaryTitle}>{`Loan amount ${formatCurrency(summary.loanAmount, true)} · ${summary.tenureMonths}-month plan`}</AppText>
       <View style={styles.row}>
         <SummaryMetric label="Total payable" value={formatCurrency(summary.totalPayable, true)} />
         <SummaryMetric label="Monthly EMI" value={formatCurrency(summary.monthlyEmi, true)} />
@@ -40,12 +43,13 @@ export function EmiPaymentContent({ loan, onPayPress, onForeclosePress, ctaLoadi
       </View>
       <View style={styles.track} accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: 100, now: Math.round(progress * 100) }}>
         <View style={[styles.progress, { width: `${progress * 100}%` }]} />
+        {progressMarkers}
       </View>
       <View style={styles.progressRow}>
-        <AppText variant="captionExtraSmall" style={styles.progressLabel}>{`${formatCurrency(summary.totalPaid, true)} paid`}</AppText>
-        <AppText variant="captionExtraSmall" style={styles.progressLabelRight}>{`${formatCurrency(summary.remaining, true)} remaining`}</AppText>
+        <AppText variant="captionSmall" weight="semiBold" style={styles.progressLabel}>{`${formatCurrency(summary.totalPaid, true)} paid`}</AppText>
+        <AppText variant="captionSmall" weight="semiBold" style={styles.progressLabelRight}>{`${formatCurrency(summary.remaining, true)} remaining`}</AppText>
       </View>
-    </LinearGradient>;
+    </View>;
   }
   let options: React.ReactNode = null;
   if (!closed) {
@@ -66,15 +70,15 @@ export function EmiPaymentContent({ loan, onPayPress, onForeclosePress, ctaLoadi
   }
   let schedule: React.ReactNode = <AppText variant="body" style={styles.optionTitle}>Your EMI schedule is not available yet.</AppText>;
   if (items.length > 0) {
-    schedule = <EmiRepaymentAccordion title="Your EMI schedule" items={items} compact showExpandIndicator={false} />;
+    schedule = <EmiRepaymentAccordion key={scheduleKey} title="Your EMI schedule" items={items} />;
   }
   let errorNode: React.ReactNode = null;
   if (ctaError) errorNode = <AppText variant="caption" color="error" accessibilityRole="alert">{ctaError}</AppText>;
   const footerLabel = closed ? 'Loan repayment completed' : decision.footerLabel;
   return <View style={styles.container}>
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>{summaryNode}{schedule}{options}</ScrollView>
-    <View style={styles.footer}>{errorNode}<AppText variant="captionSmall" weight="medium" style={styles.footerLabel}>{footerLabel}</AppText>
-      <Button title={`Pay ${formatCurrency(decision.amount, true)}`} size="small" leftIcon={<CreditCard size={16} color={colors.text.primary} />} onPress={() => onPayPress(decision.amount)} disabled={disabled} loading={ctaLoading} fullWidth />
+    <View style={styles.footer}>{errorNode}<AppText variant="body" weight="semiBold" style={styles.footerLabel}>{footerLabel}</AppText>
+      <Button title={`Pay ${formatCurrency(decision.amount, true)}`} size="large" leftIcon={<CreditCard size={20} color={colors.text.primary} />} onPress={() => onPayPress(decision.amount)} disabled={disabled} loading={ctaLoading} fullWidth />
     </View>
   </View>;
 }
@@ -82,14 +86,15 @@ export function EmiPaymentContent({ loan, onPayPress, onForeclosePress, ctaLoadi
 const styles = StyleSheet.create({
   container: { flex: 1 },
   content: { paddingBottom: spacing.md },
-  summary: { borderRadius: radius.lg, borderWidth: 1, borderColor: colors.primary.main, paddingHorizontal: spacing.md, paddingVertical: spacing.md, gap: spacing.sm },
+  summary: { backgroundColor: colors.primary.main, borderRadius: radius.lg, padding: spacing.lg, gap: spacing.lg, marginBottom: spacing.sm },
   summaryTitle: { color: colors.text.primary },
   row: { flexDirection: 'row', justifyContent: 'space-between', gap: spacing.md },
   metric: { flex: 1, gap: spacing.xs },
   metricLabel: { color: colors.text.secondary },
-  metricValue: { color: colors.text.black, lineHeight: typography.fontSize.base * typography.lineHeight.tight },
-  track: { height: spacing.xs, borderRadius: radius.full, backgroundColor: colors.background.primary, overflow: 'hidden' },
+  metricValue: { color: colors.text.black, lineHeight: typography.fontSize.lg * typography.lineHeight.tight },
+  track: { height: spacing.sm, borderRadius: radius.full, backgroundColor: colors.background.primary, overflow: 'hidden' },
   progress: { height: '100%', backgroundColor: colors.text.black, borderRadius: radius.full },
+  progressMarker: { position: 'absolute', top: 0, bottom: 0, width: spacing.xs, marginLeft: -spacing.xs / 2, borderRadius: radius.full, backgroundColor: colors.primary.contrast },
   progressRow: { flexDirection: 'row', justifyContent: 'space-between', gap: spacing.sm },
   progressLabel: { color: colors.text.secondary },
   progressLabelRight: { color: colors.text.secondary, textAlign: 'right' },
@@ -99,6 +104,6 @@ const styles = StyleSheet.create({
   optionCopy: { flex: 1, gap: spacing.xs },
   optionTitle: { color: colors.text.primary },
   optionSubtitle: { color: colors.text.secondary },
-  footer: { marginHorizontal: -spacing.base, paddingHorizontal: spacing.base, paddingTop: spacing.sm, paddingBottom: spacing.sm, gap: spacing.xs, backgroundColor: colors.background.primary, borderTopWidth: 1, borderTopColor: colors.border.light },
+  footer: { marginHorizontal: -spacing.base, paddingHorizontal: spacing.base, paddingTop: spacing.base, paddingBottom: spacing.base, gap: spacing.md, backgroundColor: colors.background.primary, borderTopLeftRadius: radius['2xl'], borderTopRightRadius: radius['2xl'], borderTopWidth: 1, borderTopColor: colors.border.light },
   footerLabel: { color: colors.error.overdue },
 });

@@ -29,8 +29,9 @@ export interface EmiHomePlan {
 
 function resolveEmiHomeStep(status: string, locked: boolean): Pick<EmiHomePlanStep, 'state' | 'statusLabel'> {
   if (status === 'PAID') return { state: 'paid', statusLabel: 'Paid' };
-  if (locked || status === 'UPCOMING' || status === '') return { state: 'upcoming', statusLabel: 'Upcoming' };
   if (status === 'OVERDUE') return { state: 'overdue', statusLabel: 'Overdue' };
+  if (status === 'DUE') return { state: 'due', statusLabel: 'Due' };
+  if (locked || status === 'UPCOMING' || status === '') return { state: 'upcoming', statusLabel: 'Upcoming' };
   return { state: 'due', statusLabel: 'Due' };
 }
 
@@ -38,7 +39,7 @@ export function buildEmiHomePlan(loan: Loan): EmiHomePlan {
   const summary = loan.emiRepayment?.summary;
   const nextBlock = getNextDueEmiBlock(loan);
   const nextDueSource = summary?.nextDueDate || nextBlock?.dueDate || '';
-  const nextDueLabel = formatLoanDueDate(nextDueSource);
+  const nextDueLabel = formatEmiHomeDueDate(nextDueSource);
   const steps = getSortedEmiSchedule(loan).map((block) => {
     const status = normalizeEmiStatus(block.status);
     const lock = getEmiBlockLockState(loan, block);
@@ -63,11 +64,10 @@ export function buildEmiHomePlan(loan: Loan): EmiHomePlan {
   };
 }
 
-function formatPaidOnLabel(dueDate: string): string {
-  const date = new Date(dueDate);
-  if (Number.isNaN(date.getTime())) return 'Paid';
-  const paidOn = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
-  return `Paid on ${paidOn}`;
+function formatEmiHomeDueDate(dateStr: string): string {
+  const date = new Date(dateStr);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 function formatDueLabel(dueDate: string): string {
@@ -91,9 +91,9 @@ export function buildEmiScheduleItems(loan: Loan): EmiRepaymentAccordionItem[] {
       id: String(block.index),
       badgeLabel: String(block.index + 1),
       title: `EMI ${block.index + 1}`,
-      dueLabel: isPaid ? formatPaidOnLabel(block.dueDate) : formatDueLabel(block.dueDate),
+      dueLabel: formatDueLabel(block.dueDate),
       amount: formatCurrency(block.emiAmount, true),
-      statusLabel: lock.locked || status === 'UPCOMING' ? null : status,
+      statusLabel: status === 'UPCOMING' ? null : status,
       statusVariant,
       ...lock,
       defaultExpanded: isCurrentDue,
@@ -102,7 +102,7 @@ export function buildEmiScheduleItems(loan: Loan): EmiRepaymentAccordionItem[] {
         { label: 'Interest', value: formatCurrency(block.interest, true) },
         ...charges.map((row) => ({ label: row.label, value: formatCurrency(row.amount, true) })),
       ],
-      totalLabel: 'EMI amount',
+      totalLabel: 'EMI total',
       totalValue: formatCurrency(block.payableTotal ?? block.emiAmount, true),
     };
   });
