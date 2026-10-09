@@ -5,6 +5,7 @@ import {
   handlePrivilegedAccessDetected,
   recordJourneyBlockingThreat,
 } from './deviceSecurityService';
+import { markFreeRaspBootstrapFailed, markFreeRaspBootstrapStarted } from './freeRaspBootstrapGuard';
 import { markFreeRaspNativeStarted } from './freeRaspReloadGuard';
 
 /**
@@ -61,10 +62,12 @@ export const freeRaspActions = {
   unsecureWifi: () => blockJourneyForThreat('UNSECURE_WIFI_DETECTED'),
   automation: () => blockJourneyForThreat('AUTOMATION_DETECTED'),
   started: () => {
+    markFreeRaspBootstrapStarted();
     void markFreeRaspNativeStarted();
     consoleLogDev('[freeRASP] Initialized successfully');
   },
   initializationError: (message: string) => {
+    markFreeRaspBootstrapFailed();
     console.warn('[freeRASP] Initialization failed:', message);
   },
 };

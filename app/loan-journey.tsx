@@ -7,6 +7,7 @@ import { FLOW_PHASES, findFlowPositionBySubstepId } from '@/src/config/flowSteps
 import { isCblOrRejectedStage, UserStagesInBackend } from '@/src/config/userStages';
 import { goHomeWithFallback } from '@/src/services/navigation/homeNavigation';
 import { logJourneyEntered } from '@/src/services/logging/logPoolJourney';
+import { enforceSensitiveEntrySecurity } from '@/src/services/security';
 import { fetchUserStage } from '@/src/services/user/useUserStage';
 import {
   navigateToPhaseSubstep,
@@ -30,6 +31,7 @@ export default function LoanJourneyScreen() {
   const shouldTreatJourneyAsCompleted = isCblOrRejectedStage(userStage);
 
   useEffect(() => {
+    enforceSensitiveEntrySecurity();
     logJourneyEntered();
     // Always refresh backend stage when entering loan journey.
     void fetchUserStage();

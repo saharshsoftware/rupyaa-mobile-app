@@ -21,6 +21,7 @@
     "submit-dev-ios": "eas submit --profile development --platform ios",
     "submit-prod-ios": "eas submit --profile production --platform ios",
     "verify:ota-env": "node scripts/verify-ota-env.js --all",
+    "verify:r8": "node scripts/verify-r8-release-config.js",
     "ota-preview": "node scripts/verify-ota-env.js --file .env.preview --expect-app-env development && cross-env EXPO_NO_DOTENV=1 dotenv -e .env.preview -o -- node updateversion.js && cross-env EXPO_NO_DOTENV=1 dotenv -e .env.preview -o -- eas update --channel preview",
     "ota-development": "node scripts/verify-ota-env.js --file .env.preview --expect-app-env development && cross-env EXPO_NO_DOTENV=1 dotenv -e .env.preview -o -- node updateversion.js && cross-env EXPO_NO_DOTENV=1 dotenv -e .env.preview -o -- eas update --channel development",
     "ota-production": "node scripts/verify-ota-env.js --file .env.production --expect-app-env production && cross-env EXPO_NO_DOTENV=1 dotenv -e .env.production -o -- node updateversion.js && cross-env EXPO_NO_DOTENV=1 dotenv -e .env.production -o -- eas update --channel production",

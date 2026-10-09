@@ -19,7 +19,8 @@ export type SecurityThreatId =
   | 'TIME_SPOOFING_DETECTED'
   | 'LOCATION_SPOOFING_DETECTED'
   | 'UNSECURE_WIFI_DETECTED'
-  | 'AUTOMATION_DETECTED';
+  | 'AUTOMATION_DETECTED'
+  | 'SECURITY_MONITOR_NOT_STARTED';
 
 export const SECURITY_THREAT_USER_MESSAGES: Record<SecurityThreatId, string> = {
   ROOT_OR_JAILBREAK_DETECTED:
@@ -64,6 +65,8 @@ export const SECURITY_THREAT_USER_MESSAGES: Record<SecurityThreatId, string> = {
     'An unsecured Wi‑Fi network was detected. Please switch networks to continue using ZapCash.',
   AUTOMATION_DETECTED:
     'Automated interaction tools were detected. ZapCash is unavailable.',
+  SECURITY_MONITOR_NOT_STARTED:
+    'We could not verify this device. Rupyaa is unavailable until you restart the app.',
 };
 
 export const DEFAULT_APP_BLOCK_MESSAGE =

@@ -23,6 +23,7 @@ import '@/src/services/i18n';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppStartup } from '@/hooks/useAppStartup';
+import { useEarlySecurityBootstrap } from '@/hooks/useEarlySecurityBootstrap';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { useNavigationService } from '@/hooks/useNavigationService';
 import { QueryProvider } from '@/src/services/query/QueryProvider';
@@ -81,6 +82,7 @@ const basePlatformAndDevGate =
 function AppBootstrap({ shouldEnableFreeRasp }: { shouldEnableFreeRasp: boolean }) {
   const { t } = useTranslation();
   useFrameworkReady();
+  useEarlySecurityBootstrap();
   useAppStartup();
   useNavigationService();
   usePushNotifications();

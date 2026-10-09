@@ -98,6 +98,7 @@ export default ({ config }) => {
             },
           },
         ],
+        "./plugins/withAndroidR8Optimize",
         // "./plugins/withRNFirebasePodFix",
         // ✅ Google Sign-In plugin
         [
@@ -134,6 +135,9 @@ export default ({ config }) => {
         // can auto-fill the code on Android without any SMS permissions. No
         // iOS work; safe to keep before the permission-strip plugin below.
         "./plugins/withSmsOtpRetriever",
+        "./plugins/withEarlySecurityBootstrap",
+        "./plugins/withApiHttpCacheSecurity",
+        "./plugins/withTapjackingProtection",
         "./plugins/withRemoveRestrictedPermissions", // MUST be last — strips Play Loans policy–banned permissions
       ],
       extra: {

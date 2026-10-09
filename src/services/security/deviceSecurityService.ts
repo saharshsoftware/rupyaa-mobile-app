@@ -5,6 +5,8 @@ import {
   useDeviceSecurityStore,
 } from '@/src/store/deviceSecurityStore';
 import { getSecurityThreatMessage, type SecurityThreatId } from '@/src/types/deviceSecurity';
+import { clearSensitiveStateOnThreat, resetSensitiveThreatCleanup } from './clearSensitiveStateOnThreat';
+import { getFreeRaspBootstrapBlockThreat } from './freeRaspBootstrapGuard';
 
 const PRIVILEGED_ACCESS_THREAT: SecurityThreatId = 'ROOT_OR_JAILBREAK_DETECTED';
 
@@ -27,6 +29,7 @@ export const recordJourneyBlockingThreat = (threat: SecurityThreatId): void => {
   }
 
   useDeviceSecurityStore.getState().addBlockingThreat(threat);
+  clearSensitiveStateOnThreat(threat === PRIVILEGED_ACCESS_THREAT);
 
   if (loggedBlockingThreats.has(threat)) {
     return;
@@ -50,8 +53,21 @@ export const showLoanJourneyBlockedAlert = (): void => {
   });
 };
 
+const applyFreeRaspBootstrapGate = (): void => {
+  const bootstrapThreat = getFreeRaspBootstrapBlockThreat();
+  if (bootstrapThreat) {
+    recordJourneyBlockingThreat(bootstrapThreat);
+  }
+};
+
+/** Re-check freeRASP before a sensitive screen renders, including deep links into the loan journey. */
+export const enforceSensitiveEntrySecurity = (): void => {
+  applyFreeRaspBootstrapGate();
+};
+
 /** Gate navigation into loan journey and other sensitive application flows. */
 export const tryOpenLoanJourney = (onAllowed: () => void): void => {
+  applyFreeRaspBootstrapGate();
   if (!isLoanJourneyBlocked()) {
     onAllowed();
     return;
@@ -84,5 +100,6 @@ export const handlePrivilegedAccessDetected = (): void => {
 export const resetDeviceSecuritySession = (): void => {
   handledHardExitThreats.clear();
   loggedBlockingThreats.clear();
+  resetSensitiveThreatCleanup();
   useDeviceSecurityStore.getState().resetSecurityState();
 };
