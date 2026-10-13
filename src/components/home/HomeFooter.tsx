@@ -13,11 +13,11 @@ export const HomeFooter = () => {
         align="center"
         style={styles.brandText}
       >
-        ZapCash{'\n'}Forever
+        Rupyaa{'\n'}Forever
       </AppText>
 
       <AppText variant="body" color="tertiary" align="center">
-        Created with 💚 by ZapCash, India.
+        Created with 💚 by Rupyaa, India.
       </AppText>
     </View>
   );

@@ -13,7 +13,7 @@ import { consoleLogDev } from '../utils/common-helper';
 import { AnimatedLoader } from './AnimatedLoader';
 
 const OVERLAY_Z_INDEX = 9999;
-const LOG_PREFIX = '[ZapcashLoading]';
+const LOG_PREFIX = '[RupyaaLoading]';
 const GIF_SIZE = 40;
 const SPINNER_SIZE = GIF_SIZE + 25;
 
