@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 import { Platform } from "react-native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { getGoogleClientId, getIosGoogleClientId } from "@/src/config/resolvedAppConfig";

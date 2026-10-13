@@ -1,5 +1,4 @@
 import { router } from "expo-router";
-import { useCallback } from "react";
 import { Alert } from "react-native";
 import { HyperKycResult } from "../components/HyperKYCFace";
 import { goBackWithFallback } from "@/src/services/navigation/goBackWithFallback";
@@ -321,47 +320,44 @@ export const buildHyperKycHtml = (sdkVersion: string, config: HyperKycConfig, in
 };
 
 
-export const handleResult = useCallback(
-  (result: HyperKycResult) => {
-    consoleLogDev('Result', result);
-    // Handle successful verification result
-    if (result.status === 'auto_approved') {
-      Alert.alert('Verification Successful', 'Your face has been verified successfully.', [
-        { text: 'OK', onPress: () => goBackWithFallback(router) },
-      ]);
-    } else if (result.status === 'auto_declined') {
-      Alert.alert(
-        'Verification Failed',
-        result.message || 'Face verification could not be completed. Please try again.',
-        [{ text: 'OK', onPress: () => goBackWithFallback(router) }]
-      );
-    } else if (result.status === 'needs_review') {
-      Alert.alert(
-        'Under Review',
-        'Your verification is under review. You will be notified once it is complete.',
-        [{ text: 'OK', onPress: () => goBackWithFallback(router) }]
-      );
-    } else if (result.status === 'user_cancelled') {
-      // User cancelled - just go back silently
-      goBackWithFallback(router);
-    } else if (result.status === 'error') {
-      // Handle error status with proper error message
-      const errorMessage =
-        result.message ||
-        (result.raw && typeof result.raw === 'object' && 'errorMessage' in result.raw
-          ? String(result.raw.errorMessage)
-          : 'An error occurred during verification. Please try again.');
-      Alert.alert('Verification Error', errorMessage, [
-        { text: 'OK', onPress: () => goBackWithFallback(router) },
-      ]);
-    } else {
-      // Fallback for unknown statuses
-      Alert.alert(
-        'Verification Error',
-        result.message || 'An unexpected error occurred during verification.',
-        [{ text: 'OK', onPress: () => goBackWithFallback(router) }]
-      );
-    }
-  },
-  [router]
-);
+export const handleResult = (result: HyperKycResult) => {
+  consoleLogDev('Result', result);
+  // Handle successful verification result
+  if (result.status === 'auto_approved') {
+    Alert.alert('Verification Successful', 'Your face has been verified successfully.', [
+      { text: 'OK', onPress: () => goBackWithFallback(router) },
+    ]);
+  } else if (result.status === 'auto_declined') {
+    Alert.alert(
+      'Verification Failed',
+      result.message || 'Face verification could not be completed. Please try again.',
+      [{ text: 'OK', onPress: () => goBackWithFallback(router) }]
+    );
+  } else if (result.status === 'needs_review') {
+    Alert.alert(
+      'Under Review',
+      'Your verification is under review. You will be notified once it is complete.',
+      [{ text: 'OK', onPress: () => goBackWithFallback(router) }]
+    );
+  } else if (result.status === 'user_cancelled') {
+    // User cancelled - just go back silently
+    goBackWithFallback(router);
+  } else if (result.status === 'error') {
+    // Handle error status with proper error message
+    const errorMessage =
+      result.message ||
+      (result.raw && typeof result.raw === 'object' && 'errorMessage' in result.raw
+        ? String(result.raw.errorMessage)
+        : 'An error occurred during verification. Please try again.');
+    Alert.alert('Verification Error', errorMessage, [
+      { text: 'OK', onPress: () => goBackWithFallback(router) },
+    ]);
+  } else {
+    // Fallback for unknown statuses
+    Alert.alert(
+      'Verification Error',
+      result.message || 'An unexpected error occurred during verification.',
+      [{ text: 'OK', onPress: () => goBackWithFallback(router) }]
+    );
+  }
+};

@@ -4,7 +4,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import {
   useScrollToFirstError,
   type ScrollViewScrollToFocusedInput,
-} from '@/hooks/useScrollToFirstError';
+} from '@/src/hooks/useScrollToFirstError';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -33,12 +33,12 @@ import {
 } from '@/src/types/kyc';
 import type { StepProps } from '@/src/types/flow';
 import { colors, radius, spacing, typography } from '@/src/theme';
-import { useRegistrationSubmit } from '@/hooks/useRegistrationSubmit';
-import { useSalaryAccounts } from '@/hooks/useSalaryAccounts';
+import { useRegistrationSubmit } from '@/src/hooks/useRegistrationSubmit';
+import { useSalaryAccounts } from '@/src/hooks/useSalaryAccounts';
 import { isEnteredAccountSalaryMatch } from '@/src/utils/salaryAccountValidation';
 import { appConfig } from '@/src/config/appConfig';
 import { UserStagesInBackend, type UserStage } from '@/src/config/userStages';
-import { useIneligibilityModal } from '@/hooks/useIneligibilityModal';
+import { useIneligibilityModal } from '@/src/hooks/useIneligibilityModal';
 import { ANALYTICS_EVENT, logAnalyticsEvent } from '@/src/services/analytics';
 import {
   lookupIfsc,

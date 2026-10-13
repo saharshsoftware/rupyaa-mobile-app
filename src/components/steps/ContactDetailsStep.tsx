@@ -22,12 +22,12 @@ import { contactDetailsSchema } from '@/src/utils/validation/kycSchemas';
 import type { ContactDetails, PostContactDetailsRequest } from '@/src/types/kyc';
 import type { StepProps } from '@/src/types/flow';
 import { colors, radius, spacing, typography } from '@/src/theme';
-import { useRegistrationSubmit } from '@/hooks/useRegistrationSubmit';
-import { useIneligibilityModal } from '@/hooks/useIneligibilityModal';
+import { useRegistrationSubmit } from '@/src/hooks/useRegistrationSubmit';
+import { useIneligibilityModal } from '@/src/hooks/useIneligibilityModal';
 import {
   useScrollToFirstError,
   type ScrollViewScrollToFocusedInput,
-} from '@/hooks/useScrollToFirstError';
+} from '@/src/hooks/useScrollToFirstError';
 import ErrorContainer from '../ErrorContainer';
 import { appConfig } from '@/src/config/appConfig';
 import { FLOW_CONFIG, FLOW_PHASES } from '@/src/config/flowSteps';

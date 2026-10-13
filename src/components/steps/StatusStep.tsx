@@ -26,7 +26,7 @@ export function StatusStep({ onNext, onPrev }: StepProps) {
           Bank Connection Status
         </AppText>
         <AppText style={styles.subtitle} variant="body">
-          Your bank has been successfully connected. We're processing your application.
+          Your bank has been successfully connected. We&apos;re processing your application.
         </AppText>
         <View style={styles.statusContainer}>
           <View style={styles.statusRow}>

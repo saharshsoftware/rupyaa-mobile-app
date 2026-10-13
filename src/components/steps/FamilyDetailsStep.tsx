@@ -4,7 +4,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import {
   useScrollToFirstError,
   type ScrollViewScrollToFocusedInput,
-} from '@/hooks/useScrollToFirstError';
+} from '@/src/hooks/useScrollToFirstError';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -24,8 +24,8 @@ import { familyDetailsSchema } from '@/src/utils/validation/kycSchemas';
 import type { PostFamilyDetailsRequest } from '@/src/types/kyc';
 import type { StepProps } from '@/src/types/flow';
 import { colors, spacing } from '@/src/theme';
-import { useRegistrationSubmit } from '@/hooks/useRegistrationSubmit';
-import { useIneligibilityModal } from '@/hooks/useIneligibilityModal';
+import { useRegistrationSubmit } from '@/src/hooks/useRegistrationSubmit';
+import { useIneligibilityModal } from '@/src/hooks/useIneligibilityModal';
 import { appConfig } from '@/src/config/appConfig';
 import { UserStagesInBackend, type UserStage } from '@/src/config/userStages';
 import { ConsentNotice } from '../ConsentNotice';

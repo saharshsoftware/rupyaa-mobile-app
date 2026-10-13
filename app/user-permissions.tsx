@@ -4,7 +4,7 @@ import { useFocusEffect } from 'expo-router';
 import { ChevronRight } from 'lucide-react-native';
 import { Screen, ListItemRow, Divider, PermissionStatusBadge, AppText } from '@/src/components';
 import { colors, spacing, typography, radius } from '@/src/theme';
-import { usePermissions } from '@/hooks/usePermissions';
+import { usePermissions } from '@/src/hooks/usePermissions';
 import { getAvailablePermissions, getPermissionIcon } from '@/src/services/permissions';
 import type { PermissionType } from '@/src/types/permissions';
 

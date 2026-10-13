@@ -2,8 +2,7 @@ import { setupGlobalErrorHandlers } from '@/src/utils/setupGlobalErrorHandlers';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Stack } from 'expo-router';
-import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import {
@@ -22,13 +21,13 @@ import * as SplashScreen from 'expo-splash-screen';
 import '@/src/services/i18n';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAppStartup } from '@/hooks/useAppStartup';
-import { useEarlySecurityBootstrap } from '@/hooks/useEarlySecurityBootstrap';
-import { useFrameworkReady } from '@/hooks/useFrameworkReady';
-import { useNavigationService } from '@/hooks/useNavigationService';
+import { useAppStartup } from '@/src/hooks/useAppStartup';
+import { useEarlySecurityBootstrap } from '@/src/hooks/useEarlySecurityBootstrap';
+import { useFrameworkReady } from '@/src/hooks/useFrameworkReady';
+import { useNavigationService } from '@/src/hooks/useNavigationService';
 import { QueryProvider } from '@/src/services/query/QueryProvider';
 import { useCredeauSync } from '@/src/hooks/useCredeauSync';
-import { useLogPool } from '@/hooks/useLogPool';
+import { useLogPool } from '@/src/hooks/useLogPool';
 import { useDeepLinkHandler } from '@/src/hooks/useDeepLinkHandler';
 import { colors } from '@/src/theme';
 import { startNetworkLogging, stopNetworkLogging } from 'react-native-network-logger';
@@ -139,7 +138,7 @@ function AppBootstrap({ shouldEnableFreeRasp }: { shouldEnableFreeRasp: boolean 
                 <Stack.Screen name="+not-found" />
               </Stack>
             </ThemeProvider>
-            <StatusBar style="dark" translucent backgroundColor="transparent" />
+            <StatusBar style="dark" />
           </GestureHandlerRootView>
         </QueryProvider>
       </SafeAreaProvider>

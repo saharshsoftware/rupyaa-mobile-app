@@ -9,7 +9,7 @@ import {
 import {
   BottomTabBarHeightCallbackContext,
   type BottomTabBarProps,
-} from '@react-navigation/bottom-tabs';
+} from 'expo-router/js-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import {

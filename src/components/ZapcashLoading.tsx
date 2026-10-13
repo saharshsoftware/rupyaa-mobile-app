@@ -129,7 +129,7 @@ export function ZapcashLoading({
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: colors.transparent,
     // backgroundColor: 'blue',
     zIndex: OVERLAY_Z_INDEX,

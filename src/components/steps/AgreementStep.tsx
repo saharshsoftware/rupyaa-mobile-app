@@ -82,10 +82,10 @@ export function AgreementStep({ onNext, onPrev }: StepProps) {
             />
           </View>
           <AppText style={styles.title} variant="body" color="textprimary" weight="semiBold">
-            ⏳ Hold on, we're reviewing your application
+            ⏳ Hold on, we&apos;re reviewing your application
           </AppText>
           <AppText style={styles.subtitle} variant="body" color="textprimary">
-            We're checking your details and setting up your Credit Builder Loan. This will only take a few moments.
+            We&apos;re checking your details and setting up your Credit Builder Loan. This will only take a few moments.
           </AppText>
           <AppText style={styles.subtitle} variant="body" color="textprimary">
             You’ll be notified once your loan is sanctioned.
