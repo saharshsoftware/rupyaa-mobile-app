@@ -88,8 +88,8 @@
     "extra": {
       "otaUpdateNumberDev": "9",
       "otaUpdateNumberProd": "2",
-      "versionDev": "1.0.2",
-      "versionProd": "1.0.1",
+      "versionDev": "1.0.3",
+      "versionProd": "1.0.2",
       "versionProdIos": "1.0.0",
       "isDevelopment": true,
       "otaUpdateNumber": "1",
