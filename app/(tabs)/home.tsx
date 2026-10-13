@@ -42,7 +42,7 @@ import { ActiveLoanDevToolbar } from '@/src/components/home/ActiveLoanDevToolbar
 import { useActiveLoanDevStore } from '@/src/store/useActiveLoanDevStore';
 import { appConfig } from '@/src/config/appConfig';
 import { useAuthStore, selectIsAuthenticated } from '@/src/store/useAuthStore';
-import { useLoanJourneyGuard } from '@/hooks/useLoanJourneyGuard';
+import { useLoanJourneyGuard } from '@/src/hooks/useLoanJourneyGuard';
 import { DEFAULT_ACTIVE_LOAN_AMOUNT } from '@/src/constants/data';
 import { useBottomTabBarHeight } from 'expo-router/js-tabs';
 

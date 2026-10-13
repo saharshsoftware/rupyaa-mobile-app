@@ -4,7 +4,7 @@ import { View, StyleSheet, TextInput } from 'react-native';
 import {
   useScrollToFirstError,
   type ScrollViewScrollToFocusedInput,
-} from '@/hooks/useScrollToFirstError';
+} from '@/src/hooks/useScrollToFirstError';
 import type { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -25,8 +25,8 @@ import { addressDetailsSchema } from '@/src/utils/validation/kycSchemas';
 import type { AddressDetails, PostResidenceAddressRequest } from '@/src/types/kyc';
 import type { StepProps } from '@/src/types/flow';
 import { colors, spacing } from '@/src/theme';
-import { useRegistrationSubmit } from '@/hooks/useRegistrationSubmit';
-import { useIneligibilityModal } from '@/hooks/useIneligibilityModal';
+import { useRegistrationSubmit } from '@/src/hooks/useRegistrationSubmit';
+import { useIneligibilityModal } from '@/src/hooks/useIneligibilityModal';
 import ErrorContainer from '../ErrorContainer';
 import { appConfig } from '@/src/config/appConfig';
 import { ANALYTICS_EVENT, logAnalyticsEvent } from '@/src/services/analytics';

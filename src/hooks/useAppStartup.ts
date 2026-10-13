@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { initAdjustSdk } from '@/hooks/useAdjustSdk';
+import { initAdjustSdk } from '@/src/hooks/useAdjustSdk';
 import { runStartupTasks } from '@/src/services/startup';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import { refreshAndStoreGeoLocation } from '@/src/services/location/geoLocation';

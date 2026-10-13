@@ -404,4 +404,3 @@ export function useLoanJourneyPermissionGate(
     openSettings,
   };
 }
-

@@ -10,8 +10,8 @@ import {
 } from '@/src/services/registration';
 import { EMPLOYMENT_OPTIONS } from '@/src/data/registration';
 import { devLog } from '@/src/utils';
-import { useRegistrationSubmit } from '@/hooks/useRegistrationSubmit';
-import { useIneligibilityModal } from '@/hooks/useIneligibilityModal';
+import { useRegistrationSubmit } from '@/src/hooks/useRegistrationSubmit';
+import { useIneligibilityModal } from '@/src/hooks/useIneligibilityModal';
 import type { EmploymentType } from '@/src/types/registration';
 import type { StepProps } from '@/src/types/flow';
 import { colors, spacing } from '@/src/theme';

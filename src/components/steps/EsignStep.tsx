@@ -25,7 +25,7 @@ import type { GetExistingActiveLoanResponse } from '@/src/types/loans';
 import { getGeoLocationForEsignOrMandate } from '@/src/services/location/geoLocation';
 import { ZapcashLoading } from '../ZapcashLoading';
 import { useStepSimulation } from '@/src/hooks/useStepSimulation';
-import { useGoogleAuth } from '@/hooks/useGoogleAuth';
+import { useGoogleAuth } from '@/src/hooks/useGoogleAuth';
 import { commonStyles } from '@/src/utils/common-styles';
 import { ANALYTICS_EVENT, logAnalyticsEvent } from '@/src/services/analytics';
 import { usePersonalDetails } from '@/src/hooks/usePersonalDetails';

@@ -12,7 +12,7 @@ import {
 } from '@/src/services/registration/softPullFlow';
 import { useFlowStore } from '@/src/store/useFlowStore';
 import { navigateToPhaseSubstep } from '@/src/services/navigation/stepNavigation';
-import { useIneligibilityModal } from '@/hooks/useIneligibilityModal';
+import { useIneligibilityModal } from '@/src/hooks/useIneligibilityModal';
 import { useStepSimulation } from '@/src/hooks/useStepSimulation';
 import { ZapcashLoading } from '../ZapcashLoading';
 import { GIF_VIDEOS, IMAGES } from '@/src/constants/images';

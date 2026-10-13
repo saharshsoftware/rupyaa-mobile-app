@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, StyleSheet, TextInput } from 'react-native';
-import { useScrollToFirstError } from '@/hooks/useScrollToFirstError';
-import type { ScrollViewScrollToFocusedInput } from '@/hooks/useScrollToFirstError';
+import { useScrollToFirstError } from '@/src/hooks/useScrollToFirstError';
+import type { ScrollViewScrollToFocusedInput } from '@/src/hooks/useScrollToFirstError';
 import { useForm, useWatch } from 'react-hook-form';
 import type { FieldErrors } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -36,13 +36,13 @@ import type {
 } from '@/src/types/registration';
 import type { StepProps } from '@/src/types/flow';
 import { colors, spacing } from '@/src/theme';
-import { useRegistrationSubmit } from '@/hooks/useRegistrationSubmit';
+import { useRegistrationSubmit } from '@/src/hooks/useRegistrationSubmit';
 import { useFlowStore } from '@/src/store/useFlowStore';
 import ErrorContainer from '../ErrorContainer';
 import { appConfig } from '@/src/config/appConfig';
 import { REGISTRATION_ERROR_MESSAGES } from '@/src/services/registration/registrationSubmit';
 import { UserStagesInBackend, type UserStage } from '@/src/config/userStages';
-import { useIneligibilityModal } from '@/hooks/useIneligibilityModal';
+import { useIneligibilityModal } from '@/src/hooks/useIneligibilityModal';
 import { ConsentNotice } from '../ConsentNotice';
 import { ANALYTICS_EVENT, logAnalyticsEvent } from '@/src/services/analytics';
 import { pushLoanJourneyApiError } from '@/src/services/logging/logPoolJourney';

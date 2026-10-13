@@ -10,7 +10,7 @@ import {
   FeaturedBenefits,
   ProductEligibilityCard,
 } from '@/src/components';
-import { useLoanJourneyGuard } from '@/hooks/useLoanJourneyGuard';
+import { useLoanJourneyGuard } from '@/src/hooks/useLoanJourneyGuard';
 import { getProductById } from '@/src/data/products';
 import { IMAGES } from '@/src/constants/images';
 import { spacing } from '@/src/theme';

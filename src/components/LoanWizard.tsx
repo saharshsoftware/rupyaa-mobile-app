@@ -22,7 +22,7 @@ import { goHomeWithFallback, HOME_ROUTE } from '@/src/services/navigation/homeNa
 import { shouldSkipUserStageSync } from '@/src/services/navigation/stepNavigation';
 import { colors, spacing } from '@/src/theme';
 import { AppText } from './AppText';
-import { useLoanJourneyPermissionGate } from '@/hooks/useLoanJourneyPermissionGate';
+import { useLoanJourneyPermissionGate } from '@/src/hooks/useLoanJourneyPermissionGate';
 import { consoleLogDev } from '@/src/utils/common-helper';
 import { logAnalyticsEvent } from '@/src/services/analytics';
 import { LOAN_JOURNEY_LAND_EVENT_BY_SUBSTEP } from '@/src/services/analytics/loanJourneyLandEvents';
@@ -30,8 +30,8 @@ import {
   logJourneyOfferCheckOffers,
   logJourneySubstepEntered,
 } from '@/src/services/logging/logPoolJourney';
-import { usePreEnachReviewGate } from '@/hooks/usePreEnachReviewGate';
-import { useOfferStatusStagePrefetch } from '@/hooks/useOfferStatusStagePrefetch';
+import { usePreEnachReviewGate } from '@/src/hooks/usePreEnachReviewGate';
+import { useOfferStatusStagePrefetch } from '@/src/hooks/useOfferStatusStagePrefetch';
 
 // Get steps once (static)
 const STEPPER_STEPS = getMainStepLabels();
