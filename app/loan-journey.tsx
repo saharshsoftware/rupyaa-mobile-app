@@ -78,10 +78,6 @@ export default function LoanJourneyScreen() {
       });
     }
 
-    // A user returning after application review already has the OFFERINGS stage,
-    // so the earlier soft-pull/bank-connect callbacks that normally open this
-    // success screen are no longer mounted. Show it explicitly before loan details.
-    setShowOfferStatusModal(true, 'Verified');
   }, [
     flowId,
     goTo,

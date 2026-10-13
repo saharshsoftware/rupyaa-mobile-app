@@ -54,7 +54,6 @@ export interface FormLayoutProps {
 }
 
 const FOOTER_PADDING_VERTICAL = spacing.md;
-const ANDROID_FOOTER_AWARE_EXTRA_SCROLL_HEIGHT = 80;
 
 export const FormLayout = forwardRef<KeyboardAwareScrollView, FormLayoutProps>(
   function FormLayout(
@@ -87,13 +86,10 @@ export const FormLayout = forwardRef<KeyboardAwareScrollView, FormLayoutProps>(
         ? keyboardHeight + FOOTER_PADDING_VERTICAL
         : FOOTER_PADDING_VERTICAL;
 
-    // If footer is already "keyboard aware", DON'T also push scroll content (prevents extra bottom gap)
-    const shouldAutoScroll = !keyboardAwareFooter;
-
-    const resolvedExtraScrollHeight =
-      Platform.OS === "android" && shouldAutoScroll
-        ? Math.max(extraScrollHeight, ANDROID_FOOTER_AWARE_EXTRA_SCROLL_HEIGHT)
-        : extraScrollHeight;
+    // Android already resizes the window for the keyboard. The library's
+    // automatic-scroll path can retain a stale native input tag while a wizard
+    // step unmounts, which triggers viewIsDescendantOf warnings in bridgeless mode.
+    const shouldAutoScroll = Platform.OS === "ios" && !keyboardAwareFooter;
 
     useImperativeHandle(
       ref,
@@ -130,9 +126,8 @@ export const FormLayout = forwardRef<KeyboardAwareScrollView, FormLayoutProps>(
             scrollEnabled={scrollEnabled}
             enableOnAndroid
             enableResetScrollToCoords={false}
-            // ✅ IMPORTANT FIX: avoid double spacing when footer already moves up
             enableAutomaticScroll={shouldAutoScroll}
-            extraScrollHeight={shouldAutoScroll ? resolvedExtraScrollHeight : 0}
+            extraScrollHeight={shouldAutoScroll ? extraScrollHeight : 0}
             {...scrollViewProps}
           >
             {header}

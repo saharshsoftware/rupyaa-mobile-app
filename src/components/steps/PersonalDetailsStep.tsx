@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { View, StyleSheet, TextInput } from 'react-native';
+import { Keyboard, View, StyleSheet, TextInput } from 'react-native';
 import { useScrollToFirstError } from '@/src/hooks/useScrollToFirstError';
 import type { ScrollViewScrollToFocusedInput } from '@/src/hooks/useScrollToFirstError';
 import { useForm, useWatch } from 'react-hook-form';
@@ -324,6 +324,7 @@ export function PersonalDetailsStep({ onNext, onPrev }: StepProps) {
 
   const onReview = (data: MergedFormData) => {
     clearError();
+    Keyboard.dismiss();
     // Schema strips extra keys; parse personal fields (transforms pan/name).
     const personal = personalDetailsSchema.parse(data) as PersonalDetails;
     const mode = data.employmentMode as EmploymentType;
