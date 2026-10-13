@@ -1,5 +1,6 @@
 import {
   addSslPinningErrorListener,
+  disableSslPinning,
   initializeSslPinning,
   isSslPinningAvailable as isNativeSslPinningAvailable,
   type PinningOptions,
@@ -7,8 +8,8 @@ import {
 import { API_ENDPOINTS, apiConfig, apiHeaders } from '@/src/config/api';
 
 import { fetchAndStoreAppConfig } from '@/src/hooks/useExternalAppConfig';
+import { useAppConfigStore } from '@/src/store/useAppConfigStore';
 import {
-  getEnableSslPinning,
   getSslIncludeSubdomains,
   getSslPinningExpirationDate,
   getSslPublicKeyHashes,
@@ -50,10 +51,15 @@ let sslPinningErrorHandler: ((hostname: string) => void) | null = null;
 
 export const isSslPinningAvailable = (): boolean => isNativeSslPinningAvailable();
 
+const isSslPinningEnabledByAppConfig = (): boolean => {
+  const { config, status } = useAppConfigStore.getState();
+  return status === 'ready' && config?.enableSslPinning === true;
+};
+
 const logSslPinningState = (message: string, extra?: Record<string, unknown>): void => {
   console.log('[SSL Pinning]', {
     message,
-    enabled: getEnableSslPinning(),
+    enabled: isSslPinningEnabledByAppConfig(),
     nativeAvailable: isSslPinningAvailable(),
     appEnv: process.env.EXPO_PUBLIC_APP_ENV,
     forceFailure: FORCE_SSL_PINNING_FAILURE,
@@ -120,9 +126,17 @@ export const setupSslPinning = async (onPinMismatch?: (hostname: string) => void
    // Config-first: pin values come from /external/config. Dedupes with the
   // routing gate's fetch. The first fetch on a fresh install is unavoidably
   // unpinned (config lives on the host we pin), then pinning applies.
+  if (isSslPinningAvailable()) {
+    await disableSslPinning();
+    sslPinningInitialized = false;
+    sslPinningSubscription?.remove();
+    sslPinningSubscription = null;
+    sslPinningErrorHandler = null;
+  }
+
   await fetchAndStoreAppConfig();
 
-  if (!getEnableSslPinning()) {
+  if (!isSslPinningEnabledByAppConfig()) {
     logSslPinningState('disabled by app-config');
     return;
   }
