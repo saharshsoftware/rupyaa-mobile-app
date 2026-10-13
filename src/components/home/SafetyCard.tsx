@@ -32,7 +32,7 @@ export const SafetyCard = () => {
 
           <AppText variant="captionSmall" color="textprimary" style={styles.paragraph}>
             <AppText variant="caption" weight="semiBold" color="primary">
-              ZapCash
+              Rupyaa
             </AppText>
             {' '}
             {t('will only contact you through official channels, never from a personal number.')}

@@ -74,8 +74,8 @@ Each OTA script runs `scripts/verify-ota-env.js` (fails fast if env file doesn't
 ### Deep link testing (Android)
 
 ```bash
-npm run deeplink:android        # custom scheme zapcash://emi-calculator
-npm run deeplink:android:https  # universal link https://zapcash.in/emi-calculator
+npm run deeplink:android        # custom scheme rupyaa://emi-calculator
+npm run deeplink:android:https  # universal link https://rupyaa.com//emi-calculator
 ```
 
 ---
