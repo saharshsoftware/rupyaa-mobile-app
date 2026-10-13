@@ -13,7 +13,7 @@ export function sanitizeOtp(input: string, length: number): string {
  * Returns an empty string when no digit run of the required length is found.
  *
  * Designed for SMS Retriever payloads like:
- *   "<#> 6838 is your login OTP. ... ZAPCASH\nWwGEKwfwaqv"
+ *   "<#> 6838 is your login OTP. ... RUPYA\nWwGEKwfwaqv"
  * where we want "6838", not the 11-char app hash on the trailing line.
  */
 export function extractOtpFromSms(message: string, length: number): string {

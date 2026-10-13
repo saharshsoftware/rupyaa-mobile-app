@@ -42,7 +42,7 @@ export interface ExternalAppConfigData {
   showGoogleContacts?: boolean;
   /** When true, users must complete internal review before ENACH and E-sign. */
   enablePreEnachReview?: boolean;
-  /** Credeau client name for device-sync (e.g. "zapcash") */
+  /** Credeau client name for device-sync (e.g. "rupyaa") */
   credeauClientName?: string;
   /** Credeau client key (UUID) for device-sync */
   credeauClientKey?: string;

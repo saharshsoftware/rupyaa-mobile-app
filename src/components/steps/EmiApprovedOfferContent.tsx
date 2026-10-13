@@ -128,8 +128,8 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: radius.full,
-    borderWidth: 4,
-    borderColor: colors.primary.lightest_2,
+    borderWidth: 2,
+    borderColor: colors.text.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -148,9 +148,9 @@ const styles = StyleSheet.create({
   summaryCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.primary.lightest_3,
+    backgroundColor: colors.background.cream,
     borderWidth: 1,
-    borderColor: colors.primary.lightest,
+    borderColor: colors.primary.main,
     borderRadius: radius.md,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.lg,
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
   },
   summaryValue: {
-    color: colors.primary.main,
+    color: colors.text.primary,
     textAlign: 'center',
   },
   detailsSection: {

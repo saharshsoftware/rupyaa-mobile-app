@@ -11,6 +11,7 @@ import { AppText } from '../AppText';
 import { PreOfferCard } from './PreOfferCard';
 import { PostOfferCard } from './PostOfferCard';
 import { ActiveLoanCard } from './ActiveLoanCard';
+import { EmiHomePlanCard } from './EmiHomePlanCard';
 import { UnderReviewCard } from './UnderReviewCard';
 import { ProgressStepperV2 } from '../ProgressStepper';
 import { getLoanStatusCardStageConfig } from '@/src/config/loanStatusCardConfig';
@@ -19,7 +20,8 @@ import { USER_STAGE_GROUPS } from '@/src/config/userStages';
 import { isCblOrRejectedStage } from '@/src/config/userStages';
 import { getMainStepLabels, type FlowPhase } from '@/src/config/flowSteps';
 import type { FlowJourneySummary } from '@/src/utils/flowProgress';
-import { isLoanStatusPending } from '@/src/utils/loan-helpers';
+import { isEmiLoan, isLoanStatusPending } from '@/src/utils/loan-helpers';
+import type { Loan } from '@/src/types';
 import { IMAGES } from '@/src/constants/images';
 import { ApplicationNotApprovedCard } from './ApplicationNotApprovedCard';
 
@@ -60,6 +62,8 @@ export interface StageCtaCardSectionProps {
   tenure?: string;
   /** PostOfferCard only: total payable amount */
   totalPayable?: number;
+  /** Active EMI dashboard card. Payday loans keep ActiveLoanCard. */
+  loan?: Loan | null;
   /** ActiveLoanCard only: amount due for repayment */
   amountDue?: number;
   /** ActiveLoanCard only: due date string */
@@ -107,6 +111,7 @@ export function StageCtaCardSection({
   statusPillVariant,
   applicationNumber,
   amount,
+  loan = null,
   tenure,
   totalPayable,
   amountDue,
@@ -170,6 +175,10 @@ export function StageCtaCardSection({
       )}
     </>
   );
+
+  if (isActiveLoanDashboard && loan != null && isEmiLoan(loan)) {
+    return <EmiHomePlanCard loan={loan} onPayPress={onActionPress} disabled={disableAction} />;
+  }
 
   // dueAmount API field is not yet live — amountDue is optional; card handles the fallback internally
   if (isActiveLoanDashboard && amount != null && dueDate && statusPill) {

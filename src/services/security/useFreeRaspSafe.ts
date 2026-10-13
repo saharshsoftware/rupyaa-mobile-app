@@ -12,6 +12,10 @@ import type {
   TalsecConfig,
   ThreatEventActions,
 } from 'freerasp-react-native';
+import {
+  markFreeRaspBootstrapFailed,
+  markFreeRaspBootstrapStarted,
+} from './freeRaspBootstrapGuard';
 import { shouldSkipTalsecStart } from './freeRaspReloadGuard';
 
 /**
@@ -36,21 +40,27 @@ export const useFreeRaspSafe = (
       }
 
       if (await shouldSkipTalsecStart()) {
+        markFreeRaspBootstrapStarted();
         return;
       }
 
       try {
         const response = await talsecStart(config);
         if (response !== 'freeRASP started') {
+          markFreeRaspBootstrapFailed();
           onInvalidCallback();
+          return;
         }
+        markFreeRaspBootstrapStarted();
       } catch (e: unknown) {
         const err = e as { code?: string; message?: string };
         const msg = String(err?.message ?? '').toLowerCase();
         const isAlreadyRunning = msg.includes('already') || msg.includes('consumed');
         if (isAlreadyRunning) {
+          markFreeRaspBootstrapStarted();
           console.warn('[freeRASP] talsecStart skipped — SDK already running in native layer');
         } else {
+          markFreeRaspBootstrapFailed();
           console.error(`[freeRASP] ${err.code ?? 'unknown'}: ${err.message ?? 'talsecStart failed'}`);
         }
       }

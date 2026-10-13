@@ -160,7 +160,7 @@ export function OfferStatusModal({
           No Offer Available Right Now
         </AppText>
         <AppText style={styles.subtitle} variant="caption">
-          {t("No offer at the moment. \nBut your ZapCash journey isn't over")}
+          {t("No offer at the moment. \nBut your Rupyaa journey isn't over")}
         </AppText>
         <View style={styles.badgeContainer}>
           <View style={styles.badgeDot} />

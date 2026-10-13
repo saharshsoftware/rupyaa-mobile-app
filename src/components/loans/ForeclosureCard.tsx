@@ -13,6 +13,8 @@ import type { Loan } from '@/src/types/loans';
 import { LoanDetailRow, AmountSummaryBox } from './LoanDetailSection';
 import { LoanApplicationHeader } from './LoanApplicationHeader';
 import ErrorContainer from '../ErrorContainer';
+import { isEmiLoan } from '@/src/utils/loan-helpers';
+import { EmiForeclosureCard } from './EmiForeclosureCard';
 
 export interface ForeclosureCardProps {
   loan: Loan;
@@ -35,6 +37,11 @@ export function ForeclosureCard({
   ctaLoading = false,
   ctaError = null,
 }: ForeclosureCardProps): React.ReactElement {
+  if (isEmiLoan(loan)) {
+    return <EmiForeclosureCard loan={loan} foreclosureAmount={foreclosureAmount}
+      interestSaved={0} totalDueOnDueDate={loan.totalPayable}
+      onForeclosePress={onForeclosePress} ctaLoading={ctaLoading} ctaError={ctaError} />;
+  }
   const loanStatus = loan.status ?? '';
   // The caller (foreclosuer.tsx) resolves the correct payable amount via
   // resolveForeclosureTotalPayable — this component just displays what it receives.

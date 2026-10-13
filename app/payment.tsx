@@ -5,12 +5,13 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Screen, Header, AppText, ZapcashLoading } from '@/src/components';
 import { PaymentSuccessModal } from '@/src/components/PaymentSuccessModal';
-import { PaymentCard } from '@/src/components/loans';
+import { EmiPaymentContent, PaymentCard } from '@/src/components/loans';
 import { colors, spacing } from '@/src/theme';
 import { useGetExistingActiveLoanWithPaidRedirect } from '@/src/services/loans';
 import { useCreatePaymentOrder, openCashfreePaymentCheckout } from '@/src/services/payment';
 import { fetchAndStoreAppConfig } from '@/src/hooks/useExternalAppConfig';
 import { pollPaymentStatus } from '@/src/utils/pollPaymentStatus';
+import { getEmiRemainingAmount, isEmiLoan } from '@/src/utils/loan-helpers';
 import { VERIFY_PAYMENT_MESSAGE } from '@/src/constants/data';
 
 /**
@@ -43,7 +44,8 @@ export default function PaymentScreen() {
   );
 
   const loan = activeLoanQuery.data?.loan ?? null;
-  const paymentLeft = loan?.amountDue ?? 0;
+  const isEmi = isEmiLoan(loan);
+  const paymentLeft = isEmi ? getEmiRemainingAmount(loan) : loan?.amountDue ?? 0;
   const isLoading =
     activeLoanQuery.isPending ||
     activeLoanQuery.shouldRedirectToHome ||
@@ -116,7 +118,7 @@ export default function PaymentScreen() {
   if (isLoading) {
     return (
       <Screen scroll={false} edges={['top', 'bottom']}>
-        <Header title={t('Make Payment')} showBack onBackPress={() => router.back()} />
+        <Header title={t(isEmi ? 'Payment Option' : 'Make Payment')} showBack onBackPress={() => router.back()} />
         <View style={styles.centered}>
           <ActivityIndicator size="large" color={colors.primary.main} />
           <AppText variant="body" style={styles.message}>
@@ -130,7 +132,7 @@ export default function PaymentScreen() {
   if (error) {
     return (
       <Screen scroll={false} edges={['top', 'bottom']}>
-        <Header title={t('Make Payment')} showBack onBackPress={() => router.back()} />
+        <Header title={t(isEmi ? 'Payment Option' : 'Make Payment')} showBack onBackPress={() => router.back()} />
         <View style={styles.centered}>
           <AppText variant="body" color="error" style={styles.message}>
             {error instanceof Error ? error.message : 'Failed to load loan.'}
@@ -143,7 +145,7 @@ export default function PaymentScreen() {
   if (!loan) {
     return (
       <Screen scroll={false} edges={['top', 'bottom']}>
-        <Header title={t('Make Payment')} showBack onBackPress={() => router.back()} />
+        <Header title={t(isEmi ? 'Payment Option' : 'Make Payment')} showBack onBackPress={() => router.back()} />
         <View style={styles.centered}>
           <AppText variant="body" style={styles.message}>
             No active loan found.
@@ -155,22 +157,30 @@ export default function PaymentScreen() {
 
   const remainingBalance = Math.max(0, paymentLeft - paidAmount);
 
+  const paymentContent = isEmi ? (
+    <EmiPaymentContent
+      loan={loan}
+      onPayPress={handlePaymentPress}
+      onForeclosePress={() => router.push('/offercard/foreclosuer')}
+      ctaLoading={createPaymentOrderMutation.isPending || isVerifyingPayment}
+      ctaError={paymentError}
+    />
+  ) : (
+    <PaymentCard loan={loan} onPaymentPress={handlePaymentPress}
+      ctaLoading={createPaymentOrderMutation.isPending || isVerifyingPayment}
+      ctaError={paymentError} resetCustomAmountKey={customAmountResetKey} />
+  );
+
   return (
-    <Screen scroll={false} edges={['top', 'bottom']}>
-      <Header title={t('Make Payment')} showBack onBackPress={() => router.back()} />
+    <Screen scroll={false} edges={['top', 'bottom']} style={isEmi ? styles.plainScreen : undefined}>
+      <Header title={t(isEmi ? 'Payment Option' : 'Make Payment')} showBack onBackPress={() => router.back()} />
       {isVerifyingPayment ? (
         <View style={styles.centered}>
           <ZapcashLoading visible={true} title={VERIFY_PAYMENT_MESSAGE.TITLE} message={VERIFY_PAYMENT_MESSAGE.MESSAGE} />
         </View>
       ) : (
-        <View style={styles.cardWrap}>
-          <PaymentCard
-            loan={loan}
-            onPaymentPress={handlePaymentPress}
-            ctaLoading={createPaymentOrderMutation.isPending || isVerifyingPayment}
-            ctaError={paymentError}
-            resetCustomAmountKey={customAmountResetKey}
-          />
+        <View style={[styles.cardWrap, isEmi ? styles.emiCardWrap : null]}>
+          {paymentContent}
         </View>
       )}
       <PaymentSuccessModal
@@ -186,10 +196,16 @@ export default function PaymentScreen() {
 }
 
 const styles = StyleSheet.create({
+  plainScreen: {
+    backgroundColor: colors.background.primary,
+  },
   cardWrap: {
     flex: 1,
     paddingHorizontal: spacing.base,
     paddingTop: spacing.base,
+  },
+  emiCardWrap: {
+    paddingTop: spacing.sm,
   },
   centered: {
     flex: 1,

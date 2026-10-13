@@ -82,5 +82,6 @@ export const colors = {
     dark: '#2563EB',
     bg: '#DBEAFE',
   },
+  emi: { due: '#7856F5', paid: '#258D50', gradientMid: '#FEE7B1' },
   transparent: 'transparent',
 } as const;
