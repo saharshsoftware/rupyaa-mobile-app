@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  ActivityIndicator,
   TouchableOpacity,
   TouchableOpacityProps,
   StyleSheet,
@@ -9,7 +10,6 @@ import {
 } from 'react-native';
 import { colors, spacing, radius, typography } from '../theme';
 import { AppText } from './AppText';
-import { AnimatedLoader } from './AnimatedLoader';
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'text' | 'danger';
 type ButtonSize = 'small' | 'medium' | 'large';
@@ -64,7 +64,7 @@ export function Button({
       {...props}
     >
       {loading ? (
-        <AnimatedLoader size={24} color={textColor} />
+        <ActivityIndicator size="small" color={textColor} accessibilityLabel="Loading" />
       ) : (
         <View style={styles.content}>
           {(leftIcon || icon) && <View style={styles.leftIcon}>{leftIcon || icon}</View>}
