@@ -15,7 +15,10 @@ export interface ActiveLoanDevToolbarProps {
 }
 
 export function ActiveLoanDevToolbar({ visible }: ActiveLoanDevToolbarProps) {
-  if (!visible || !__DEV__) return null;
+  return visible && __DEV__ ? <ActiveLoanDevToolbarContent /> : null;
+}
+
+function ActiveLoanDevToolbarContent() {
 
   const testVariant = useActiveLoanDevStore((s) => s.testVariant);
   const setTestVariant = useActiveLoanDevStore((s) => s.setTestVariant);

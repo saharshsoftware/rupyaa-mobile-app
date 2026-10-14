@@ -1,4 +1,6 @@
 import React from 'react';
+import { router } from 'expo-router';
+import { EmiPaymentContent } from './EmiPaymentContent';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { AppText } from '@/src/components';
 import { colors, spacing } from '@/src/theme';
@@ -94,6 +96,15 @@ export function ActiveLoanContent({
         ctaLoading={ctaLoading}
         ctaError={ctaError}
       />
+    );
+  }
+
+  if (screenType === 'payment-emi') {
+    return (
+      <EmiPaymentContent loan={loan}
+        onPayPress={(amount) => onPaymentPress?.(loan._id, amount)}
+        onForeclosePress={() => router.push('/offercard/foreclosuer')}
+        ctaLoading={ctaLoading || !onPaymentPress} ctaError={ctaError} />
     );
   }
 

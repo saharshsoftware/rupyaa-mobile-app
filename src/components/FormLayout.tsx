@@ -16,7 +16,10 @@ import {
 import { colors, spacing } from "@/src/theme";
 import { useKeyboardHeight } from "@/src/hooks/useKeyboardHeight";
 
+import { ContactSupport } from "./ContactSupport";
+
 export interface FormLayoutProps {
+  showContactSupport?: boolean;
   children: ReactNode;
   /** Pass null to hide the fixed footer strip entirely. */
   footer?: ReactNode | null;
@@ -51,12 +54,12 @@ export interface FormLayoutProps {
 }
 
 const FOOTER_PADDING_VERTICAL = spacing.md;
-const ANDROID_FOOTER_AWARE_EXTRA_SCROLL_HEIGHT = 80;
 
 export const FormLayout = forwardRef<KeyboardAwareScrollView, FormLayoutProps>(
   function FormLayout(
     {
       children,
+      showContactSupport = false,
       footer,
       header,
       fixedHeader,
@@ -83,13 +86,10 @@ export const FormLayout = forwardRef<KeyboardAwareScrollView, FormLayoutProps>(
         ? keyboardHeight + FOOTER_PADDING_VERTICAL
         : FOOTER_PADDING_VERTICAL;
 
-    // If footer is already "keyboard aware", DON'T also push scroll content (prevents extra bottom gap)
-    const shouldAutoScroll = !keyboardAwareFooter;
-
-    const resolvedExtraScrollHeight =
-      Platform.OS === "android" && shouldAutoScroll
-        ? Math.max(extraScrollHeight, ANDROID_FOOTER_AWARE_EXTRA_SCROLL_HEIGHT)
-        : extraScrollHeight;
+    // Android already resizes the window for the keyboard. The library's
+    // automatic-scroll path can retain a stale native input tag while a wizard
+    // step unmounts, which triggers viewIsDescendantOf warnings in bridgeless mode.
+    const shouldAutoScroll = Platform.OS === "ios" && !keyboardAwareFooter;
 
     useImperativeHandle(
       ref,
@@ -126,16 +126,15 @@ export const FormLayout = forwardRef<KeyboardAwareScrollView, FormLayoutProps>(
             scrollEnabled={scrollEnabled}
             enableOnAndroid
             enableResetScrollToCoords={false}
-            // ✅ IMPORTANT FIX: avoid double spacing when footer already moves up
             enableAutomaticScroll={shouldAutoScroll}
-            extraScrollHeight={shouldAutoScroll ? resolvedExtraScrollHeight : 0}
+            extraScrollHeight={shouldAutoScroll ? extraScrollHeight : 0}
             {...scrollViewProps}
           >
             {header}
             {children}
           </KeyboardAwareScrollView>
 
-          {footer != null ? (
+          {footer != null || showContactSupport ? (
             <View
               style={[
                 styles.footer,
@@ -144,6 +143,7 @@ export const FormLayout = forwardRef<KeyboardAwareScrollView, FormLayoutProps>(
                 footerStyle,
               ]}
             >
+              {showContactSupport && <ContactSupport />}
               {footer}
             </View>
           ) : null}

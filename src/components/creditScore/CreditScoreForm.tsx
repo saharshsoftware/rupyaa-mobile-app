@@ -14,7 +14,7 @@ import { resolveVerifiedPhoneNumber } from '@/src/services/user/verifiedPhoneNum
 import { useCreditReportStore } from '@/src/store/useCreditReportStore';
 import { convertDdMmYyyyToIso } from '@/src/utils/common-helper';
 import { isCreditScoreUnavailable } from '@/src/config/creditScore';
-import { useScrollToFirstError, type ScrollViewScrollToFocusedInput } from '@/hooks/useScrollToFirstError';
+import { useScrollToFirstError, type ScrollViewScrollToFocusedInput } from '@/src/hooks/useScrollToFirstError';
 import { envConfig } from '@/src/config/envConfig';
 import type { CreditReportData, CreditScoreDetailsRequest } from '@/src/types/creditScore';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Platform, StyleSheet, View } from 'react-native';
 
-import { useDeviceSecurityBlock } from '@/hooks/useDeviceSecurityBlock';
+import { useDeviceSecurityBlock } from '@/src/hooks/useDeviceSecurityBlock';
 import { exitApp, resetDeviceSecuritySession } from '@/src/services/security';
 import { SecurityNoticeScreen } from './SecurityNoticeScreen';
 

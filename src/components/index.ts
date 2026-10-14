@@ -1,3 +1,4 @@
+export { ContactSupport } from './ContactSupport';
 export { AppText } from './AppText';
 export { ConsentNotice } from './ConsentNotice';
 export {

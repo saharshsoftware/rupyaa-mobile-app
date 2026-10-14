@@ -1,3 +1,6 @@
+// Keep requests on React Native's transport for native SSL pinning and network logging.
+process.env.EXPO_PUBLIC_USE_RN_FETCH = '1';
+
 const { getDefaultConfig } = require('expo/metro-config');
 const path = require('path');
 

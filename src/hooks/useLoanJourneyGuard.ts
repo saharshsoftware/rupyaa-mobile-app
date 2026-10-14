@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { tryOpenLoanJourney } from '@/src/services/security/deviceSecurityService';
-import { useDeviceSecurityBlock } from '@/hooks/useDeviceSecurityBlock';
+import { useDeviceSecurityBlock } from '@/src/hooks/useDeviceSecurityBlock';
 
 export const useLoanJourneyGuard = () => {
   const { isBlocked, blockingThreats, message: blockMessage } = useDeviceSecurityBlock();

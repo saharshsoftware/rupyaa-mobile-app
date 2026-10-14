@@ -4,6 +4,7 @@ export { freeRaspExecutionStateActions } from './freeRaspExecutionState';
 export { useFreeRaspSafe } from './useFreeRaspSafe';
 export { markNextLaunchAsOtaReload } from './freeRaspReloadGuard';
 export {
+  enforceSensitiveEntrySecurity,
   exitApp,
   getLoanJourneyBlockMessage,
   handlePrivilegedAccessDetected,

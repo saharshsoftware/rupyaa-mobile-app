@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { View, Image, StyleSheet, Linking, Pressable } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 import { SvgUri } from 'react-native-svg';
 import { useRouter } from 'expo-router';
 import { AppText } from '../AppText';
@@ -11,7 +11,7 @@ import type { StepProps } from '@/src/types/flow';
 import { colors, radius, spacing } from '@/src/theme';
 import { goHomeWithFallback } from '@/src/services/navigation/homeNavigation';
 import { IMAGES } from '@/src/constants/images';
-import { formatCurrency, resolveWhatsAppUrl } from '@/src/utils/common-helper';
+import { formatCurrency } from '@/src/utils/common-helper';
 import {
   getCanCancelFromActiveLoanResponse,
   getLoanIdFromActiveLoanResponse,
@@ -60,7 +60,6 @@ export function SanctionedStep({
   isPreEnachReviewGateModal = false,
 }: SanctionedStepProps) {
   const router = useRouter();
-  const whatsAppUrl = useMemo(() => resolveWhatsAppUrl(), []);
   const isModalPresentation = presentation === 'modal';
   const [isCancellationModalVisible, setCancellationModalVisible] = useState(false);
   const cancellationLoanIdEnabled = !isPreEnachReviewGateModal;
@@ -116,18 +115,6 @@ export function SanctionedStep({
     handleComplete();
   };
 
-  const handleOpenSupportPage = () => {
-    router.replace('/support?hideCallToAction=true');
-  };
-
-  const handleOpenWhatsApp = () => {
-    if (whatsAppUrl) {
-      void Linking.openURL(whatsAppUrl).catch(() => undefined);
-      return;
-    }
-    handleOpenSupportPage();
-  };
-
   const handleOpenCancellationModal = () => {
     if (!cancellationLoanId) {
       return;
@@ -141,6 +128,7 @@ export function SanctionedStep({
 
   return (
     <FormLayout
+      showContactSupport
       safeAreaEdges={['bottom']}
       onBack={onPrev}
       contentContainerStyle={[
@@ -192,22 +180,6 @@ export function SanctionedStep({
               containerStyle={styles.cancellationNotice}
             />
           ) : null}
-
-          <AppText style={[styles.body, styles.bodyBeforeLinks]} variant="caption" color="textprimary" align="center">
-            For any questions or assistance, contact our support team.
-          </AppText>
-
-          <Pressable
-            accessibilityRole="link"
-            accessibilityLabel="Open WhatsApp support"
-            onPress={handleOpenWhatsApp}
-            style={({ pressed }) => [styles.linkRow, pressed && styles.linkRowPressed]}
-            hitSlop={8}
-          >
-            <AppText style={styles.supportLink} variant="caption" weight="medium" color="primary" align="center">
-              WhatsApp Support
-            </AppText>
-          </Pressable>
         </View>
       </View>
 
@@ -261,10 +233,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
     color: colors.text.gray,
   },
-  bodyBeforeLinks: {
-    marginTop: spacing.lg,
-    marginBottom: spacing.sm,
-  },
   summaryRow: {
     flexDirection: 'row',
     gap: spacing.base,
@@ -289,18 +257,6 @@ const styles = StyleSheet.create({
   summaryValue: {
     color: colors.text.primary,
     textAlign: 'center',
-  },
-  linkRow: {
-    alignSelf: 'center',
-    marginTop: 0,
-    marginBottom: spacing.sm,
-    paddingVertical: 2,
-  },
-  linkRowPressed: {
-    opacity: 0.75,
-  },
-  supportLink: {
-    textDecorationLine: 'underline',
   },
   cancellationNotice: {
     borderWidth: 1,

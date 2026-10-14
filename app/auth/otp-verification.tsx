@@ -166,7 +166,7 @@ export default function OTPVerificationScreen() {
             <View style={styles.phoneNumberContainer}>
               <TouchableOpacity onPress={handleChangePhoneNumber} style={styles.changeButton}>
                 <AppText style={styles.phoneNumber} variant="caption" weight="regular">
-                  We've sent a 4-digit OTP to {displayPhoneNumber}
+                  We&apos;ve sent a 4-digit OTP to {displayPhoneNumber}
                 </AppText>
               </TouchableOpacity>
             </View>

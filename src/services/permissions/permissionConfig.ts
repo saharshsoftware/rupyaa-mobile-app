@@ -17,7 +17,7 @@ const CONTACTS_PERMISSION_DEFINITION: PermissionDefinition = {
   id: 'contacts',
   title: 'Contacts',
   description:
-    'ZapCash needs access to your device contacts so you can invite friends.',
+    'Rupyaa needs access to your device contacts so you can invite friends.',
   platform: 'both',
 };
 

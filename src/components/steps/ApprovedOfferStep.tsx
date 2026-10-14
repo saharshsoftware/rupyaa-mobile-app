@@ -176,6 +176,7 @@ export function ApprovedOfferStep({ onNext, onPrev }: StepProps) {
     if (simulatedState === 'success') {
       return (
         <FormLayout
+          showContactSupport
           safeAreaEdges={['bottom']}
           onBack={onPrev}
           footer={
@@ -193,6 +194,7 @@ export function ApprovedOfferStep({ onNext, onPrev }: StepProps) {
     if (simulatedState === 'error') {
       return (
         <FormLayout
+          showContactSupport
           safeAreaEdges={['bottom']}
           onBack={onPrev}
           footer={
@@ -219,13 +221,14 @@ export function ApprovedOfferStep({ onNext, onPrev }: StepProps) {
 
   if (showLoadingOverlay) {
     return (
-      <ZapcashLoading
-        visible={showLoadingOverlay}
-      />
+      <FormLayout showContactSupport safeAreaEdges={['bottom']}>
+        <ZapcashLoading visible={showLoadingOverlay} />
+      </FormLayout>
     );
   }
   return (
     <FormLayout
+      showContactSupport
       safeAreaEdges={['bottom']}
       onBack={onPrev}
       footer={

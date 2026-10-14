@@ -446,7 +446,7 @@ export const contactOptions = [
     type: 'chat',
     title: 'Connect via Chat',
     subtitle:
-      "Have a question about ZapCash? Start a quick chat with us. We're here to help and will do our best to resolve your query.",
+      "Have a question about Rupyaa? Start a quick chat with us. We're here to help and will do our best to resolve your query.",
     buttonText: 'Chat with Us',
     icon: 'message-circle',
   },
@@ -455,8 +455,8 @@ export const contactOptions = [
     type: 'email',
     title: 'Connect Via Email',
     subtitle:
-      'How to connect with us? Write email with your any query regarding ZapCash will try our best to solve.',
-    buttonText: 'Drop an email at help@Zapcash.com',
+      'How to connect with us? Write email with your any query regarding Rupyaa will try our best to solve.',
+    buttonText: 'Drop an email at help@Rupyaa.com',
     icon: 'mail',
     email: appConfig.contactSupportTeamEmail,
   },
@@ -475,7 +475,7 @@ export const contactOptions = [
 export const grievanceOfficerData = {
   name: 'Piyush Beli',
   designation: 'Grievance Officer',
-  company: 'ZapCash Loan Pvt. Ltd.',
+  company: 'Rupyaa Loan Pvt. Ltd.',
   address: '123, Business Park, Mumbai, Maharashtra - 400001',
   email: appConfig.grievanceOfficerEmail,
   phone: appConfig.contactUsWhatsAppNumber,

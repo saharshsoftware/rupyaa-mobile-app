@@ -13,7 +13,7 @@ const LOG_TAG = '[OTP_AUTOFILL]';
  * Redacts the OTP digits from the SMS body before logging so we never log PII
  * while still giving enough context (length + trailing app hash) to debug
  * "nothing happens" reports. Example output:
- *   "<#> **** is your login OTP. Do not share this code with anyone. - ZAPCASH\nWwGEKwfwaqv"
+ *   "<#> **** is your login OTP. Do not share this code with anyone. - RUPYA\nWwGEKwfwaqv"
  */
 function redactOtpDigits(message: string, length: number): string {
   if (!message) return '';

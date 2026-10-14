@@ -12,7 +12,7 @@ import ErrorContainer from '@/src/components/ErrorContainer';
 import { colors, spacing, typography, radius } from '@/src/theme';
 import { getPersonalDetails, getGoogleContacts } from '@/src/services/registration/registrationApi';
 import { importGoogleContacts } from '@/src/services/registration/sanctionApi';
-import { useGoogleAuth } from '@/hooks/useGoogleAuth';
+import { useGoogleAuth } from '@/src/hooks/useGoogleAuth';
 import type { GoogleContact } from '@/src/types';
 import { appConfig } from '@/src/config/appConfig';
 

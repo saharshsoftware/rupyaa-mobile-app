@@ -24,8 +24,8 @@ import type { EmploymentType, EmploymentDetails } from '@/src/types/registration
 import type { StepProps } from '@/src/types/flow';
 import { colors, spacing } from '@/src/theme';
 import ErrorContainer from '../ErrorContainer';
-import { useRegistrationSubmit } from '@/hooks/useRegistrationSubmit';
-import { useIneligibilityModal } from '@/hooks/useIneligibilityModal';
+import { useRegistrationSubmit } from '@/src/hooks/useRegistrationSubmit';
+import { useIneligibilityModal } from '@/src/hooks/useIneligibilityModal';
 import { appConfig } from '@/src/config/appConfig';
 import { UserStagesInBackend, type UserStage } from '@/src/config/userStages';
 import type { UserStageContext, UserStageSectionsCompleted } from '@/src/types/user';
@@ -282,6 +282,7 @@ export function EmploymentDetailsStep({ onNext, onPrev }: StepProps) {
   // Brief loading state while employmentMode is fetched from storage
   return (
     <FormLayout
+      showContactSupport
       safeAreaEdges={['bottom']}
       onBack={onPrev}
       footer={
@@ -331,6 +332,7 @@ function DirectEmploymentSubmit({
 
   return (
     <FormLayout
+      showContactSupport
       safeAreaEdges={['bottom']}
       onBack={onPrev}
       footer={
@@ -404,6 +406,7 @@ function EmploymentDetailsForm({ employmentMode, onNext, onPrev }: EmploymentSub
 
   return (
     <FormLayout
+      showContactSupport
       safeAreaEdges={['bottom']}
       onBack={onPrev}
       keyboardAwareFooter

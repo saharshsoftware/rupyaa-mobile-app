@@ -1,3 +1,10 @@
+export interface VerifiedOfferLockedLoan {
+  readonly loanNumber: number;
+  readonly subtitle: string;
+  readonly moreLabel: string;
+  readonly amountLabel: string;
+}
+
 /** Starter-tier offer amount that unlocks VerifiedOfferStatusContent. */
 export const STARTER_TIER_OFFER_AMOUNT = 1200;
 
@@ -16,15 +23,15 @@ export const VERIFIED_OFFER_STATUS = {
   lockedLoans: [
     {
       loanNumber: 2,
-      amountLabel: '\u20B9****',
-      subtitle: 'Unlocks when Loan 1 is repaid',
-      moreLabel: '+100%',
+      amountLabel: '₹2,400',
+      subtitle: 'Unlocks after repayment',
+      moreLabel: '₹2,400',
     },
     {
       loanNumber: 3,
-      amountLabel: '\u20B9****',
-      subtitle: 'Unlocks when Loan 2 is repaid',
-      moreLabel: '+200%',
+      amountLabel: '₹5,000',
+      subtitle: 'Unlocks after repayment',
+      moreLabel: '₹5,000',
     },
-  ],
+  ] as const satisfies readonly VerifiedOfferLockedLoan[],
 } as const;

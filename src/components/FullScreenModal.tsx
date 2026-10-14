@@ -24,6 +24,7 @@ export interface FullScreenModalProps {
   onClose: () => void;
   /** Dynamic content to render below the header */
   children: React.ReactNode;
+  footer?: React.ReactNode;
   /** Optional title below header (e.g., "All Products") */
   title?: string;
   /** Optional subtitle below title */
@@ -44,6 +45,7 @@ export function FullScreenModal({
   visible,
   onClose,
   children,
+  footer,
   title,
   subtitle,
   hideHeader = false,
@@ -127,6 +129,11 @@ export function FullScreenModal({
           ]}
         >
           {children}
+          {footer ? (
+            <View style={{ paddingBottom: disableContentPadding ? insets.bottom : 0 }}>
+              {footer}
+            </View>
+          ) : null}
         </View>
       </View>
     </Modal>

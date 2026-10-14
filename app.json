@@ -56,9 +56,14 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash.png",
-          "resizeMode": "cover",
-          "backgroundColor": "#FFFCF4"
+          "image": "./assets/images/splash-logo.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#FFFCF4",
+          "dark": {
+            "image": "./assets/images/splash-logo.png",
+            "backgroundColor": "#FFFCF4"
+          }
         }
       ],
       [
@@ -83,8 +88,8 @@
     "extra": {
       "otaUpdateNumberDev": "9",
       "otaUpdateNumberProd": "2",
-      "versionDev": "1.0.2",
-      "versionProd": "1.0.1",
+      "versionDev": "1.0.3",
+      "versionProd": "1.0.3",
       "versionProdIos": "1.0.0",
       "isDevelopment": true,
       "otaUpdateNumber": "1",

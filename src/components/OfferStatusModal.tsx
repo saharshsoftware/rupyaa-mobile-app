@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFlowStore } from '@/src/store/useFlowStore';
 import { useCurrentOfferStore } from '@/src/store/useCurrentOfferStore';
 import { colors, spacing, typography } from '@/src/theme';
+import { ContactSupport } from './ContactSupport';
 import { AppText } from './AppText';
 import { Button } from './Button';
 import { IMAGES } from '@/src/constants/images';
@@ -159,7 +160,7 @@ export function OfferStatusModal({
           No Offer Available Right Now
         </AppText>
         <AppText style={styles.subtitle} variant="caption">
-          {t("No offer at the moment. \nBut your ZapCash journey isn't over")}
+          {t("No offer at the moment. \nBut your Rupyaa journey isn't over")}
         </AppText>
         <View style={styles.badgeContainer}>
           <View style={styles.badgeDot} />
@@ -236,6 +237,7 @@ export function OfferStatusModal({
           },
         ]}
       >
+        <ContactSupport />
         {footerAction}
       </View>
     </Animated.View>
@@ -244,7 +246,7 @@ export function OfferStatusModal({
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: colors.background.primary,
     zIndex: OVERLAY_Z_INDEX,
     elevation: OVERLAY_Z_INDEX,

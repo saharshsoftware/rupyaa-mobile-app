@@ -74,8 +74,8 @@ Each OTA script runs `scripts/verify-ota-env.js` (fails fast if env file doesn't
 ### Deep link testing (Android)
 
 ```bash
-npm run deeplink:android        # custom scheme zapcash://emi-calculator
-npm run deeplink:android:https  # universal link https://zapcash.in/emi-calculator
+npm run deeplink:android        # custom scheme rupyaa://emi-calculator
+npm run deeplink:android:https  # universal link https://rupyaa.com//emi-calculator
 ```
 
 ---
@@ -84,13 +84,13 @@ npm run deeplink:android:https  # universal link https://zapcash.in/emi-calculat
 
 Expo SDK 54 + Expo Router (file-based routing) + TypeScript (strict), React 19 / React Native 0.81. State: Zustand stores (some persisted). Data fetching: TanStack React Query wrapping a custom `apiClient`. Forms: react-hook-form + zod.
 
-Path alias `@/` maps to the repo root (`@/src/...`, `@/hooks/...`).
+Path alias `@/` maps to the repo root (`@/src/...`).
 
 ### Folder Structure
 
 ```
 app/                    # Expo Router screens (file-based routing)
-hooks/                  # cross-cutting React hooks (app-startup, navigation service, deep links, push)
+src/hooks/              # cross-cutting React hooks (app-startup, navigation service, deep links, push)
 src/
   components/           # Reusable UI components, barrel-exported via index.ts
   config/               # Static config, feature flags, endpoint maps, flow/stage definitions
@@ -106,7 +106,7 @@ src/
 
 - **Services**: Business logic, async operations, external integrations → `src/services/<domain>/`
 - **Utils**: Pure, stateless helpers with no side effects → `src/utils/`
-- **Hooks**: Reusable React logic → `hooks/` at project root
+- **Hooks**: Reusable React logic → `src/hooks/`
 - **Components**: UI only → `src/components/` with barrel export via `index.ts`
 
 Each multi-file folder typically has an `index.ts` barrel; prefer importing from the barrel (`@/src/components`, `@/src/services/navigation`) over deep-importing a specific file when a barrel exists, except inside low-level modules where the barrel would create a Metro require cycle.

@@ -1,9 +1,11 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useCurrentOfferStore } from '@/src/store/useCurrentOfferStore';
+import { useUserDetailsStore } from '@/src/store/useUserDetailsStore';
 import { fetchCurrentOfferForBankStatement } from '@/src/services/user/useUserStage';
 import { offerService } from '@/src/services/offer';
 import { useFlowStore } from '@/src/store/useFlowStore';
+import { shouldShowImproveOfferABVariant } from '@/src/utils/ab-testing';
 import type { CurrentOfferOffer, CurrentOfferSuccessResponse, CurrentEmiOffer } from '@/src/types/offer';
 import { getCurrentEmiOffer, isCurrentOfferSuccess, isOfferAcceptable } from '@/src/types/offer';
 import type { LoanType } from '@/src/types/loans';
@@ -71,6 +73,7 @@ export function useApprovedOfferStep({
 }: UseApprovedOfferStepParams): UseApprovedOfferStepResult {
   const lastResponse = useCurrentOfferStore((s) => s.lastResponse);
   const showUpdateButton = useCurrentOfferStore((s) => s.showUpdateButton);
+  const phoneNumber = useUserDetailsStore((state) => state.personalDetails?.phoneNumber);
   const goTo = useFlowStore((s) => s.goTo);
   const userStage = useFlowStore((s) => s.userStage);
   const setCameFromOfferings = useFlowStore((s) => s.setCameFromOfferings);
@@ -91,10 +94,12 @@ export function useApprovedOfferStep({
   // Controller flow: /offer/current -> useCurrentOfferStore.setLastResponse ->
   // showUpdateButton selector here -> ApprovedOfferStep ActionCard visibility.
   // /stage only gates the OFFERINGS screen; it never owns update eligibility.
+  // Even phone numbers see the BSA card; odd or missing numbers stay on the control.
   const showImproveOfferAction =
     isApproved &&
     userStage === 'OFFERINGS' &&
-    showUpdateButton;
+    showUpdateButton &&
+    shouldShowImproveOfferABVariant(phoneNumber);
 
   const acceptMutation = useMutation({
     mutationFn: (): Promise<ApiResponse<unknown>> => offerService.acceptOfferApi(),

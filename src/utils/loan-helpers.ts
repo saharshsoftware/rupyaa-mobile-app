@@ -470,7 +470,10 @@ export function isEmiBlockLocked(loan: Loan | null, block: EmiRepaymentScheduleI
   return nextDueBlock == null || block.index > nextDueBlock.index;
 }
 
-const EMI_BLOCK_LOCKED_MESSAGE = 'Unlocks once earlier EMIs are paid';
+function buildEmiLockedMessage(block: EmiRepaymentScheduleItem): string {
+  if (block.index <= 0) return 'Unlocks once earlier EMIs are paid';
+  return `Unlocks once EMI ${block.index} is fully paid`;
+}
 
 /** Resolves the complete EMI lock presentation state from the repayment sequence. */
 export function getEmiBlockLockState(
@@ -479,11 +482,7 @@ export function getEmiBlockLockState(
 ): EmiBlockLockState {
   const locked = isEmiBlockLocked(loan, block);
   if (!locked) return { locked };
-
-  return {
-    locked,
-    lockedMessage: EMI_BLOCK_LOCKED_MESSAGE,
-  };
+  return { locked, lockedMessage: buildEmiLockedMessage(block) };
 }
 
 /**

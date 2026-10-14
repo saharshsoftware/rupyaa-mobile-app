@@ -217,7 +217,7 @@ export function EnachStep({ onNext, onPrev }: StepProps): React.JSX.Element {
   if (isSimulating) {
     if (simulatedState === 'loading') {
       return (
-        <FormLayout safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+        <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
           <View style={styles.loaderWrapper}>
             <ActivityIndicator size="large" color={colors.primary.main} />
             <AppText style={styles.loaderText} variant="body">
@@ -230,10 +230,11 @@ export function EnachStep({ onNext, onPrev }: StepProps): React.JSX.Element {
     if (simulatedState === 'success') {
       return (
         <View style={styles.stepWrapper}>
-          <FormLayout safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+          <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
             <View style={styles.content} />
           </FormLayout>
           <SuccessModal
+            showContactSupport
             visible={true}
             title="Auto-Payment Activated"
             message="Your repayment mandate has been successfully set up. Redirecting to final agreement…"
@@ -246,10 +247,11 @@ export function EnachStep({ onNext, onPrev }: StepProps): React.JSX.Element {
     if (simulatedState === 'error') {
       return (
         <View style={styles.stepWrapper}>
-          <FormLayout safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+          <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
             <View style={styles.content} />
           </FormLayout>
           <ErrorModal
+            showContactSupport
             visible={true}
             title="E-NACH authorization failed"
             message="Please try again."
@@ -264,7 +266,7 @@ export function EnachStep({ onNext, onPrev }: StepProps): React.JSX.Element {
 
   if (screen === 'fetching_details') {
     return (
-      <FormLayout safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+      <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
         <View style={styles.loaderWrapper}>
           <ActivityIndicator size="large" color={colors.primary.main} />
           <AppText style={styles.loaderText} variant="body">
@@ -278,10 +280,11 @@ export function EnachStep({ onNext, onPrev }: StepProps): React.JSX.Element {
   if (screen === 'success') {
     return (
       <View style={styles.stepWrapper}>
-        <FormLayout safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+        <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
           <View style={styles.content} />
         </FormLayout>
         <SuccessModal
+          showContactSupport
           visible={true}
           title="Auto-Payment Activated"
           message="Your repayment mandate has been successfully set up. Redirecting to final agreement…"
@@ -294,6 +297,7 @@ export function EnachStep({ onNext, onPrev }: StepProps): React.JSX.Element {
 
   return (
     <FormLayout
+      showContactSupport
       safeAreaEdges={['bottom']}
       onBack={onPrev}
       footer={

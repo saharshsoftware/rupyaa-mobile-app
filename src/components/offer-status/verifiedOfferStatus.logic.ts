@@ -12,5 +12,4 @@ export function isStarterTierVerifiedOffer(
   offerAmount: number | null | undefined
 ): boolean {
   return offerAmount === STARTER_TIER_OFFER_AMOUNT;
-
 }

@@ -112,11 +112,11 @@ npm run deeplink:android:https
 
 ```txt
 app/                    # Expo Router screens
-hooks/                  # shared React hooks
 src/
   components/           # reusable UI components
   config/               # config, flags, endpoint maps, flow definitions
   data/                 # mock data and fixtures
+  hooks/                # shared React hooks
   services/             # business logic and API calls
   store/                # Zustand stores
   theme/                # colors, spacing, typography
@@ -128,7 +128,7 @@ src/
 
 * Business logic goes in `src/services/<domain>/`
 * Pure helpers go in `src/utils/`
-* Reusable hooks go in `hooks/`
+* Reusable hooks go in `src/hooks/`
 * UI components go in `src/components/`
 * Config goes in `src/config/`
 * Shared types go in `src/types/`

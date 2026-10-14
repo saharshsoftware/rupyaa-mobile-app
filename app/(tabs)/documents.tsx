@@ -1,6 +1,6 @@
 import { View, StyleSheet, Image, FlatList, RefreshControl } from "react-native";
 import { useCallback, useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect } from "expo-router";
 import { useDocumentRequestsUser } from "@/src/hooks/useDocumentRequestsUser";
 import { AppText, Button, Screen, ZapcashLoading } from "@/src/components";
 import { IMAGES } from "@/src/constants/images";

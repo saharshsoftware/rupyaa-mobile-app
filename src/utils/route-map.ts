@@ -2,7 +2,7 @@ import type { ParsedURL } from 'expo-linking';
 
 /**
  * Maps deep link path segments to Expo Router paths.
- * Used for both https://zapcash.in/... and zapcash://... URLs.
+ * Used for both https://rupyaa.com//... and rupyaa://... URLs.
  */
 export interface DeepLinkRouteRule {
   readonly pattern: RegExp;
@@ -34,9 +34,9 @@ const NON_APP_DEEP_LINK_HOSTS = ['expo-development-client'];
  * Extracts the navigable path from an expo-linking ParsedURL.
  *
  * Handles all deep link formats:
- *  - zapcash:///offers        → path="offers"  (triple-slash, path-based)
- *  - zapcash://offers         → host="offers"  (double-slash, host-based)
- *  - https://zapcash.in/offers → host=domain, path="offers"
+ *  - rupyaa:///offers        → path="offers"  (triple-slash, path-based)
+ *  - rupyaa://offers         → host="offers"  (double-slash, host-based)
+ *  - https://rupyaa.com//offers → host=domain, path="offers"
  */
 export function extractDeepLinkPath(parsed: ParsedURL): string {
   const host = parsed.hostname ?? '';
@@ -53,12 +53,12 @@ export function extractDeepLinkPath(parsed: ParsedURL): string {
     return path;
   }
 
-  // Triple-slash format (zapcash:///offers) — path is already correct, host is empty
+  // Triple-slash format (rupyaa:///offers) — path is already correct, host is empty
   if (!host && path) {
     return path;
   }
 
-  // Double-slash format (zapcash://offers) — hostname holds the first segment
+  // Double-slash format (rupyaa://offers) — hostname holds the first segment
   const combined = path ? `${host}/${path.replace(/^\/+/, '')}` : host;
   return combined;
 }

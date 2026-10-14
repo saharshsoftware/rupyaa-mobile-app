@@ -3,6 +3,7 @@ import { StyleSheet, ScrollView } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import {
   FullScreenModal,
+  ContactSupport,
   LoanStatusCardSkeleton,
   StageCtaCardSection,
   ProductsGrid,
@@ -41,9 +42,9 @@ import { ActiveLoanDevToolbar } from '@/src/components/home/ActiveLoanDevToolbar
 import { useActiveLoanDevStore } from '@/src/store/useActiveLoanDevStore';
 import { appConfig } from '@/src/config/appConfig';
 import { useAuthStore, selectIsAuthenticated } from '@/src/store/useAuthStore';
-import { useLoanJourneyGuard } from '@/hooks/useLoanJourneyGuard';
+import { useLoanJourneyGuard } from '@/src/hooks/useLoanJourneyGuard';
 import { DEFAULT_ACTIVE_LOAN_AMOUNT } from '@/src/constants/data';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useBottomTabBarHeight } from 'expo-router/js-tabs';
 
 export default function HomeTab() {
   const tabBarHeight = useBottomTabBarHeight();
@@ -146,7 +147,7 @@ export default function HomeTab() {
     // debugger;
     const screenType = resolveActiveLoanScreenType(loan);
     // const screenType = 'payment';
-    if (screenType === 'payment') {
+    if (screenType === 'payment' || screenType === 'payment-emi') {
       router.push('/payment');
     } else if (screenType === 'foreclosure') {
       router.push('/offercard/foreclosuer');
@@ -349,6 +350,7 @@ export default function HomeTab() {
         <StageCtaCardSection
           userStage={userStage as UserStagesInBackend}
           {...buildLoanStatusCardProps()}
+          loan={activeLoanQuery.data?.loan ?? null}
           tenure={postOfferTenure}
           totalPayable={postOfferTotalPayable}
           amountDue={activeLoanAmountDue}
@@ -397,6 +399,7 @@ export default function HomeTab() {
           onCreditScorePress={handleCreditReportPress}
           onContactPress={() => router.push('/need-help')}
         />
+        <ContactSupport />
       </ScrollView>
     );
   }
@@ -437,6 +440,7 @@ export default function HomeTab() {
           onCreditScorePress={handleCreditReportPress}
           onContactPress={() => router.push('/need-help')}
         />
+        <ContactSupport />
       </ScrollView>
     </>
   );

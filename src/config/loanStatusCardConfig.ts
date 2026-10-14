@@ -6,7 +6,7 @@ const DEFAULT_TITLE = 'Check loan offers';
 const DEFAULT_HEADING = 'Instant Loan Up to';
 /** Use when amount is shown separately in the card to avoid showing ₹5,00,000 twice */
 export const DEFAULT_HEADING_WITHOUT_AMOUNT = 'Get Loan Offers';
-const DEFAULT_DESCRIPTION = 'Instant approval with ZapCash credit engine';
+const DEFAULT_DESCRIPTION = 'Instant approval with Rupyaa credit engine';
 
 export { DEFAULT_HEADING };
 
