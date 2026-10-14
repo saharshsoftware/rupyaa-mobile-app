@@ -16,7 +16,7 @@ import {
   persistLogPoolPhoneNumber,
 } from '@/src/services/logging';
 import { getPlayInstallReferrerForAuthPayload } from '@/src/services/installReferrer';
-import { getAdjustAttributionForAuthPayload } from '@/src/services/attribution';
+// import { getAdjustAttributionForAuthPayload } from '@/src/services/attribution';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import { resetNgrokApiBaseUrlOnLogout } from '@/src/services/devToggles/devTogglesService';
 import { consoleLogDev } from '@/src/utils/common-helper';
@@ -147,15 +147,14 @@ export const authService = {
         Object.assign(body, installReferrerParams);
       }
 
-      // Adjust deep links only carry an opaque adjust_reftag in the install referrer;
-      // resolve the actual campaign/adgroup/creative via the Adjust SDK instead.
-      const adjustAttributionParams = await getAdjustAttributionForAuthPayload();
-      logPool.push(
-        logPoolMessages.adjustAttributionSentToOtp(payload.phoneNumber, adjustAttributionParams)
-      );
-      if (adjustAttributionParams) {
-        Object.assign(body, adjustAttributionParams);
-      }
+      // Adjust attribution is temporarily disabled.
+      // const adjustAttributionParams = await getAdjustAttributionForAuthPayload();
+      // logPool.push(
+      //   logPoolMessages.adjustAttributionSentToOtp(payload.phoneNumber, adjustAttributionParams)
+      // );
+      // if (adjustAttributionParams) {
+      //   Object.assign(body, adjustAttributionParams);
+      // }
 
       logPool.push(logPoolMessages.verifyOtpBody(payload.phoneNumber, body));
   

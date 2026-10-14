@@ -124,8 +124,9 @@ export default ({ config }) => {
         "@react-native-firebase/crashlytics",
         ["./plugins/withMobileGator", { market: "india", allowBackup: false, enableDesugaring: true }],
         "./plugins/withCashfreeSubscription",
-        ["@config-plugins/react-native-adjust", { "targetAndroid12": true }],
-        "./plugins/withAdjustMetaReferrer",
+        // Adjust SDK is temporarily disabled.
+        // ["@config-plugins/react-native-adjust", { "targetAndroid12": true }],
+        // "./plugins/withAdjustMetaReferrer",
         // iOS: patches the Podfile so RNFB pods compile correctly under use_frameworks! :linkage => :static.
         // Sets $RNFirebaseAsStaticFramework = true (RNFB conditional compilation flag) and
         // CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES (suppresses Xcode 16 header errors).
