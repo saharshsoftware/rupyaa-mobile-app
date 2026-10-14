@@ -2,6 +2,8 @@
 
 "fingerprint":"MQ$0",
 
+
+
 "resource": {
   "version":"1",
   
@@ -9,7 +11,9 @@
   "tags":[],
   "predicates":[],
   "rules":[]
-},
+}
+
+,
 "runtime":
 [
 [50,"__ai_main",[46],[36,[2,[17,[15,"gtmUtils"],"mobile"],"applicationId",[7]]]],[50,"__ai",[46,"data"],[36,["__ai_main",[15,"data"]]]],[50,"__an_main",[46],[36,[2,[17,[15,"gtmUtils"],"mobile"],"applicationName",[7]]]],[50,"__an",[46,"data"],[36,["__an_main",[15,"data"]]]],[50,"__av_main",[46],[36,[2,[17,[15,"gtmUtils"],"mobile"],"applicationVersion",[7]]]],[50,"__av",[46,"data"],[36,["__av_main",[15,"data"]]]],[50,"__avn_main",[46],[36,[2,[17,[15,"gtmUtils"],"mobile"],"applicationVersionName",[7]]]],[50,"__avn",[46,"data"],[36,["__avn_main",[15,"data"]]]],[50,"__e_main",[46],[41,"a","b"],[3,"a",[2,[17,[15,"gtmUtils"],"mobile"],"event",[7]]],[22,[1,[1,[15,"a"],[18,[17,[15,"a"],"length"],0]],[12,[16,[15,"a"],0],"_"]],[46,[3,"b",[8,"_f","first_open","_v","first_visit","_iap","in_app_purchase","_e","user_engagement","_s","session_start","_ssr","session_start_with_rollout","_au","app_update","_ui","app_remove","_ab","app_background","_ou","os_update","_cd","app_clear_data","_ae","app_exception","_nf","notification_foreground","_nr","notification_receive","_no","notification_open","_nd","notification_dismiss","_cmp","firebase_campaign","_cmpx","invalid_campaign","_vs","screen_view","_ar","ad_reward","_asr","app_store_refund","_assc","app_store_subscription_convert","_assr","app_store_subscription_renew","_asse","app_store_subscription_cancel"]],[3,"a",[30,[16,[15,"b"],[15,"a"]],[15,"a"]]]]],[36,[15,"a"]]],[50,"__e",[46,"data"],[36,["__e_main",[15,"data"]]]],
