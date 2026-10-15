@@ -1,1 +1,3 @@
-export { createCustomerTicket } from './supportTicketService';
+export { createCustomerTicket, getTicketFilterOptions } from './supportTicketService';
+
+export { prepareLoanJourneySupport } from './prepareLoanJourneySupport';

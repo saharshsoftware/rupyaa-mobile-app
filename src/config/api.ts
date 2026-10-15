@@ -136,6 +136,7 @@ export const API_ENDPOINTS = {
     orderStatus: '/payment/order-status',
   },
   tickets: {
+    filterOptions: '/tickets/config/filter-options',
     createCustomerTicket: '/tickets/customer',
   },
 };
