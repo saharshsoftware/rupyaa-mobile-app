@@ -351,6 +351,7 @@ export default function HomeTab() {
           userStage={userStage as UserStagesInBackend}
           {...buildLoanStatusCardProps()}
           loan={activeLoanQuery.data?.loan ?? null}
+          isPendingPayment={activeLoanQuery.data?.isPendingPayment ?? activeLoanQuery.data?.loan?.isPendingPayment}
           tenure={postOfferTenure}
           totalPayable={postOfferTotalPayable}
           amountDue={activeLoanAmountDue}

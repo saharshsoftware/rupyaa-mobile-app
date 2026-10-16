@@ -40,5 +40,11 @@
   "No active loans found. Apply now to get quick, hassle-free financing that fits your needs.": "कोई सक्रिय लोन नहीं मिला। अपनी जरूरतों के अनुसार त्वरित, परेशानी मुक्त फाइनेंसिंग के लिए अभी आवेदन करें।",
   "No active loans. We'll notify you if anything is required.": "कोई सक्रिय लोन नहीं है। कुछ आवश्यक होने पर हम आपको सूचित करेंगे।",
   "EMI Tips": "EMI टिप्स",
-  "Loan Hacks": "लोन हैक्स"
+  "Loan Hacks": "लोन हैक्स",
+  "PROCESSING": "प्रक्रिया जारी है",
+  "Money transfer initiated to your bank account.": "आपके बैंक खाते में पैसे भेजने की प्रक्रिया शुरू हो गई है।",
+  "It can take up to 6–8 hours to reflect.": "राशि दिखाई देने में 6–8 घंटे तक लग सकते हैं।",
+  "Transfer Status": "ट्रांसफर की स्थिति",
+  "Sent to your bank account": "आपके बैंक खाते में भेजा गया",
+  "Transfer in progress": "ट्रांसफर जारी है"
 }
