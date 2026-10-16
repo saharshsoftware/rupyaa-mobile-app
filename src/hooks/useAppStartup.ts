@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { initAdjustSdk } from '@/src/hooks/useAdjustSdk';
+// import { initAdjustSdk } from '@/src/hooks/useAdjustSdk';
 import { runStartupTasks } from '@/src/services/startup';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import { refreshAndStoreGeoLocation } from '@/src/services/location/geoLocation';
@@ -16,9 +16,10 @@ export function useAppStartup(): void {
       // Hydrate auth store before any network work so the token is available to all API calls.
       await useAuthStore.getState().hydrate();
 
-      // iOS only: ATT before Adjust (IDFA). Android: ATT is a no-op; Adjust still inits here.
+      // iOS tracking permission is still used by other attribution integrations.
       await requestTrackingTransparencyIfNeeded();
-      await initAdjustSdk();
+      // Adjust SDK is temporarily disabled.
+      // await initAdjustSdk();
 
       // Populate geo cache before startup tasks so X-Geo-Location header is correct on first API call
       await refreshAndStoreGeoLocation();

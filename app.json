@@ -75,6 +75,16 @@
         }
       ],
       [
+        "./plugins/withGoogleTagManager.js",
+        {
+          "androidContainerId": "GTM-KN2BCBCK",
+          "iosContainerId": "GTM-KN2BCBCK",
+          "tagManagerVersion": "18.0.1",
+          "androidContainerFile": "./assets/gtm-containers/GTM-KN2BCBCK.json",
+          "iosContainerFile": "./assets/gtm-containers/GTM-KN2BCBCK.json"
+        }
+      ],
+      [
         "expo-contacts",
         {
           "contactsPermission": "Rupyaa needs access to your device contacts so you can invite friends."

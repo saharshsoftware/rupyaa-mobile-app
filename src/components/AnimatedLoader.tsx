@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   Animated,
   Easing,
@@ -7,9 +7,8 @@ import {
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
+import Svg, { Circle, Path } from 'react-native-svg';
 import { colors } from '@/src/theme';
-
-const RAY_COUNT = 8;
 
 export interface AnimatedLoaderProps {
   size?: number;
@@ -23,7 +22,6 @@ export function AnimatedLoader({
   style,
 }: AnimatedLoaderProps): React.JSX.Element {
   const rotation = useRef(new Animated.Value(0)).current;
-  const rays = useMemo(() => Array.from({ length: RAY_COUNT }, (_, index) => index), []);
 
   useEffect(() => {
     const animation = Animated.loop(
@@ -39,43 +37,37 @@ export function AnimatedLoader({
     return () => animation.stop();
   }, [rotation]);
 
-  const rayWidth = Math.max(3, size * 0.11);
-  const rayHeight = size * 0.29;
-  const rayOffset = size * 0.04;
   const spin = rotation.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],
   });
 
   return (
-    <Animated.View
+    <View
       accessibilityLabel="Loading"
       accessibilityRole="progressbar"
-      style={[styles.container, { width: size, height: size, transform: [{ rotate: spin }] }, style]}
+      style={[styles.container, { width: size, height: size }, style]}
     >
-      {rays.map((ray) => (
-        <View
-          key={ray}
-          style={[
-            styles.rayPosition,
-            {
-              transform: [{ rotate: `${ray * (360 / RAY_COUNT)}deg` }],
-            },
-          ]}
-        >
-          <View
-            style={{
-              width: rayWidth,
-              height: rayHeight,
-              marginTop: rayOffset,
-              borderRadius: rayWidth / 2,
-              backgroundColor: color,
-              opacity: 0.35 + ray * 0.08,
-            }}
+      <Animated.View
+        style={[styles.ring, { transform: [{ rotate: spin }] }]}
+      >
+        <Svg width={size} height={size} viewBox="-12 -12 120 120" fill="none">
+          <Circle cx={48} cy={48} r={43} stroke={color} strokeWidth={5} opacity={0.2} />
+          <Path
+            d="M48 5a43 43 0 0 1 43 43"
+            stroke={color}
+            strokeWidth={5}
+            strokeLinecap="round"
           />
-        </View>
-      ))}
-    </Animated.View>
+        </Svg>
+      </Animated.View>
+      {/* Inline favicon.svg artwork keeps the mark crisp at every loader size. */}
+      <Svg width={size} height={size} viewBox="-12 -12 120 120" fill={color}>
+        <Circle cx={30} cy={27} r={5} />
+        <Circle cx={66} cy={27} r={5} />
+        <Path d="M24 39h12v12c0 8 4 12 12 12s12-4 12-12V39h12v12c0 15-9 23-24 23S24 66 24 51Z" />
+      </Svg>
+    </View>
   );
 }
 
@@ -84,8 +76,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  rayPosition: {
-    ...StyleSheet.absoluteFill,
-    alignItems: 'center',
+  ring: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
   },
 });

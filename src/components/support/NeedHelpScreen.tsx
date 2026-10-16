@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useRouter, useFocusEffect } from 'expo-router';
+import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -18,11 +18,9 @@ import { NeedHelpAttachmentField } from './NeedHelpAttachmentField';
 import { usePersonalDetails } from '@/src/hooks/usePersonalDetails';
 import { useAllUserLoans } from '@/src/services/loans';
 import { createCustomerTicket } from '@/src/services/support';
-import {
-  SUPPORT_ISSUE_OPTIONS,
-  SUPPORT_ISSUE_VALUES,
-  type SupportIssueValue,
-} from '@/src/config/supportIssueOptions';
+import { useTicketFilterOptions } from '@/src/hooks/useTicketFilterOptions';
+import { useSupportPrefillStore } from '@/src/store/supportPrefillStore';
+import { AppText } from '@/src/components/AppText';
 import { formatFullName } from '@/src/utils/profile-formatters';
 import {
   getValidApplicationNumbers,
@@ -34,21 +32,21 @@ import type { DocumentFile } from '@/src/utils/documentFilePicker';
 
 const needHelpFormSchema = z.object({
   applicationNumber: z.string().trim().optional(),
-  issueCategory: z.enum(SUPPORT_ISSUE_VALUES).optional(),
+  categoryId: z.string().min(1, 'Select an issue category'),
   subject: z.string().trim().min(1, 'Enter an issue subject'),
   description: z.string().trim().optional(),
 });
 
 export type NeedHelpFormValues = {
   applicationNumber?: string;
-  issueCategory?: SupportIssueValue;
+  categoryId: string;
   subject: string;
   description?: string;
 };
 
 const defaultFormValues: NeedHelpFormValues = {
   applicationNumber: undefined,
-  issueCategory: undefined,
+  categoryId: '',
   subject: '',
   description: '',
 };
@@ -64,9 +62,24 @@ const NEED_HELP_SCROLL_VIEW_PROPS = {
  */
 export function NeedHelpScreen(): React.JSX.Element {
   const router = useRouter();
+  const { source, prefillId } = useLocalSearchParams<{ source?: string; prefillId?: string }>();
+  const [journeyPrefill] = useState(() => {
+    const prefill = useSupportPrefillStore.getState().prefill;
+    return source === 'loan-journey' && prefill?.id === prefillId ? prefill : null;
+  });
+  useEffect(() => {
+    if (journeyPrefill) useSupportPrefillStore.getState().clearPrefill(journeyPrefill.id);
+  }, [journeyPrefill]);
+  const filters = useTicketFilterOptions();
+  const prefilled = useRef(false);
+  const isMounted = useRef(true);
+  useEffect(() => {
+    isMounted.current = true;
+    return () => { isMounted.current = false; };
+  }, []);
   const { personalDetails } = usePersonalDetails();
   const { data: loansData, isLoading: isLoansLoading, refetch } = useAllUserLoans();
-  const [attachments, setAttachments] = useState<DocumentFile[]>([]);
+  const [attachments, setAttachments] = useState<DocumentFile[]>(() => journeyPrefill?.attachment ? [journeyPrefill.attachment] : []);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false);
   const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
@@ -90,12 +103,42 @@ export function NeedHelpScreen(): React.JSX.Element {
     }, [refetch, loansData?.loans?.length])
   );
 
-  const { control, handleSubmit, reset } = useForm<NeedHelpFormValues>({
+  const { control, handleSubmit, reset, setValue, getValues } = useForm<NeedHelpFormValues>({
     resolver: zodResolver(needHelpFormSchema),
-    defaultValues: defaultFormValues,
+    defaultValues: { ...defaultFormValues, subject: journeyPrefill ? `Loan Journey (web) — ${journeyPrefill.screenLabel}` : '' },
     mode: 'onSubmit',
     reValidateMode: 'onSubmit',
   });
+
+  const issueOptions = useMemo(
+    () => (filters.data?.categories ?? []).map(category => ({
+      label: category.name,
+      value: category._id,
+    })),
+    [filters.data]
+  );
+
+  useEffect(() => {
+    if (source !== 'loan-journey' || prefilled.current) return;
+    const category = issueOptions.find(option => option.label.trim().toLowerCase() === 'loan journey (web)');
+    if (!category) return;
+    if (!getValues('categoryId')) setValue('categoryId', category.value);
+    prefilled.current = true;
+  }, [source, issueOptions, getValues, setValue]);
+
+  const issuesUnavailable = filters.isPending || filters.isError || issueOptions.length === 0;
+  const issuePlaceholder = filters.isPending ? 'Loading issues...' : 'Select an issue category';
+  let issueFeedback = null;
+  if (!filters.isPending && (filters.isError || issueOptions.length === 0)) {
+    issueFeedback = (
+      <View>
+        <AppText>Unable to load support issues. Please try again.</AppText>
+        <Button onPress={() => { void filters.refetch(); }} disabled={filters.isFetching}>
+          Retry
+        </Button>
+      </View>
+    );
+  }
 
   const applicationOptions = useMemo(
     () => toApplicationDropdownOptions(getValidApplicationNumbers(loansData?.loans)),
@@ -132,8 +175,12 @@ export function NeedHelpScreen(): React.JSX.Element {
     [greetingFirstName, handleBack]
   );
 
-  const onSubmit = handleSubmit(async (data) => {
-    if (isSubmitting) return;
+  const submitTicket = async (data: NeedHelpFormValues) => {
+    if (isSubmitting || issuesUnavailable) return;
+    if (!issueOptions.some(option => option.value === data.categoryId)) {
+      showErrorModal('Please select an available issue category.');
+      return;
+    }
 
     const phoneNumber = personalDetails?.phoneNumber?.trim();
     if (!phoneNumber) {
@@ -154,11 +201,12 @@ export function NeedHelpScreen(): React.JSX.Element {
         phoneNumber,
         subject: data.subject,
         description: data.description?.trim() || undefined,
-        issueCategory: data.issueCategory,
+        categoryId: data.categoryId,
         applicationNumber,
         files: attachments.length > 0 ? attachments : undefined,
       });
 
+      if (!isMounted.current) return;
       if (!response.success) {
         const message =
           getApiErrorDisplayMessage(response.error) ||
@@ -171,29 +219,28 @@ export function NeedHelpScreen(): React.JSX.Element {
       setAttachments([]);
       setIsSuccessModalVisible(true);
     } catch {
+      if (!isMounted.current) return;
       showErrorModal(
         'Something went wrong. Please check your connection and try again.'
       );
     } finally {
-      setIsSubmitting(false);
+      if (isMounted.current) setIsSubmitting(false);
     }
-  });
+  };
+  const onSubmit = () => { void handleSubmit(submitTicket)(); };
 
-  const footer = useMemo(
-    () => (
+  const footer = (
       <Button
         variant="primary"
         size="large"
         fullWidth
         onPress={onSubmit}
         loading={isSubmitting}
-        disabled={isSubmitting}
+        disabled={isSubmitting || issuesUnavailable}
         accessibilityLabel="Submit support request"
       >
         Submit
       </Button>
-    ),
-    [onSubmit, isSubmitting]
   );
 
   return (
@@ -218,13 +265,15 @@ export function NeedHelpScreen(): React.JSX.Element {
             placeholder="Select application number"
           />
         ) : null}
-        <ControlledDropdown<NeedHelpFormValues, SupportIssueValue>
+        <ControlledDropdown<NeedHelpFormValues, string>
           control={control}
-          name="issueCategory"
+          name="categoryId"
           label="Select Issue"
-          options={SUPPORT_ISSUE_OPTIONS}
-          placeholder="Select an issue category"
+          options={issueOptions}
+          placeholder={issuePlaceholder}
+          required
         />
+        {issueFeedback}
         <ControlledInput
           control={control}
           name="subject"
@@ -240,6 +289,9 @@ export function NeedHelpScreen(): React.JSX.Element {
           multiline
           style={styles.descriptionInput}
         />
+        {journeyPrefill && !journeyPrefill.attachment && (
+          <AppText>Could not capture the screen. You can attach a file below.</AppText>
+        )}
         <NeedHelpAttachmentField
           files={attachments}
           onChange={setAttachments}
