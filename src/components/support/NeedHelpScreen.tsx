@@ -105,7 +105,7 @@ export function NeedHelpScreen(): React.JSX.Element {
 
   const { control, handleSubmit, reset, setValue, getValues } = useForm<NeedHelpFormValues>({
     resolver: zodResolver(needHelpFormSchema),
-    defaultValues: { ...defaultFormValues, subject: journeyPrefill ? `Loan Journey (web) — ${journeyPrefill.screenLabel}` : '' },
+    defaultValues: { ...defaultFormValues, subject: journeyPrefill ? `Loan Journey (App) — ${journeyPrefill.screenLabel}` : '' },
     mode: 'onSubmit',
     reValidateMode: 'onSubmit',
   });
@@ -120,7 +120,7 @@ export function NeedHelpScreen(): React.JSX.Element {
 
   useEffect(() => {
     if (source !== 'loan-journey' || prefilled.current) return;
-    const category = issueOptions.find(option => option.label.trim().toLowerCase() === 'loan journey (web)');
+    const category = issueOptions.find(option => option.label.trim().toLowerCase() === 'loan journey (app)');
     if (!category) return;
     if (!getValues('categoryId')) setValue('categoryId', category.value);
     prefilled.current = true;
