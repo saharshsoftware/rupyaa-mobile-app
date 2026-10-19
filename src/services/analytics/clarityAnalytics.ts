@@ -5,14 +5,27 @@ import { envConfig } from '@/src/config/envConfig';
 import { consoleLogDev } from '@/src/utils/consoleLogDev';
 
 let hasInitialized = false;
+let resolveClarityReady: () => void = () => {};
+let rejectClarityReady: (error: unknown) => void = () => {};
+
+export const clarityReadyPromise = new Promise<void>((resolve, reject) => {
+  resolveClarityReady = resolve;
+  rejectClarityReady = reject;
+});
+
+export function isClarityEnabled(): boolean {
+  return (
+    Platform.OS !== 'web' &&
+    Constants.appOwnership !== 'expo' &&
+    Boolean(envConfig.clarityProjectId)
+  );
+}
 
 export async function initializeClarity(): Promise<void> {
-  if (
-    hasInitialized ||
-    Platform.OS === 'web' ||
-    Constants.appOwnership === 'expo' ||
-    !envConfig.clarityProjectId
-  ) {
+  if (hasInitialized || !isClarityEnabled()) {
+    if (!isClarityEnabled()) {
+      resolveClarityReady();
+    }
     return;
   }
 
@@ -26,8 +39,10 @@ export async function initializeClarity(): Promise<void> {
     });
 
     consoleLogDev('[analytics][clarity] initialization requested');
+    resolveClarityReady();
   } catch (error) {
     hasInitialized = false;
     consoleLogDev('[analytics][clarity] initialization failed', { error });
+    rejectClarityReady(error);
   }
 }
