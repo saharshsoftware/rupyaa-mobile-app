@@ -1,4 +1,3 @@
-import type { SupportIssueValue } from '@/src/config/supportIssueOptions';
 import type { DocumentFile } from '@/src/utils/documentFilePicker';
 
 /** Scalar fields sent to POST /tickets/customer. */
@@ -6,7 +5,7 @@ export interface CreateCustomerTicketRequest {
   phoneNumber: string;
   subject: string;
   description?: string;
-  issueCategory?: SupportIssueValue;
+  categoryId: string;
   applicationNumber?: string;
 }
 
@@ -18,4 +17,13 @@ export interface CreateCustomerTicketParams extends CreateCustomerTicketRequest 
 export interface CreateCustomerTicketResponse {
   message?: string;
   [key: string]: unknown;
+}
+
+export interface TicketCategory {
+  _id: string;
+  name: string;
+}
+
+export interface TicketFilterOptions {
+  categories: TicketCategory[];
 }

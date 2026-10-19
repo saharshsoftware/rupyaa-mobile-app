@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { API_ENDPOINTS, BANK_STATEMENT_UPLOAD_TIMEOUT_MS } from '@/src/config/api';
 import { apiClient } from '@/src/services/api/apiClient';
 import type { ApiResponse } from '@/src/types/api';
@@ -5,6 +6,7 @@ import type {
   CreateCustomerTicketParams,
   CreateCustomerTicketRequest,
   CreateCustomerTicketResponse,
+  TicketFilterOptions,
 } from '@/src/types/support';
 import type { DocumentFile } from '@/src/utils/documentFilePicker';
 
@@ -14,6 +16,7 @@ function buildJsonBody(
   const body: CreateCustomerTicketRequest = {
     phoneNumber: params.phoneNumber,
     subject: params.subject,
+    categoryId: params.categoryId,
   };
 
   const description = params.description?.trim();
@@ -21,9 +24,6 @@ function buildJsonBody(
     body.description = description;
   }
 
-  if (params.issueCategory) {
-    body.issueCategory = params.issueCategory;
-  }
 
   const applicationNumber = params.applicationNumber?.trim();
   if (applicationNumber) {
@@ -42,9 +42,7 @@ function appendScalarFields(formData: FormData, params: CreateCustomerTicketPara
     formData.append('description', description);
   }
 
-  if (params.issueCategory) {
-    formData.append('issueCategory', params.issueCategory);
-  }
+  formData.append('categoryId', params.categoryId);
 
   const applicationNumber = params.applicationNumber?.trim();
   if (applicationNumber) {
@@ -90,4 +88,23 @@ export async function createCustomerTicket(
     API_ENDPOINTS.tickets.createCustomerTicket,
     buildJsonBody(params)
   );
+}
+
+const filterOptionsSchema = z.object({
+  categories: z.array(z.object({ _id: z.string().min(1), name: z.string().min(1) })),
+});
+
+export async function getTicketFilterOptions(): Promise<ApiResponse<TicketFilterOptions>> {
+  const response = await apiClient.get<unknown>(API_ENDPOINTS.tickets.filterOptions);
+  if (!response.success) return response;
+
+  // The web endpoint supports both direct and data-wrapped category responses.
+  const parsed = z.union([
+    filterOptionsSchema,
+    z.object({ data: filterOptionsSchema }).transform(value => value.data),
+  ]).safeParse(response.data);
+  if (!parsed.success) {
+    return { success: false, error: { message: 'Unable to load support issues.' } };
+  }
+  return { ...response, data: parsed.data };
 }

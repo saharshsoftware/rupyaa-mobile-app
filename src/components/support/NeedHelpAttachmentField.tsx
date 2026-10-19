@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   View,
+  Image,
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
@@ -77,6 +78,9 @@ export function NeedHelpAttachmentField({
         <View style={styles.list}>
           {files.map((f, index) => (
             <View key={`${f.uri}-${index}`} style={styles.fileRow}>
+              {f.mimeType.startsWith('image/') && (
+                <Image source={{ uri: f.uri }} style={styles.preview} accessibilityLabel={`Preview of ${f.name}`} />
+              )}
               <AppText variant="caption" style={styles.fileName} numberOfLines={1}>
                 {f.name}
               </AppText>
@@ -128,6 +132,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: spacing.sm,
     paddingVertical: spacing.xs,
+  },
+  preview: {
+    width: spacing['4xl'],
+    height: spacing['4xl'],
+    borderRadius: radius.sm,
+    resizeMode: 'cover',
   },
   fileName: {
     flex: 1,

@@ -107,10 +107,10 @@ export default ({ config }) => {
         [
           "react-native-fbsdk-next",
           {
-            appID: "1554116568996226",
-            clientToken: "0d4eaa217f70d04edd4792cdb7873055",
+            appID: "1995109194510889",
+            clientToken: "f5c76c2c89f12fd188050b61ed719d34",
             displayName: "Rupyaa",
-            scheme: "fb1554116568996226",
+            scheme: "fb1995109194510889",
             advertiserIDCollectionEnabled: false,
             autoLogAppEventsEnabled: true,
             isAutoInitEnabled: true,
