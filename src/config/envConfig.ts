@@ -60,6 +60,7 @@ export const envConfig = {
   isDevelopment: resolveIsDevelopment(),
   adjustAppToken: process.env.EXPO_PUBLIC_ADJUST_APP_TOKEN ?? '',
   fbAppId: process.env.EXPO_PUBLIC_FB_APP_ID ?? '',
+  clarityProjectId: process.env.EXPO_PUBLIC_CLARITY_PROJECT_ID ?? 'yxgt5ymz5i',
   encryptionSecret:
     process.env.EXPO_PUBLIC_API_ENCRYPTION_SECRET ??
     process.env.EXPO_PUBLIC_TEST_ENCRYPTION_SECRET ??
