@@ -145,3 +145,5 @@ export {
   type StepResultScreenProps,
   type StepResultScreenAction,
 } from './StepResultScreen';
+
+export { SelectedOfferCard } from './SelectedOfferCard';
