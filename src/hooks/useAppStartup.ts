@@ -4,6 +4,7 @@ import { runStartupTasks } from '@/src/services/startup';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import { refreshAndStoreGeoLocation } from '@/src/services/location/geoLocation';
 import { requestTrackingTransparencyIfNeeded } from '@/src/utils/ios-tracking-transparency';
+import { initializeClarity } from '@/src/services/analytics';
 
 export function useAppStartup(): void {
   const hasRun = useRef(false);
@@ -11,6 +12,8 @@ export function useAppStartup(): void {
   useEffect(() => {
     if (hasRun.current) return;
     hasRun.current = true;
+
+    void initializeClarity();
 
     (async () => {
       // Hydrate auth store before any network work so the token is available to all API calls.

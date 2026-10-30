@@ -253,6 +253,11 @@ export const useFlowStore = create<FlowState>()(
           cameFromOfferings:
             stage === 'OFFERINGS' ? currentState.cameFromOfferings : false,
         });
+
+        // Lazy import avoids Metro cycle: clarityUserSession -> verifiedPhoneNumber -> storageService -> useFlowStore.
+        void import('@/src/services/analytics/clarityUserSession').then(({ syncClarityAfterUserStageSync }) =>
+          syncClarityAfterUserStageSync(stage),
+        );
       },
 
       completeFlow: () => {
