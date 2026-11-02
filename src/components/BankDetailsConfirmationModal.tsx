@@ -55,6 +55,7 @@ export function BankDetailsConfirmationModal({
   ...details
 }: BankDetailsConfirmationModalProps) {
   const insets = useSafeAreaInsets();
+  const bottomPadding = Math.max(insets.bottom, spacing.base);
 
   return (
     <Modal
@@ -62,11 +63,12 @@ export function BankDetailsConfirmationModal({
       transparent
       animationType="slide"
       statusBarTranslucent
+      navigationBarTranslucent
       onRequestClose={onEdit}
     >
       <TouchableOpacity style={styles.overlay} activeOpacity={1} onPress={onEdit}>
         <TouchableOpacity
-          style={[styles.sheet, { paddingBottom: Math.max(insets.bottom, spacing.lg) }]}
+          style={[styles.sheet, { paddingBottom: bottomPadding }]}
           activeOpacity={1}
           onPress={(event) => event.stopPropagation()}
         >
@@ -82,10 +84,10 @@ export function BankDetailsConfirmationModal({
           </View>
 
           <View style={styles.actions}>
-            <Button variant="outline" size="large" style={styles.action} onPress={onEdit}>
+            <Button variant="outline" size="small" style={styles.action} onPress={onEdit}>
               Edit details
             </Button>
-            <Button variant="primary" size="large" style={styles.action} onPress={onConfirm}>
+            <Button variant="primary" size="small" style={styles.action} onPress={onConfirm}>
               Yes, proceed
             </Button>
           </View>
@@ -125,7 +127,6 @@ const styles = StyleSheet.create({
   },
   details: {
     gap: spacing.lg,
-    marginBottom: spacing.xl,
   },
   detailRow: {
     flexDirection: 'row',
@@ -144,11 +145,10 @@ const styles = StyleSheet.create({
   },
   actions: {
     flexDirection: 'row',
-    gap: spacing.sm,
+    gap: spacing.base,
+    paddingVertical: spacing.lg,
   },
   action: {
     flex: 1,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.sm,
   },
 });

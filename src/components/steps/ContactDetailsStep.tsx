@@ -76,7 +76,7 @@ const submitContactDetails = createRegistrationSubmit<
   apiCall: postContactDetails,
 });
 
-export function ContactDetailsStep({ onNext, onPrev }: StepProps) {
+export function ContactDetailsStep({ onNext, onPrev, header }: StepProps) {
   const phaseIndex = useFlowStore((s) => s.phaseIndex);
   const substepIndex = useFlowStore((s) => s.substepIndex);
   const safePhaseIndex = Math.max(0, Math.min(phaseIndex, FLOW_PHASES.length - 1));
@@ -435,6 +435,7 @@ export function ContactDetailsStep({ onNext, onPrev }: StepProps) {
   return (
     <>
       <FormLayout
+        header={header}
         showContactSupport
         ref={scrollViewRef}
         safeAreaEdges={['bottom']}

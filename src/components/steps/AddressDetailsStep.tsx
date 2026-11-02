@@ -71,7 +71,7 @@ const ADDRESS_FIELD_ORDER: (keyof AddressDetailsFormData)[] = [
   'state',
 ];
 
-export function AddressDetailsStep({ onNext, onPrev }: StepProps) {
+export function AddressDetailsStep({ onNext, onPrev, header }: StepProps) {
   const [pincodeLookupLoading, setPincodeLookupLoading] = useState(false);
   const [pincodeLookupMessage, setPincodeLookupMessage] =
     useState<PincodeLookupMessage>(null);
@@ -234,6 +234,7 @@ export function AddressDetailsStep({ onNext, onPrev }: StepProps) {
   return (
     <>
       <FormLayout
+        header={header}
         showContactSupport
         ref={scrollViewRef}
         safeAreaEdges={['bottom']}
