@@ -3,6 +3,7 @@ import { Animated, BackHandler, Pressable, StyleSheet, Text, View } from 'react-
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RelativePathString, useRouter } from 'expo-router';
 import { AuthHeader } from './AuthHeader';
+import { SelectedOfferCard } from './SelectedOfferCard';
 import { ProgressStepper, ProgressStepperV2 } from './ProgressStepper';
 import { IneligibilityModal } from './IneligibilityModal';
 import { OfferStatusModal } from './OfferStatusModal';
@@ -242,6 +243,7 @@ export function LoanWizard() {
 
   const hasSyncError = stageSyncStatus === 'error';
   const isUnderReview = userStage === UserStagesInBackend.APPLICATION_STATUS;
+  const showSelectedOffer = currentPhase === 'kyc' || currentPhase === 'disbursal';
   if (!StepComponent) {
     return null;
   }
@@ -264,6 +266,7 @@ export function LoanWizard() {
               <ProgressStepper {...stepperProps} />
             )
           )}
+          {showSelectedOffer && <SelectedOfferCard />}
         </View>
       </SafeAreaView>
 
