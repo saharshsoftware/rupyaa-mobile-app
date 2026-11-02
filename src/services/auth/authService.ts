@@ -17,7 +17,9 @@ import {
 } from '@/src/services/logging';
 import { getPlayInstallReferrerForAuthPayload } from '@/src/services/installReferrer';
 // import { getAdjustAttributionForAuthPayload } from '@/src/services/attribution';
+import { trackClarityLogoutFromAppState } from '@/src/services/analytics/clarityUserSession';
 import { useAuthStore } from '@/src/store/useAuthStore';
+import { useFlowStore } from '@/src/store/useFlowStore';
 import { resetNgrokApiBaseUrlOnLogout } from '@/src/services/devToggles/devTogglesService';
 import { consoleLogDev } from '@/src/utils/common-helper';
 
@@ -233,6 +235,8 @@ export const authService = {
   logout: async (): Promise<ApiResponse<{ success: boolean }>> => {
     // Force API base URL back to the default backend before logout flow begins.
     await resetNgrokApiBaseUrlOnLogout();
+
+    await trackClarityLogoutFromAppState(useFlowStore.getState().userStage ?? null);
 
     const { accessToken, refreshToken } = useAuthStore.getState();
     const body: Record<string, unknown> = {};

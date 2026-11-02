@@ -1,6 +1,8 @@
 import { devConfig } from '@/src/config/dev';
+import { trackClarityLogoutFromAppState } from '@/src/services/analytics/clarityUserSession';
 import { navigationService } from '@/src/services/navigation/navigationService';
 import { useAuthStore } from '@/src/store/useAuthStore';
+import { useFlowStore } from '@/src/store/useFlowStore';
 
 const logSessionCleared = (method: string, path: string): void => {
   void import('@/src/services/logging/logPoolJourney')
@@ -29,6 +31,8 @@ export async function handleUnauthorizedResponse(
   if (isAuthEndpoint || skipAuth) {
     return;
   }
+
+  await trackClarityLogoutFromAppState(useFlowStore.getState().userStage ?? null);
 
   await useAuthStore.getState().clearSession();
   logSessionCleared(method, path);

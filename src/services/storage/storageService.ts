@@ -3,6 +3,7 @@ import { STORAGE_KEYS } from '@/src/constants/data';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import { useFlowStore } from '@/src/store/useFlowStore';
 import { offerService } from '@/src/services/offer';
+import { trackClarityLogoutFromAppState } from '@/src/services/analytics/clarityUserSession';
 import { resetNgrokApiBaseUrlOnLogout } from '@/src/services/devToggles/devTogglesService';
 
 export const storageService = {
@@ -21,6 +22,7 @@ export const storageService = {
     ];
     await AsyncStorage.multiRemove(CLEAR_KEYS);
     await resetNgrokApiBaseUrlOnLogout();
+    await trackClarityLogoutFromAppState(useFlowStore.getState().userStage ?? null);
     await useAuthStore.getState().clearSession();
     // Reset timeline state (persisted under separate key)
     useFlowStore.getState().reset();
