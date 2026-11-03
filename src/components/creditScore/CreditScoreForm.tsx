@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useRouter } from 'expo-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ChevronLeft } from 'lucide-react-native';
-import { AppText, Button, ControlledDateInput, ControlledInput, FormLayout, PhoneInput, RupyaaLogo, ScreenBackground } from '@/src/components';
+import { AppText, Button, ControlledDateInput, ControlledInput, FormLayout, PhoneInput } from '@/src/components';
 import ErrorContainer from '@/src/components/ErrorContainer';
 import { CreditReportLoading, CreditScoreReport, CreditScoreUnavailable } from '@/src/components/creditScore';
 import { colors, spacing } from '@/src/theme';
@@ -114,21 +113,12 @@ export function CreditScoreForm() {
   if (pull.isPending && lastPayload.current) return <CreditReportLoading />;
   if (isCheckingExisting) return <CreditReportLoading />;
 
-  return <ScreenBackground><FormLayout
+  return <FormLayout
     ref={scrollRef}
+    safeAreaEdges={['bottom']}
     keyboardAwareFooter
     header={
       <>
-        <RupyaaLogo size="sm" style={styles.logo} />
-        <TouchableOpacity
-          onPress={() => router.back()}
-          style={styles.backButton}
-          activeOpacity={0.7}
-          accessibilityRole="button"
-          accessibilityLabel="Go back"
-        >
-          <ChevronLeft size={24} color={colors.text.primary} />
-        </TouchableOpacity>
         <View style={styles.heading}>
           <AppText variant="h3" weight="semiBold" color="black">Check your credit score</AppText>
           <AppText color="black" style={styles.subtitle}>Free & won’t affect your score. We just need a few details to fetch your Equifax report.</AppText>
@@ -144,18 +134,11 @@ export function CreditScoreForm() {
       <ControlledInput control={control} name="email" label="Email Address" placeholder="name@email.com" required keyboardType="email-address" autoCapitalize="none" inputRef={emailRef} returnKeyType="next" onSubmitEditing={() => incomeRef.current?.focus()} />
       <ControlledInput control={control} name="monthlyIncome" label="Monthly Income" placeholder="00,000" required keyboardType="number-pad" leftAccessory={<AppText color="black">₹</AppText>} inputRef={incomeRef} />
     </View>
-  </FormLayout></ScreenBackground>;
+  </FormLayout>;
 }
 
 const styles = StyleSheet.create({
-  logo: { marginTop: spacing['4xl'], marginLeft: spacing.md, marginBottom: spacing.md },
-  backButton: {
-    alignSelf: 'flex-start',
-    padding: spacing.xs,
-    marginLeft: spacing.sm,
-    marginBottom: spacing.md,
-  },
-  heading: { gap: spacing.sm, paddingHorizontal: spacing.md, paddingBottom: spacing.xl },
+  heading: { paddingTop: spacing.md, gap: spacing.sm, paddingHorizontal: spacing.md, paddingBottom: spacing.xl },
   subtitle: { lineHeight: 24, color: colors.text.black },
   form: { gap: spacing.md, paddingHorizontal: spacing.md, paddingBottom: spacing.xl },
   phoneLabel: { fontSize: 14, marginBottom: spacing.sm },
