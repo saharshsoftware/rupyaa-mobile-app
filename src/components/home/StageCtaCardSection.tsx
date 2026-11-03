@@ -142,9 +142,10 @@ export function StageCtaCardSection({
 
   const isPreOffer = isPreOfferStage(userStage);
   const isActiveLoanDashboard = userStage === UserStagesInBackend.ACTIVE_LOAN_DASHBOARD;
-  /** Same card as APPLICATION_STATUS when API reports pending (e.g. stage not yet synced). */
+  // Use loan status only until the authoritative backend stage is available.
   const showUnderReviewCard =
-    userStage === UserStagesInBackend.APPLICATION_STATUS || isLoanStatusPending(loanStatus);
+    userStage === UserStagesInBackend.APPLICATION_STATUS ||
+    (userStage == null && isLoanStatusPending(loanStatus));
   const showCblRejectedCard = isCblOrRejectedStage(userStage);
 
   const stepperAndMessage = (

@@ -38,6 +38,7 @@ import { consoleLogDev, formatCurrency } from '@/src/utils/common-helper';
 import { colors, spacing } from '@/src/theme';
 import { getFlowJourneySummary } from '@/src/utils/flowProgress';
 import { useUserStage } from '@/src/hooks/useUserStage';
+import { refreshHomeOffer } from '@/src/services/offer';
 import { ActiveLoanDevToolbar } from '@/src/components/home/ActiveLoanDevToolbar';
 import { useActiveLoanDevStore } from '@/src/store/useActiveLoanDevStore';
 import { appConfig } from '@/src/config/appConfig';
@@ -46,11 +47,15 @@ import { useLoanJourneyGuard } from '@/src/hooks/useLoanJourneyGuard';
 import { DEFAULT_ACTIVE_LOAN_AMOUNT } from '@/src/constants/data';
 import { useBottomTabBarHeight } from 'expo-router/js-tabs';
 
+const HOME_REFRESH_INTERVAL_MS = 15_000;
+
 export default function HomeTab() {
   const tabBarHeight = useBottomTabBarHeight();
   const isAuthenticated = useAuthStore(selectIsAuthenticated);
+  const [isHomeFocused, setIsHomeFocused] = useState(false);
+  const shouldRefreshHome = isAuthenticated && isHomeFocused;
   // Fetch and sync user stage from backend when logged in.
-  const userStageQuery = useUserStage(isAuthenticated);
+  const userStageQuery = useUserStage(shouldRefreshHome, HOME_REFRESH_INTERVAL_MS);
   const isUserStageLoading =
     userStageQuery.isPending ||
     (userStageQuery.isFetching && userStageQuery.data == null);
@@ -58,7 +63,6 @@ export default function HomeTab() {
   const isCheckingEligibility = userStageQuery.data?.retryStage === true;
 
   const [productsModalVisible, setProductsModalVisible] = useState(false);
-  const [isRefreshingLoanStatus, setIsRefreshingLoanStatus] = useState(false);
   const [isCancellationModalVisible, setCancellationModalVisible] = useState(false);
   const phaseIndex = useFlowStore((s) => s.phaseIndex);
   const substepIndex = useFlowStore((s) => s.substepIndex);
@@ -68,7 +72,14 @@ export default function HomeTab() {
   const activeLoanTestVariant = useActiveLoanDevStore((s) => s.testVariant);
 
   // Fetch existing active loan only for authenticated users.
-  const activeLoanQuery = useGetExistingActiveLoan({ enabled: isAuthenticated });
+  const activeLoanQuery = useGetExistingActiveLoan({
+    enabled: shouldRefreshHome,
+    refetchInterval: HOME_REFRESH_INTERVAL_MS,
+  });
+
+  const { refetch: refetchActiveLoan } = activeLoanQuery;
+  const { refetch: refetchUserStage } = userStageQuery;
+  const isRefreshingLoanStatus = activeLoanQuery.isFetching || userStageQuery.isFetching;
 
   const cancellationLoanId = useMemo(
     () => getLoanIdFromActiveLoanResponse(activeLoanQuery.data),
@@ -101,16 +112,19 @@ export default function HomeTab() {
   const passedPhases = useFlowStore((s) => s.passedPhases);
   const passedSubsteps = useFlowStore((s) => s.passedSubsteps);
 
-  // Re-fetch user stage and active loan every time this tab comes into focus (e.g. after returning
-  // from loan journey or permissions screen). Tab screens stay mounted, so
-  // refetchOnMount alone won't fire on re-navigation.
   useFocusEffect(
     useCallback(() => {
-      if (!isAuthenticated) return;
-      void userStageQuery.refetch();
-      void activeLoanQuery.refetch();
-    }, [activeLoanQuery.refetch, isAuthenticated, userStageQuery.refetch])
+      setIsHomeFocused(true);
+      return () => setIsHomeFocused(false);
+    }, [])
   );
+
+  useEffect(() => {
+    if (!shouldRefreshHome || userStage !== UserStagesInBackend.OFFERINGS) return;
+    void refreshHomeOffer().catch(() => {
+      // Retain the last offer; the next focused refresh retries the request.
+    });
+  }, [shouldRefreshHome, userStage, userStageQuery.dataUpdatedAt]);
 
   const journeySummary = useMemo(
     () => getFlowJourneySummary(phaseIndex, substepIndex),
@@ -172,18 +186,15 @@ export default function HomeTab() {
   }, []);
 
   const handleLoanCancelled = useCallback(() => {
-    void activeLoanQuery.refetch();
-    void userStageQuery.refetch();
-  }, [activeLoanQuery.refetch, userStageQuery.refetch]);
+    void refetchActiveLoan();
+    void refetchUserStage();
+  }, [refetchActiveLoan, refetchUserStage]);
 
   /** Refresh under-review card: active loan + user stage so UI matches backend after review. */
   const handleUnderReviewRefresh = useCallback(() => {
     if (isRefreshingLoanStatus) return;
-    setIsRefreshingLoanStatus(true);
-    void Promise.all([activeLoanQuery.refetch(), userStageQuery.refetch()]).finally(() => {
-      setIsRefreshingLoanStatus(false);
-    });
-  }, [activeLoanQuery.refetch, userStageQuery.refetch, isRefreshingLoanStatus]);
+    void Promise.all([refetchActiveLoan(), refetchUserStage()]);
+  }, [refetchActiveLoan, refetchUserStage, isRefreshingLoanStatus]);
 
   /** Maps user stage to the correct onActionPress callback. */
   function resolveActionHandler(
@@ -251,7 +262,7 @@ export default function HomeTab() {
     }
 
     // Pending loan (under review): UnderReviewCard copy matches APPLICATION_STATUS stage
-    if (isLoanStatusPending(activeLoanQuery.data?.loanStatus)) {
+    if (userStage == null && isLoanStatusPending(activeLoanQuery.data?.loanStatus)) {
       const reviewCfg = getLoanStatusCardStageConfig(UserStagesInBackend.APPLICATION_STATUS);
       heading = reviewCfg.heading;
       description = reviewCfg.description;
@@ -368,7 +379,7 @@ export default function HomeTab() {
   const resolvedHomeCardProps = buildLoanStatusCardProps();
   const isUnderReviewState =
     userStage === UserStagesInBackend.APPLICATION_STATUS ||
-    isLoanStatusPending(activeLoanQuery.data?.loanStatus);
+    (userStage == null && isLoanStatusPending(activeLoanQuery.data?.loanStatus));
   const isInitialUnsyncedState =
     userStage == null && phaseIndex === 0 && substepIndex === 0 && !applicationCompleted;
   const shouldHideJourneyUntilDetailsSubmitted =

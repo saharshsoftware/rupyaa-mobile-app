@@ -50,7 +50,7 @@ function ValueField({ label, value }: KeyValueField) {
 }
 
 export default function MyProfileScreen() {
-  const { personalDetails, isFetching } = usePersonalDetails();
+  const { personalDetails, isFetching } = usePersonalDetails(true);
 
   const viewModel = useMemo(
     () => buildMyProfileViewModel(personalDetails),
