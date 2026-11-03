@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
 import {
   getDevToggleState,
+  subscribeToDevToggles,
   loadDevToggleStateFromStorage,
   setStagingApiOverrideToggle,
   setUseAmanNgrokApiBaseUrlToggle,
@@ -10,48 +11,29 @@ import {
 import { STAGING_API_OVERRIDE } from '@/src/services/devToggles/apiBaseUrlResolver';
 
 export const useDeveloperSettingsToggles = () => {
-  const [useNgrokApiBaseUrl, setUseNgrokApiBaseUrl] = useState(
-    () => getDevToggleState().useNgrokApiBaseUrl,
+  const useNgrokApiBaseUrl = useSyncExternalStore(
+    subscribeToDevToggles, () => getDevToggleState().useNgrokApiBaseUrl,
   );
-  const [useAmanNgrokApiBaseUrl, setUseAmanNgrokApiBaseUrl] = useState(
-    () => getDevToggleState().useAmanNgrokApiBaseUrl,
+  const useAmanNgrokApiBaseUrl = useSyncExternalStore(
+    subscribeToDevToggles, () => getDevToggleState().useAmanNgrokApiBaseUrl,
   );
-  const [useBankStatementUploader, setUseBankStatementUploader] = useState(
-    () => getDevToggleState().useBankStatementUploader,
+  const useBankStatementUploader = useSyncExternalStore(
+    subscribeToDevToggles, () => getDevToggleState().useBankStatementUploader,
   );
-  const [stagingApiOverride, setStagingApiOverride] = useState(
-    () => getDevToggleState().stagingApiOverride,
+  const stagingApiOverride = useSyncExternalStore(
+    subscribeToDevToggles, () => getDevToggleState().stagingApiOverride,
   );
 
   useEffect(() => {
-    let isMounted = true;
-
-    const loadDevToggles = async () => {
-      const state = await loadDevToggleStateFromStorage();
-      if (!isMounted) {
-        return;
-      }
-      setUseNgrokApiBaseUrl(state.useNgrokApiBaseUrl);
-      setUseAmanNgrokApiBaseUrl(state.useAmanNgrokApiBaseUrl);
-      setUseBankStatementUploader(state.useBankStatementUploader);
-      setStagingApiOverride(state.stagingApiOverride);
-    };
-
-    void loadDevToggles();
-
-    return () => {
-      isMounted = false;
-    };
+    void loadDevToggleStateFromStorage();
   }, []);
 
   const clearStagingOverride = () => {
-    setStagingApiOverride(STAGING_API_OVERRIDE.none);
     void setStagingApiOverrideToggle(STAGING_API_OVERRIDE.none);
   };
 
   const clearNgrokToggles = () => {
-    setUseNgrokApiBaseUrl(false);
-    setUseAmanNgrokApiBaseUrl(false);
+
     void setUseNgrokApiBaseUrlToggle(false);
     void setUseAmanNgrokApiBaseUrlToggle(false);
   };
@@ -59,26 +41,23 @@ export const useDeveloperSettingsToggles = () => {
   const handleToggleNgrokBaseUrl = (value: boolean) => {
     // Only one API base URL source can stay active at a time.
     if (value) {
-      setUseAmanNgrokApiBaseUrl(false);
       void setUseAmanNgrokApiBaseUrlToggle(false);
       clearStagingOverride();
     }
-    setUseNgrokApiBaseUrl(value);
+
     void setUseNgrokApiBaseUrlToggle(value);
   };
 
   const handleToggleAmanNgrokBaseUrl = (value: boolean) => {
     if (value) {
-      setUseNgrokApiBaseUrl(false);
       void setUseNgrokApiBaseUrlToggle(false);
       clearStagingOverride();
     }
-    setUseAmanNgrokApiBaseUrl(value);
+
     void setUseAmanNgrokApiBaseUrlToggle(value);
   };
 
   const handleToggleBankStatementUploader = (value: boolean) => {
-    setUseBankStatementUploader(value);
     void setUseBankStatementUploaderToggle(value);
   };
 
@@ -87,7 +66,7 @@ export const useDeveloperSettingsToggles = () => {
     if (value) {
       clearNgrokToggles();
     }
-    setStagingApiOverride(nextValue);
+
     void setStagingApiOverrideToggle(nextValue);
   };
 
@@ -96,7 +75,7 @@ export const useDeveloperSettingsToggles = () => {
     if (value) {
       clearNgrokToggles();
     }
-    setStagingApiOverride(nextValue);
+
     void setStagingApiOverrideToggle(nextValue);
   };
 

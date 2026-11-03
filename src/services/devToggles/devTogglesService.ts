@@ -26,6 +26,13 @@ const logToggleError = (message: string, error: unknown): void => {
   console.log(message, error);
 };
 
+const toggleListeners = new Set<() => void>();
+
+export const subscribeToDevToggles = (listener: () => void): (() => void) => {
+  toggleListeners.add(listener);
+  return () => { toggleListeners.delete(listener); };
+};
+
 export const getDevToggleState = (): DevToggleState => ({
   useNgrokApiBaseUrl: appConfig.useNgrokApiBaseUrl,
   useAmanNgrokApiBaseUrl: appConfig.useAmanNgrokApiBaseUrl,
@@ -62,6 +69,7 @@ export const applyDevToggleState = (
     apiConfig.baseUrl = syncApiBaseUrl();
   }
 
+  toggleListeners.forEach((listener) => listener());
   return getDevToggleState();
 };
 
