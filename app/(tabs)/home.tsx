@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, ScrollView } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
@@ -50,6 +51,7 @@ import { useBottomTabBarHeight } from 'expo-router/js-tabs';
 const HOME_REFRESH_INTERVAL_MS = 15_000;
 
 export default function HomeTab() {
+  const { t } = useTranslation();
   const tabBarHeight = useBottomTabBarHeight();
   const isAuthenticated = useAuthStore(selectIsAuthenticated);
   const [isHomeFocused, setIsHomeFocused] = useState(false);
@@ -248,7 +250,7 @@ export default function HomeTab() {
 
     const offerAmount = getOfferAmount(offerStoreResponse);
     if (userStage === UserStagesInBackend.OFFERINGS && offerAmount != null) {
-      heading = `You're Eligible for ${formatCurrency(offerAmount)}`;
+      heading = t("You're Eligible for {{amount}}", { amount: formatCurrency(offerAmount) });
     }
 
     const loanAmount = activeLoanQuery.data?.loan?.amount;
