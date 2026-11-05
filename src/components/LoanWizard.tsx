@@ -33,6 +33,7 @@ import {
 } from '@/src/services/logging/logPoolJourney';
 import { usePreEnachReviewGate } from '@/src/hooks/usePreEnachReviewGate';
 import { useOfferStatusStagePrefetch } from '@/src/hooks/useOfferStatusStagePrefetch';
+import { useKeyboardHeight } from '@/src/hooks/useKeyboardHeight';
 
 // Get steps once (static)
 const STEPPER_STEPS = getMainStepLabels();
@@ -55,6 +56,7 @@ function getStageBasedRoute(params: {
 
 export function LoanWizard() {
   const router = useRouter();
+  const isKeyboardVisible = useKeyboardHeight() > 0;
   const phaseIndex = useFlowStore((s) => s.phaseIndex);
   const substepIndex = useFlowStore((s) => s.substepIndex);
   const passedSubsteps = useFlowStore((s) => s.passedSubsteps);
@@ -243,6 +245,7 @@ export function LoanWizard() {
 
   const hasSyncError = stageSyncStatus === 'error';
   const isUnderReview = userStage === UserStagesInBackend.APPLICATION_STATUS;
+  const showApplicationTracker = !isUnderReview && !isKeyboardVisible;
   const showSelectedOffer = currentPhase === 'kyc' || currentPhase === 'disbursal';
   if (!StepComponent) {
     return null;
@@ -256,7 +259,7 @@ export function LoanWizard() {
       <SafeAreaView edges={['top']} style={styles.wizardHeader}>
         <View style={styles.wizardHeaderContent}>
           <AuthHeader />
-          {!isUnderReview && (
+          {showApplicationTracker && (
             appConfig.useProgressStepperV2 ? (
               <ProgressStepperV2
                 {...stepperProps}

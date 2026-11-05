@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, spacing } from '@/src/theme';
-import { ContactSupport } from './ContactSupport';
 import { AppText } from './AppText';
 import { Button } from './Button';
 import { IMAGES } from '../constants/images';
@@ -132,7 +131,6 @@ export function IneligibilityModal({
           },
         ]}
       >
-        <ContactSupport />
         <Button variant="primary" size="large" fullWidth onPress={onCtaPress}>
           {ctaLabel}
         </Button>
