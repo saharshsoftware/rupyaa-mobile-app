@@ -8,7 +8,6 @@
  *    a) phase passed flag
  *    b) all substeps passed
  *    c) moved past the phase (currentStep > index)
- *    d) "reached last substep" (so connector can become 100% even before explicitly passing last substep)
  */
 
 import type { FlowPhase } from '@/src/config/flowSteps';
@@ -139,13 +138,7 @@ function isStepCompleted(params: {
     const passedCount = countPassedSubsteps(phase, totalSubsteps, passedSubsteps);
     if (passedCount >= totalSubsteps) return true;
 
-    // Reached last substep (connector can be 100% at last screen)
-    // This matches typical UX: once you reach the final screen of a phase, it "looks complete".
-    if (currentStep === stepIndex && totalSubsteps > 1) {
-      const transitionsTotal = totalSubsteps - 1;
-      const transitionsDone = Math.min(passedCount, transitionsTotal);
-      if (transitionsDone >= transitionsTotal) return true;
-    }
+
   }
 
   return false;
