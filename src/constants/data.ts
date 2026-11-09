@@ -24,6 +24,7 @@ export const STORAGE_KEYS = {
   registrationData: 'registrationData',
   useNgrokApiBaseUrl: 'useNgrokApiBaseUrl',
   useAmanNgrokApiBaseUrl: 'useAmanNgrokApiBaseUrl',
+  useAdityaNgrokApiBaseUrl: 'useAdityaNgrokApiBaseUrl',
   stagingApiOverride: 'stagingApiOverride',
   useBankStatementUploader: 'useBankStatementUploader',
   SKIPPED_UPDATE_VERSION: `${STRING_DATA.APP_NAME}_SKIPPED_UPDATE_VERSION`,

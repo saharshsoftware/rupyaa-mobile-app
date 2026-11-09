@@ -5,6 +5,7 @@ import {
   loadDevToggleStateFromStorage,
   setStagingApiOverrideToggle,
   setUseAmanNgrokApiBaseUrlToggle,
+  setUseAdityaNgrokApiBaseUrlToggle,
   setUseBankStatementUploaderToggle,
   setUseNgrokApiBaseUrlToggle,
 } from '@/src/services/devToggles/devTogglesService';
@@ -16,6 +17,9 @@ export const useDeveloperSettingsToggles = () => {
   );
   const useAmanNgrokApiBaseUrl = useSyncExternalStore(
     subscribeToDevToggles, () => getDevToggleState().useAmanNgrokApiBaseUrl,
+  );
+  const useAdityaNgrokApiBaseUrl = useSyncExternalStore(
+    subscribeToDevToggles, () => getDevToggleState().useAdityaNgrokApiBaseUrl,
   );
   const useBankStatementUploader = useSyncExternalStore(
     subscribeToDevToggles, () => getDevToggleState().useBankStatementUploader,
@@ -36,12 +40,14 @@ export const useDeveloperSettingsToggles = () => {
 
     void setUseNgrokApiBaseUrlToggle(false);
     void setUseAmanNgrokApiBaseUrlToggle(false);
+    void setUseAdityaNgrokApiBaseUrlToggle(false);
   };
 
   const handleToggleNgrokBaseUrl = (value: boolean) => {
     // Only one API base URL source can stay active at a time.
     if (value) {
       void setUseAmanNgrokApiBaseUrlToggle(false);
+      void setUseAdityaNgrokApiBaseUrlToggle(false);
       clearStagingOverride();
     }
 
@@ -50,11 +56,22 @@ export const useDeveloperSettingsToggles = () => {
 
   const handleToggleAmanNgrokBaseUrl = (value: boolean) => {
     if (value) {
+      void setUseAdityaNgrokApiBaseUrlToggle(false);
       void setUseNgrokApiBaseUrlToggle(false);
       clearStagingOverride();
     }
 
     void setUseAmanNgrokApiBaseUrlToggle(value);
+  };
+
+  const handleToggleAdityaNgrokBaseUrl = (value: boolean) => {
+    if (value) {
+      void setUseNgrokApiBaseUrlToggle(false);
+      void setUseAmanNgrokApiBaseUrlToggle(false);
+      clearStagingOverride();
+    }
+
+    void setUseAdityaNgrokApiBaseUrlToggle(value);
   };
 
   const handleToggleBankStatementUploader = (value: boolean) => {
@@ -82,10 +99,12 @@ export const useDeveloperSettingsToggles = () => {
   return {
     useNgrokApiBaseUrl,
     useAmanNgrokApiBaseUrl,
+    useAdityaNgrokApiBaseUrl,
     useBankStatementUploader,
     stagingApiOverride,
     handleToggleNgrokBaseUrl,
     handleToggleAmanNgrokBaseUrl,
+    handleToggleAdityaNgrokBaseUrl,
     handleToggleBankStatementUploader,
     handleToggleStaging2ApiBaseUrl,
     handleToggleStagingApiV1BaseUrl,
