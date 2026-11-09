@@ -23,7 +23,7 @@ function resolveIsDevelopment(): boolean {
 function resolveApiUrl(): string {
   // Local development / Expo Go / dev client
   if (__DEV__) {
-    return process.env.EXPO_PUBLIC_API_URL ?? 'https://commotion-disrupt-clamshell.ngrok-free.dev';
+    return process.env.EXPO_PUBLIC_API_URL ?? 'https://api-staging.rupyaa.com';
   }
 
   const channel = Updates.channel;
@@ -35,12 +35,12 @@ function resolveApiUrl(): string {
       return 'https://api.rupyaa.com';
 
     case 'preview':
-      return 'https://commotion-disrupt-clamshell.ngrok-free.dev';
+      return 'https://api-staging.rupyaa.com';
 
     default:
       // unknown or missing channel in release build
       console.warn('[resolveApiUrl] Unknown channel, using staging fallback:', channel);
-      return 'https://commotion-disrupt-clamshell.ngrok-free.devm';
+      return 'https://api-staging.rupyaa.com';
   }
 }
 
