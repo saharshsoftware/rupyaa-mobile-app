@@ -116,6 +116,7 @@ export interface EmiRepayment {
 }
 
 export interface Loan {
+  isPendingPayment?: boolean;
   _id: string;
   amount: number;
   tenure: string;
@@ -209,6 +210,7 @@ export interface GetAllUserLoansResponse {
 }
 
 export interface GetExistingActiveLoanResponse {
+  isPendingPayment?: boolean;
   message: string;
   canCancel?: boolean;
   hasActiveLoan: boolean;
