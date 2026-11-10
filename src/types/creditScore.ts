@@ -46,7 +46,7 @@ export interface CreditReportData {
     totalAccounts: number;
     onTimePaymentPercentage: number;
     totalEnquiries: number;
-    totalCreditLimit: number;
+    totalCreditLimit: number | null;
   };
   accounts: CreditAccount[];
   paymentHistory12Months: CreditPaymentMonth[];

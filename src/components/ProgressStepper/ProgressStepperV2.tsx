@@ -6,7 +6,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import StepIndicator from 'react-native-step-indicator';
-import { Check } from 'lucide-react-native';
+import { StepCircle } from './StepCircle';
 import { colors, spacing, typography } from '@/src/theme';
 import { AppText } from '../AppText';
 import { getStepperVisualStates } from '@/src/utils/progressStepperUtils';
@@ -103,21 +103,20 @@ export function ProgressStepperV2({
 
   const renderStepIndicator = ({
     position,
-    stepStatus,
   }: {
     position: number;
     stepStatus: string;
   }) => {
     const state = stepStates[position];
-    const showCheck = state?.showsCheck ?? stepStatus === 'finished';
-    if (showCheck) {
-      return (
-        <View style={styles.checkWrap}>
-          <Check size={14} color={colors.text.inverse} strokeWidth={3} />
-        </View>
-      );
-    }
-    return null;
+    if (!state) return null;
+    return (
+      <StepCircle
+        showCheck={state.showsCheck}
+        active={state.isActive}
+        size={STEP_SIZE}
+        accentColor={accentColor}
+      />
+    );
   };
 
   const renderLabel = (args: {
@@ -157,12 +156,6 @@ export function ProgressStepperV2({
 const styles = StyleSheet.create({
   container: {
     paddingVertical: spacing.base,
-  },
-  checkWrap: {
-    width: STEP_SIZE,
-    height: STEP_SIZE,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   labelWrap: {
     alignItems: 'center',

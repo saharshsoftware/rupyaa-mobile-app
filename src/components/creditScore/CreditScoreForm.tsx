@@ -4,7 +4,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { useRouter } from 'expo-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AppText, Button, ControlledDateInput, ControlledInput, FormLayout, PhoneInput, RupyaaLogo, ScreenBackground } from '@/src/components';
+import { AppText, Button, ControlledDateInput, ControlledInput, FormLayout, PhoneInput } from '@/src/components';
 import ErrorContainer from '@/src/components/ErrorContainer';
 import { CreditReportLoading, CreditScoreReport, CreditScoreUnavailable } from '@/src/components/creditScore';
 import { colors, spacing } from '@/src/theme';
@@ -13,7 +13,7 @@ import { useCreditReportPdfDownload } from '@/src/services/creditScore/useCredit
 import { resolveVerifiedPhoneNumber } from '@/src/services/user/verifiedPhoneNumber';
 import { useCreditReportStore } from '@/src/store/useCreditReportStore';
 import { convertDdMmYyyyToIso } from '@/src/utils/common-helper';
-import { isCreditScoreUnavailable } from '@/src/config/creditScore';
+import { isCreditScoreUnavailable, isRenderableCreditReport } from '@/src/config/creditScore';
 import { useScrollToFirstError, type ScrollViewScrollToFocusedInput } from '@/src/hooks/useScrollToFirstError';
 import { envConfig } from '@/src/config/envConfig';
 import type { CreditReportData, CreditScoreDetailsRequest } from '@/src/types/creditScore';
@@ -43,6 +43,9 @@ export function CreditScoreForm() {
     resolver: zodResolver(creditScoreSchema), mode: 'onChange',
     defaultValues: { fullName: envConfig.isDevelopment ? 'Piyush Beli' : '', panNumber: envConfig.isDevelopment ? 'ABCDE1234F' : '', dob: envConfig.isDevelopment ? '01/01/1990' : '', email: envConfig.isDevelopment ? 'test@test.com' : '', monthlyIncome: envConfig.isDevelopment ? '10000' : '', consent: true },
   });
+  const formError = submitError || pull.error?.message || existing.error?.message || '';
+  const isCheckingExisting =
+    existing.isPending || (!existing.isFetched && existing.fetchStatus !== 'paused');
 
   useEffect(() => {
     void resolveVerifiedPhoneNumber().then(setSessionPhone);
@@ -50,14 +53,20 @@ export function CreditScoreForm() {
 
   useEffect(() => {
     const result = existing.data;
-    if (result?.reportAvailable && result.data) {
-      setReport(result.data); setPdfUrl(result.pdfUrl?.trim() || null);
+    if (result?.reportAvailable && isRenderableCreditReport(result.data)) {
+      setReport(result.data);
+      setPdfUrl(result.pdfUrl?.trim() || null);
     }
   }, [existing.data]);
 
   const applyResult = (result: Awaited<ReturnType<typeof pull.mutateAsync>>) => {
-    if (!result.reportAvailable || !result.data) { setSubmitError(result.message || 'Your credit report is unavailable. Please try again.'); return; }
-    setSubmitError(''); setReport(result.data); setPdfUrl(result.pdfUrl?.trim() || null);
+    if (!result.reportAvailable || !isRenderableCreditReport(result.data)) {
+      setSubmitError(result.message || 'Your credit report is unavailable. Please try again.');
+      return;
+    }
+    setSubmitError('');
+    setReport(result.data);
+    setPdfUrl(result.pdfUrl?.trim() || null);
   };
 
   const onSubmit = async (values: CreditScoreFormData) => {
@@ -76,14 +85,47 @@ export function CreditScoreForm() {
     } catch { /* mutation error renders below */ }
   };
 
-  if (report && isCreditScoreUnavailable(report.creditScore)) return <CreditScoreUnavailable onRetry={retry} loading={pull.isPending || existing.isFetching} />;
-  if (report) return <CreditScoreReport report={report} onBack={() => router.back()} onEligibility={() => router.push('/(tabs)/home')} onOpenDetailed={() => { setReportSession(report, pdfUrl); router.push('/credit-score/detailed-report'); }} onDownload={pdf.download} downloading={pdf.isDownloading} downloadStatus={pdf.status} />;
+  if (report && isCreditScoreUnavailable(report.creditScore)) {
+    return (
+      <CreditScoreUnavailable
+        onRetry={retry}
+        onBack={() => router.back()}
+        loading={pull.isPending || existing.isFetching}
+      />
+    );
+  }
+  if (isRenderableCreditReport(report)) {
+    return (
+      <CreditScoreReport
+        report={report}
+        onBack={() => router.back()}
+        onEligibility={() => router.push('/(tabs)/home')}
+        onOpenDetailed={() => {
+          setReportSession(report, pdfUrl);
+          router.push('/credit-score/detailed-report');
+        }}
+        onDownload={pdf.download}
+        downloading={pdf.isDownloading}
+        downloadStatus={pdf.status}
+      />
+    );
+  }
   if (pull.isPending && lastPayload.current) return <CreditReportLoading />;
-  if (!existing.isFetched && existing.fetchStatus !== 'paused') return <CreditReportLoading />;
+  if (isCheckingExisting) return <CreditReportLoading />;
 
-  return <ScreenBackground><FormLayout ref={scrollRef} keyboardAwareFooter
-    header={<><RupyaaLogo size="sm" style={styles.logo} /><View style={styles.heading}><AppText variant="h3" weight="semiBold" color="black">Check your credit score</AppText><AppText color="black" style={styles.subtitle}>Free & won’t affect your score. We just need a few details to fetch your Equifax report.</AppText></View></>}
-    footer={<><ErrorContainer responseError={submitError || pull.error?.message || ''} /><Button fullWidth size="large" loading={pull.isPending} disabled={pull.isPending || !isValid} onPress={handleSubmit(onSubmit, onValidationError)}>Get my credit score</Button></>}>
+  return <FormLayout
+    ref={scrollRef}
+    safeAreaEdges={['bottom']}
+    keyboardAwareFooter
+    header={
+      <>
+        <View style={styles.heading}>
+          <AppText variant="h3" weight="semiBold" color="black">Check your credit score</AppText>
+          <AppText color="black" style={styles.subtitle}>Free & won’t affect your score. We just need a few details to fetch your Equifax report.</AppText>
+        </View>
+      </>
+    }
+    footer={<><ErrorContainer responseError={formError} /><Button fullWidth size="large" loading={pull.isPending} disabled={pull.isPending || !isValid} onPress={handleSubmit(onSubmit, onValidationError)}>Get my credit score</Button></>}>
     <View style={styles.form}>
       <ControlledInput control={control} name="fullName" label="Full Name" placeholder="As per PAN Card" required inputRef={fullNameRef} returnKeyType="next" onSubmitEditing={() => panRef.current?.focus()} />
       <ControlledInput control={control} name="panNumber" label="PAN Number" placeholder="Enter Your PAN Number" required autoCapitalize="characters" maxLength={10} inputRef={panRef} returnKeyType="next" onSubmitEditing={() => dobRef.current?.focus()} />
@@ -92,12 +134,11 @@ export function CreditScoreForm() {
       <ControlledInput control={control} name="email" label="Email Address" placeholder="name@email.com" required keyboardType="email-address" autoCapitalize="none" inputRef={emailRef} returnKeyType="next" onSubmitEditing={() => incomeRef.current?.focus()} />
       <ControlledInput control={control} name="monthlyIncome" label="Monthly Income" placeholder="00,000" required keyboardType="number-pad" leftAccessory={<AppText color="black">₹</AppText>} inputRef={incomeRef} />
     </View>
-  </FormLayout></ScreenBackground>;
+  </FormLayout>;
 }
 
 const styles = StyleSheet.create({
-  logo: { marginTop: spacing['4xl'], marginLeft: spacing.md, marginBottom: spacing.xl },
-  heading: { gap: spacing.sm, paddingHorizontal: spacing.md, paddingBottom: spacing.xl },
+  heading: { paddingTop: spacing.md, gap: spacing.sm, paddingHorizontal: spacing.md, paddingBottom: spacing.xl },
   subtitle: { lineHeight: 24, color: colors.text.black },
   form: { gap: spacing.md, paddingHorizontal: spacing.md, paddingBottom: spacing.xl },
   phoneLabel: { fontSize: 14, marginBottom: spacing.sm },

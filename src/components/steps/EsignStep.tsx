@@ -69,7 +69,7 @@ function EsignFailureScreen({ onRetry }: EsignFailureScreenProps) {
   );
 }
 
-export function EsignStep({ onNext, onPrev }: StepProps) {
+export function EsignStep({ onNext, onPrev, header }: StepProps) {
   const { isSimulating, simulatedState } = useStepSimulation();
   const { promptAsync: signInWithGoogle } = useGoogleAuth();
   const [screen, setScreen] = useState<EsignScreen>('ready');
@@ -326,6 +326,7 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
     if (simulatedState === 'loading') {
       return (
         <FormLayout
+          header={header}
           showContactSupport
           safeAreaEdges={['bottom']}
           onBack={onPrev}
@@ -372,6 +373,7 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
 
     return (
       <FormLayout
+        header={header}
         showContactSupport
         safeAreaEdges={['bottom']}
         onBack={onPrev}
@@ -445,6 +447,7 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
   if (screen === 'polling') {
     return (
       <FormLayout
+        header={header}
         showContactSupport
         safeAreaEdges={['bottom']}
         onBack={onPrev}
@@ -465,6 +468,7 @@ export function EsignStep({ onNext, onPrev }: StepProps) {
   if (screen === 'pending') {
     return (
       <FormLayout
+        header={header}
         showContactSupport
         safeAreaEdges={['bottom']}
         onBack={onPrev}

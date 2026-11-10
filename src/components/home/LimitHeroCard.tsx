@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -81,6 +82,7 @@ export function LimitHeroCard({
   animatedArrow = true,
   children,
 }: LimitHeroCardProps): React.JSX.Element {
+  const { t } = useTranslation();
   const isInteractive = typeof onActionPress === 'function' && !disableAction;
   const isStatusCard = title != null;
 
@@ -89,7 +91,7 @@ export function LimitHeroCard({
       {badgeLabel ? (
         <View style={styles.badge}>
           <AppText style={styles.badgeText} variant="captionExtraSmall" weight="semiBold">
-            {badgeLabel.toUpperCase()}
+            {t(badgeLabel).toUpperCase()}
           </AppText>
           <RotateCcw size={14} color={colors.primary.main} strokeWidth={2.5} />
         </View>
@@ -115,7 +117,7 @@ export function LimitHeroCard({
           disabled={!isInteractive}
           activeOpacity={0.85}
           accessibilityRole="button"
-          accessibilityLabel={actionLabel}
+          accessibilityLabel={t(actionLabel)}
         >
           <AppText style={styles.actionText} variant="caption" weight="semiBold">
             {actionLabel}

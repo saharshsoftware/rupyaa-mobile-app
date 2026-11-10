@@ -234,14 +234,8 @@ export const authService = {
     // Force API base URL back to the default backend before logout flow begins.
     await resetNgrokApiBaseUrlOnLogout();
 
-    const { accessToken, refreshToken } = useAuthStore.getState();
-    const body: Record<string, unknown> = {};
-    if (accessToken) {
-      body.accessToken = accessToken;
-    }
-    if (refreshToken) {
-      body.refreshToken = refreshToken;
-    }
+    // Capture token before local cleanup so the logout request can authenticate.
+    const { accessToken } = useAuthStore.getState();
 
     // Always clear local session, even if API call fails (graceful degradation)
     const clearSession = async () => {
@@ -253,9 +247,20 @@ export const authService = {
       }
     };
 
-    // Attempt to call logout API, but don't fail if it errors
+    // Server logout first (awaited). Refresh token goes via HttpOnly cookie
+    // (credentials: include) — do not set Cookie header manually.
     try {
-      const response = await apiClient.post<unknown>(API_ENDPOINTS.auth.logout, body);
+      const response = await apiClient.post<unknown>(
+        API_ENDPOINTS.auth.logout,
+        undefined,
+        {
+          skipAuth: true,
+          credentials: 'include',
+          headers: accessToken
+            ? { Authorization: `Bearer ${accessToken}` }
+            : undefined,
+        }
+      );
       await clearSession();
       return response.success
         ? { success: true, data: { success: true } }

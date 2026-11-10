@@ -19,6 +19,7 @@ const RETRY_STAGE_REFETCH_INTERVAL_MS = 1000;
  */
 export function useUserStage(
   enabled: boolean = true,
+  refetchInterval: number | false = false,
 ) {
     const syncFromUserStage = useFlowStore((s) => s.syncFromUserStage);
 
@@ -36,7 +37,7 @@ export function useUserStage(
       refetchOnReconnect: true,
       refetchOnWindowFocus: true,
       refetchInterval: (query) =>
-        query.state.data?.retryStage === true ? RETRY_STAGE_REFETCH_INTERVAL_MS : false,
+        query.state.data?.retryStage === true ? RETRY_STAGE_REFETCH_INTERVAL_MS : refetchInterval,
       retry: 1,
       enabled,
     });
@@ -50,7 +51,6 @@ export function useUserStage(
         }
         syncFromUserStage(stage, query.data?.sectionsCompleted, query.data?.context);
       }
-      applyUserStageResultToStore(query.data);
     }, [
       query.data?.context,
       query.data?.sectionsCompleted,
@@ -58,5 +58,9 @@ export function useUserStage(
       syncFromUserStage,
     ]);
   
+    useEffect(() => {
+      if (query.data) applyUserStageResultToStore(query.data);
+    }, [query.data]);
+
     return query;
   }

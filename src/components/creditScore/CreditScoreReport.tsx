@@ -17,10 +17,11 @@ interface Props {
   downloadStatus?: string;
 }
 
-function compactCurrency(value: number): string {
-  if (value >= 100000) return `₹${(value / 100000).toFixed(1).replace('.0', '')}L`;
-  if (value >= 1000) return `₹${Math.round(value / 1000)}K`;
-  return `₹${value.toLocaleString('en-IN')}`;
+function compactCurrency(value: number | null | undefined): string {
+  const amount = typeof value === 'number' && Number.isFinite(value) ? value : 0;
+  if (amount >= 100000) return `₹${(amount / 100000).toFixed(1).replace('.0', '')}L`;
+  if (amount >= 1000) return `₹${Math.round(amount / 1000)}K`;
+  return `₹${amount.toLocaleString('en-IN')}`;
 }
 
 function factorColor(rating: string): string {
@@ -43,6 +44,8 @@ export function CreditScoreReport({ report, onBack, onEligibility, onOpenDetaile
   const factors = Object.values(report.creditHealthBreakdown ?? {});
   const weakest = factors.reduce<CreditHealthFactor | undefined>((lowest, item) => !lowest || item.percentage < lowest.percentage ? item : lowest, undefined);
   const enquiries = Number.parseInt(report.creditHealthBreakdown?.creditEnquiries?.description ?? '', 10) || 0;
+  const activeAccounts = report.creditSummary?.activeAccounts ?? 0;
+  const totalCreditLimit = report.creditSummary?.totalCreditLimit ?? null;
   return <View style={styles.screen}>
     <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
       <LinearGradient colors={[colors.primary.main, '#FFF4CE', colors.background.primary]} style={styles.hero}>
@@ -64,7 +67,7 @@ export function CreditScoreReport({ report, onBack, onEligibility, onOpenDetaile
       <View style={styles.summaryCard}>
         <AppText variant="caption" weight="semiBold" color="black">Report summary</AppText>
         <View style={styles.metrics}>
-          {[[report.creditSummary.activeAccounts, 'ACTIVE\nACCOUNTS'], [compactCurrency(report.creditSummary.totalCreditLimit), 'TOTAL\nCREDIT'], [enquiries, 'ENQUIRIES\n(6 Months)']].map(([value, label]) =>
+          {[[activeAccounts, 'ACTIVE\nACCOUNTS'], [compactCurrency(totalCreditLimit), 'TOTAL\nCREDIT'], [enquiries, 'ENQUIRIES\n(6 Months)']].map(([value, label]) =>
             <View key={String(label)} style={styles.metric}><AppText variant="h4" weight="bold" color="black">{value}</AppText><AppText variant="captionExtraSmall" color="black" align="center">{label}</AppText></View>)}
         </View>
       </View>

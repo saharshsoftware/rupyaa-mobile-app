@@ -1,3 +1,4 @@
+import { useResolvedAppConfigValue } from '@/src/hooks/useResolvedAppConfigValue';
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { View, StyleSheet, ActivityIndicator, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -126,7 +127,7 @@ function classifyHyperKycApiResult(payload: {
  * Face KYC step — guides the user through a selfie-based identity
  * verification to match their face against their KYC documents.
  */
-export function FaceKycStep({ onNext, onPrev }: StepProps) {
+export function FaceKycStep({ onNext, onPrev, header }: StepProps) {
   const { isSimulating, simulatedState } = useStepSimulation();
   const [screen, setScreen] = useState<FaceKycScreen>('intro');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -160,8 +161,8 @@ export function FaceKycStep({ onNext, onPrev }: StepProps) {
   const successAutoNextTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const accessToken = accessTokenResponse?.token || '';
-  const workflowId = getHyperKycWorkflowId();
-  const sdkVersion = getHyperKycSdkVersion();
+  const workflowId = useResolvedAppConfigValue(getHyperKycWorkflowId);
+  const sdkVersion = useResolvedAppConfigValue(getHyperKycSdkVersion);
   const hasValidConfig = Boolean(accessToken && workflowId && transactionId && sdkVersion);
   const isPreparingVerificationContent =
     isLoadingAccessToken ||
@@ -524,7 +525,7 @@ export function FaceKycStep({ onNext, onPrev }: StepProps) {
   if (isSimulating) {
     if (simulatedState === 'loading') {
       return (
-        <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+        <FormLayout header={header} showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
           <View style={styles.loadingContainer}>
             {/* <View style={styles.centeredContainer}>
               <ActivityIndicator size="large" color={colors.primary.main} />
@@ -594,6 +595,7 @@ export function FaceKycStep({ onNext, onPrev }: StepProps) {
   // ─── Intro / instructions screen (default) ─────────────────────
   return (
     <FormLayout
+      header={header}
       showContactSupport
       safeAreaEdges={['bottom']}
       onBack={onPrev}
