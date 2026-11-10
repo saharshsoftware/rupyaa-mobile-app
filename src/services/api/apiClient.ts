@@ -33,6 +33,8 @@ export type ApiRequestOptions = {
   requestKey?: string;
   skipAuth?: boolean;
   skipApiVersion?: boolean;
+  /** Browser cookie credentials (e.g. logout refreshToken HttpOnly cookie). */
+  credentials?: RequestCredentials;
 };
 
 export const apiRequest = async <T>(options: ApiRequestOptions): Promise<ApiResponse<T>> => {
@@ -112,6 +114,7 @@ export const apiRequest = async <T>(options: ApiRequestOptions): Promise<ApiResp
       cache: 'no-store',
       body: requestBody,
       signal: controller.signal,
+      ...(options.credentials ? { credentials: options.credentials } : {}),
     });
 
     const durationMs = Date.now() - startTime;
