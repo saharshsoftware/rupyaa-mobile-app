@@ -19,6 +19,7 @@ export const appConfig = {
   apiDisabled: false,
   useNgrokApiBaseUrl: false,
   useAmanNgrokApiBaseUrl: false,
+  useAdityaNgrokApiBaseUrl: false,
   stagingApiOverride: 'none' as 'none' | 'staging2' | 'staging',
   useBankStatementUploader: false,
   prefillPersonalWithPiyushData: envConfig.isDevelopment,
