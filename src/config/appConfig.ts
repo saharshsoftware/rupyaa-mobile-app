@@ -19,6 +19,7 @@ export const appConfig = {
   apiDisabled: false,
   useNgrokApiBaseUrl: false,
   useAmanNgrokApiBaseUrl: false,
+  useAdityaNgrokApiBaseUrl: false,
   stagingApiOverride: 'none' as 'none' | 'staging2' | 'staging',
   useBankStatementUploader: false,
   prefillPersonalWithPiyushData: envConfig.isDevelopment,
@@ -61,7 +62,7 @@ export const appConfig = {
   // Contact us
   contactUsWhatsAppNumber: '+91',
   /** Direct WhatsApp chat (wa.me) — prefer this over building from the number. */
-  whatsappSupportUrl: 'https://wa.me/918503090309?text=Hi',
+  whatsappSupportUrl: 'https://wa.me/918949155686?text=Hi',
 
   grievanceOfficerEmail: "help@rupyaa.com",
   contactSupportTeamEmail: "care@rupyaa.com",

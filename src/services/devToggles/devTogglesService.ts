@@ -1,8 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { appConfig } from '@/src/config/appConfig';
 import { apiConfig } from '@/src/config/api';
 import { devConfig } from '@/src/config/dev';
-import { STORAGE_KEYS } from '@/src/constants/data';
 import {
   getCurrentApiBaseUrl,
   isStagingApiOverride,
@@ -15,6 +13,7 @@ import {
 export interface DevToggleState {
   useNgrokApiBaseUrl: boolean;
   useAmanNgrokApiBaseUrl: boolean;
+  useAdityaNgrokApiBaseUrl: boolean;
   stagingApiOverride: StagingApiOverride;
   useBankStatementUploader: boolean;
 }
@@ -36,6 +35,7 @@ export const subscribeToDevToggles = (listener: () => void): (() => void) => {
 export const getDevToggleState = (): DevToggleState => ({
   useNgrokApiBaseUrl: appConfig.useNgrokApiBaseUrl,
   useAmanNgrokApiBaseUrl: appConfig.useAmanNgrokApiBaseUrl,
+  useAdityaNgrokApiBaseUrl: appConfig.useAdityaNgrokApiBaseUrl,
   stagingApiOverride:
     (appConfig as { stagingApiOverride: StagingApiOverride }).stagingApiOverride,
   useBankStatementUploader: appConfig.useBankStatementUploader,
@@ -53,6 +53,11 @@ export const applyDevToggleState = (
 
   if (typeof updates.useAmanNgrokApiBaseUrl === 'boolean') {
     appConfig.useAmanNgrokApiBaseUrl = updates.useAmanNgrokApiBaseUrl;
+    shouldRebuildApiBaseUrl = true;
+  }
+
+  if (typeof updates.useAdityaNgrokApiBaseUrl === 'boolean') {
+    appConfig.useAdityaNgrokApiBaseUrl = updates.useAdityaNgrokApiBaseUrl;
     shouldRebuildApiBaseUrl = true;
   }
 
@@ -77,12 +82,14 @@ apiConfig.baseUrl = getCurrentApiBaseUrl();
 
 export const loadDevToggleStateFromStorage = async (): Promise<DevToggleState> => {
   try {
-    const [storedNgrok, storedAmanNgrok, storedStagingApiOverride, storedBankUploader] =
+    const { storageService } = await import('@/src/services/storage/storageService');
+    const [storedNgrok, storedAmanNgrok, storedAdityaNgrok, storedStagingApiOverride, storedBankUploader] =
       await Promise.all([
-      AsyncStorage.getItem(STORAGE_KEYS.useNgrokApiBaseUrl),
-      AsyncStorage.getItem(STORAGE_KEYS.useAmanNgrokApiBaseUrl),
-      AsyncStorage.getItem(STORAGE_KEYS.stagingApiOverride),
-      AsyncStorage.getItem(STORAGE_KEYS.useBankStatementUploader),
+      storageService.getKey('useNgrokApiBaseUrl'),
+      storageService.getKey('useAmanNgrokApiBaseUrl'),
+      storageService.getKey('useAdityaNgrokApiBaseUrl'),
+      storageService.getKey('stagingApiOverride'),
+      storageService.getKey('useBankStatementUploader'),
     ]);
 
     const updates: Partial<DevToggleState> = {};
@@ -93,6 +100,10 @@ export const loadDevToggleStateFromStorage = async (): Promise<DevToggleState> =
 
     if (storedAmanNgrok != null) {
       updates.useAmanNgrokApiBaseUrl = storedAmanNgrok === 'true';
+    }
+
+    if (storedAdityaNgrok != null) {
+      updates.useAdityaNgrokApiBaseUrl = storedAdityaNgrok === 'true';
     }
 
     if (storedStagingApiOverride != null && isStagingApiOverride(storedStagingApiOverride)) {
@@ -113,8 +124,8 @@ export const loadDevToggleStateFromStorage = async (): Promise<DevToggleState> =
 export const setUseNgrokApiBaseUrlToggle = async (value: boolean): Promise<void> => {
   applyDevToggleState({ useNgrokApiBaseUrl: value });
   try {
-    await AsyncStorage.setItem(
-      STORAGE_KEYS.useNgrokApiBaseUrl,
+    const { storageService } = await import('@/src/services/storage/storageService');
+    await storageService.setKey('useNgrokApiBaseUrl',
       value ? 'true' : 'false',
     );
   } catch (error) {
@@ -125,12 +136,24 @@ export const setUseNgrokApiBaseUrlToggle = async (value: boolean): Promise<void>
 export const setUseAmanNgrokApiBaseUrlToggle = async (value: boolean): Promise<void> => {
   applyDevToggleState({ useAmanNgrokApiBaseUrl: value });
   try {
-    await AsyncStorage.setItem(
-      STORAGE_KEYS.useAmanNgrokApiBaseUrl,
+    const { storageService } = await import('@/src/services/storage/storageService');
+    await storageService.setKey('useAmanNgrokApiBaseUrl',
       value ? 'true' : 'false',
     );
   } catch (error) {
     logToggleError('[DevToggles] Failed to persist Aman ngrok toggle', error);
+  }
+};
+
+export const setUseAdityaNgrokApiBaseUrlToggle = async (value: boolean): Promise<void> => {
+  applyDevToggleState({ useAdityaNgrokApiBaseUrl: value });
+  try {
+    const { storageService } = await import('@/src/services/storage/storageService');
+    await storageService.setKey('useAdityaNgrokApiBaseUrl',
+      value ? 'true' : 'false',
+    );
+  } catch (error) {
+    logToggleError('[DevToggles] Failed to persist Aditya ngrok toggle', error);
   }
 };
 
@@ -139,8 +162,8 @@ export const setUseBankStatementUploaderToggle = async (
 ): Promise<void> => {
   applyDevToggleState({ useBankStatementUploader: value });
   try {
-    await AsyncStorage.setItem(
-      STORAGE_KEYS.useBankStatementUploader,
+    const { storageService } = await import('@/src/services/storage/storageService');
+    await storageService.setKey('useBankStatementUploader',
       value ? 'true' : 'false',
     );
   } catch (error) {
@@ -153,7 +176,8 @@ export const setStagingApiOverrideToggle = async (
 ): Promise<void> => {
   applyDevToggleState({ stagingApiOverride: value });
   try {
-    await AsyncStorage.setItem(STORAGE_KEYS.stagingApiOverride, value);
+    const { storageService } = await import('@/src/services/storage/storageService');
+    await storageService.setKey('stagingApiOverride', value);
   } catch (error) {
     logToggleError('[DevToggles] Failed to persist staging API override', error);
   }
@@ -163,13 +187,16 @@ export const resetNgrokApiBaseUrlOnLogout = async (): Promise<void> => {
   applyDevToggleState({
     useNgrokApiBaseUrl: false,
     useAmanNgrokApiBaseUrl: false,
+    useAdityaNgrokApiBaseUrl: false,
     stagingApiOverride: STAGING_API_OVERRIDE.none,
   });
   try {
+    const { storageService } = await import('@/src/services/storage/storageService');
     await Promise.all([
-      AsyncStorage.removeItem(STORAGE_KEYS.useNgrokApiBaseUrl),
-      AsyncStorage.removeItem(STORAGE_KEYS.useAmanNgrokApiBaseUrl),
-      AsyncStorage.removeItem(STORAGE_KEYS.stagingApiOverride),
+      storageService.clearKey('useNgrokApiBaseUrl'),
+      storageService.clearKey('useAmanNgrokApiBaseUrl'),
+      storageService.clearKey('useAdityaNgrokApiBaseUrl'),
+      storageService.clearKey('stagingApiOverride'),
     ]);
   } catch (error) {
     logToggleError('[DevToggles] Failed to clear API URL toggles during logout', error);

@@ -12,22 +12,40 @@ const CIRCLE_SIZE = 20;
 export interface StepCircleProps {
   showCheck: boolean;
   active: boolean;
+  size?: number;
+  accentColor?: string;
 }
 
-export function StepCircle({ showCheck, active }: StepCircleProps) {
+export function StepCircle({
+  showCheck,
+  active,
+  size = CIRCLE_SIZE,
+  accentColor = colors.primary.main,
+}: StepCircleProps) {
   const isCompleted = showCheck;
+  const isCurrent = active && !isCompleted;
+  const status = isCompleted ? 'Completed' : isCurrent ? 'In progress' : 'Upcoming';
+  const indicator = isCompleted
+    ? <Check size={14} color={colors.text.inverse} strokeWidth={3} />
+    : isCurrent && <View style={[styles.currentDot, { backgroundColor: accentColor }]} />;
 
   return (
     <View
+      accessible
+      accessibilityLabel={status}
       style={[
         styles.circle,
-        active && !isCompleted && styles.circleActive,
-        isCompleted && styles.circleCompleted,
+        {
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          borderColor: accentColor,
+          backgroundColor: isCompleted ? accentColor : colors.background.primary,
+        },
+        isCurrent && styles.circleActive,
       ]}
     >
-      {isCompleted && (
-        <Check size={14} color={colors.text.inverse} strokeWidth={3} />
-      )}
+      {indicator}
     </View>
   );
 }
@@ -44,11 +62,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   circleActive: {
-    borderColor: colors.primary.main,
     borderWidth: 2.5,
   },
-  circleCompleted: {
-    backgroundColor: colors.primary.main,
-    borderColor: colors.primary.main,
+  currentDot: {
+    width: CIRCLE_SIZE / 2,
+    height: CIRCLE_SIZE / 2,
+    borderRadius: CIRCLE_SIZE / 4,
   },
 });

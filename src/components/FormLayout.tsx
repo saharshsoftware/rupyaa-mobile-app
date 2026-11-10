@@ -132,9 +132,10 @@ export const FormLayout = forwardRef<KeyboardAwareScrollView, FormLayoutProps>(
           >
             {header}
             {children}
+            {showContactSupport && <ContactSupport />}
           </KeyboardAwareScrollView>
 
-          {footer != null || showContactSupport ? (
+          {footer != null ? (
             <View
               style={[
                 styles.footer,
@@ -143,7 +144,6 @@ export const FormLayout = forwardRef<KeyboardAwareScrollView, FormLayoutProps>(
                 footerStyle,
               ]}
             >
-              {showContactSupport && <ContactSupport />}
               {footer}
             </View>
           ) : null}
