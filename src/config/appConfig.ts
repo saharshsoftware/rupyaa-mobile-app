@@ -19,6 +19,7 @@ export const appConfig = {
   apiDisabled: false,
   useNgrokApiBaseUrl: false,
   useAmanNgrokApiBaseUrl: false,
+  useAdityaNgrokApiBaseUrl: false,
   stagingApiOverride: 'none' as 'none' | 'staging2' | 'staging',
   useBankStatementUploader: false,
   prefillPersonalWithPiyushData: envConfig.isDevelopment,
@@ -61,7 +62,7 @@ export const appConfig = {
   // Contact us
   contactUsWhatsAppNumber: '+91',
   /** Direct WhatsApp chat (wa.me) — prefer this over building from the number. */
-  whatsappSupportUrl: 'https://wa.me/918503090309?text=Hi',
+  whatsappSupportUrl: 'https://wa.me/918949155686?text=Hi',
 
   grievanceOfficerEmail: "help@rupyaa.com",
   contactSupportTeamEmail: "care@rupyaa.com",
@@ -103,9 +104,9 @@ export const appConfig = {
 
   // Google Auth
   // webClientId (used for Android server auth code flow and token verification)
-  googleClientIdRupyaa: '520032386050-20d39sd8ie54oimi6aejo15oat47967e.apps.googleusercontent.com',
+  googleClientId: '704369181162-6ruj8pvdkiooo2na09p1mc523urao85s.apps.googleusercontent.com',
   // Android OAuth 2.0 client ID (type: Android) from Google Cloud Console
-  androidGoogleClientIdRupyaa: '520032386050-c25gdrekpmds3ekim8dupqo4fe9e8mnh.apps.googleusercontent.com',
+  //androidGoogleClientIdRupyaa: '520032386050-c25gdrekpmds3ekim8dupqo4fe9e8mnh.apps.googleusercontent.com',
   // iOS OAuth 2.0 client ID (type: iOS) from Google Cloud Console.
   // Create at: console.cloud.google.com → APIs & Services → Credentials → + Cr
   iosGoogleClientId: '520032386050-ksc98gssjndoifj6vmu70j5fcijiv7n1.apps.googleusercontent.com',

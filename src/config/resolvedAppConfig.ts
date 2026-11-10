@@ -50,7 +50,7 @@ export function getMaxSmsToSync(): number {
 }
 
 export function getGoogleClientId(): string {
-  return getFromStore('googleClientIdRupyaa', appConfig.googleClientIdRupyaa) ?? appConfig.googleClientIdRupyaa;
+  return getFromStore('googleClientId', appConfig.googleClientId) ?? appConfig.googleClientId;
 }
 
 export function getAndroidGoogleClientId(): string {

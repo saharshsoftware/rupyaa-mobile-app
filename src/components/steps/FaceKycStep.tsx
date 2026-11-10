@@ -1,3 +1,4 @@
+import { useResolvedAppConfigValue } from '@/src/hooks/useResolvedAppConfigValue';
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { View, StyleSheet, ActivityIndicator, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -160,8 +161,8 @@ export function FaceKycStep({ onNext, onPrev, header }: StepProps) {
   const successAutoNextTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const accessToken = accessTokenResponse?.token || '';
-  const workflowId = getHyperKycWorkflowId();
-  const sdkVersion = getHyperKycSdkVersion();
+  const workflowId = useResolvedAppConfigValue(getHyperKycWorkflowId);
+  const sdkVersion = useResolvedAppConfigValue(getHyperKycSdkVersion);
   const hasValidConfig = Boolean(accessToken && workflowId && transactionId && sdkVersion);
   const isPreparingVerificationContent =
     isLoadingAccessToken ||

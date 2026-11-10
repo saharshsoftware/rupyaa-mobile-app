@@ -24,9 +24,9 @@ import { resolveActiveLoanScreenType } from '@/src/utils/loan-helpers';
 export default function AllLoansScreen() {
   const { data, isLoading, error, isError, refetch } = useAllUserLoans();
 
-  useFocusEffect(() => {
+  useFocusEffect(useCallback(() => {
     void refetch();
-  });
+  }, [refetch]));
 
   const [activeTab, setActiveTab] = useState<'ongoing' | 'history'>('ongoing');
   const [nocRequestLoanId, setNocRequestLoanId] = useState<string | null>(null);
