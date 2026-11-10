@@ -31,7 +31,7 @@ const GENERIC_ERROR = 'Unable to start DigiLocker. Please try again.';
 /**
  * DigiLocker step — collect Aadhaar number and initiate KYC.
  */
-export function DigilockerStep({ onNext, onPrev }: StepProps) {
+export function DigilockerStep({ onNext, onPrev, header }: StepProps) {
   const { isSimulating, simulatedState } = useStepSimulation();
   const [digilockerUrl, setDigilockerUrl] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -190,7 +190,7 @@ export function DigilockerStep({ onNext, onPrev }: StepProps) {
   if (isSimulating) {
     if (simulatedState === 'loading') {
       return (
-        <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+        <FormLayout header={header} showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
           <View style={styles.loadingContainer}>
             <ZapcashLoading
               visible={true}
@@ -219,6 +219,7 @@ export function DigilockerStep({ onNext, onPrev }: StepProps) {
     if (simulatedState === 'error') {
       return (
         <FormLayout
+          header={header}
           showContactSupport
           safeAreaEdges={['bottom']}
           onBack={onPrev}
@@ -241,7 +242,7 @@ export function DigilockerStep({ onNext, onPrev }: StepProps) {
 
   if (isRefreshingStatus) {
     return (
-      <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+      <FormLayout header={header} showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
         <View style={styles.loadingContainer}>
           <ZapcashLoading
             visible={true}
@@ -288,6 +289,7 @@ export function DigilockerStep({ onNext, onPrev }: StepProps) {
 
   return (
     <FormLayout
+      header={header}
       showContactSupport
       safeAreaEdges={['bottom']}
       onBack={onPrev}

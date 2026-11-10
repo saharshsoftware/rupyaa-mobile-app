@@ -1,9 +1,22 @@
 import { colors } from '@/src/theme';
+import type { CreditReportData } from '@/src/types/creditScore';
 
 export const CREDIT_SCORE_UNAVAILABLE = -1;
 
 export function isCreditScoreUnavailable(score: number): boolean {
   return score === CREDIT_SCORE_UNAVAILABLE;
+}
+
+/** Guards against incomplete bureau payloads that would crash the report UI. */
+export function isRenderableCreditReport(
+  report: CreditReportData | null | undefined
+): report is CreditReportData {
+  return (
+    !!report &&
+    typeof report.creditScore === 'number' &&
+    !!report.creditSummary &&
+    typeof report.creditSummary === 'object'
+  );
 }
 
 export function getCreditScorePresentation(score: number): { rating: string; color: string } {

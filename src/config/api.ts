@@ -139,4 +139,7 @@ export const API_ENDPOINTS = {
     filterOptions: '/tickets/config/filter-options',
     createCustomerTicket: '/tickets/customer',
   },
+  dsa: {
+    rejectionRedirect: '/dsa/offers/rejection-redirect',
+  },
 };

@@ -54,6 +54,7 @@ function formatTenure(tenure: string | number | null | undefined): string {
 
 
 export function SanctionedStep({
+  header,
   onPrev,
   onNext,
   presentation = 'flow',
@@ -128,6 +129,7 @@ export function SanctionedStep({
 
   return (
     <FormLayout
+      header={header}
       showContactSupport
       safeAreaEdges={['bottom']}
       onBack={onPrev}

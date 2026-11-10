@@ -127,7 +127,7 @@ function classifyHyperKycApiResult(payload: {
  * Face KYC step — guides the user through a selfie-based identity
  * verification to match their face against their KYC documents.
  */
-export function FaceKycStep({ onNext, onPrev }: StepProps) {
+export function FaceKycStep({ onNext, onPrev, header }: StepProps) {
   const { isSimulating, simulatedState } = useStepSimulation();
   const [screen, setScreen] = useState<FaceKycScreen>('intro');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -525,7 +525,7 @@ export function FaceKycStep({ onNext, onPrev }: StepProps) {
   if (isSimulating) {
     if (simulatedState === 'loading') {
       return (
-        <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+        <FormLayout header={header} showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
           <View style={styles.loadingContainer}>
             {/* <View style={styles.centeredContainer}>
               <ActivityIndicator size="large" color={colors.primary.main} />
@@ -595,6 +595,7 @@ export function FaceKycStep({ onNext, onPrev }: StepProps) {
   // ─── Intro / instructions screen (default) ─────────────────────
   return (
     <FormLayout
+      header={header}
       showContactSupport
       safeAreaEdges={['bottom']}
       onBack={onPrev}

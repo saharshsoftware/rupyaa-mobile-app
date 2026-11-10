@@ -33,6 +33,7 @@ import {
 } from '@/src/services/logging/logPoolJourney';
 import { usePreEnachReviewGate } from '@/src/hooks/usePreEnachReviewGate';
 import { useOfferStatusStagePrefetch } from '@/src/hooks/useOfferStatusStagePrefetch';
+import { useRejectionRedirect } from '@/src/hooks/useRejectionRedirect';
 import { useKeyboardHeight } from '@/src/hooks/useKeyboardHeight';
 
 // Get steps once (static)
@@ -104,6 +105,17 @@ export function LoanWizard() {
 
   const { isResolvingStage: isResolvingOfferStatusStage, awaitResolvedStage } =
     useOfferStatusStagePrefetch(showOfferStatusModal);
+
+  const isIneligibilityVisible = ineligibilityMessage !== null;
+  const {
+    redirectUrl: rejectionRedirectUrl,
+    ctaLabel: rejectionRedirectCtaLabel,
+    openPartnerRedirect,
+  } = useRejectionRedirect({
+    enabled: isIneligibilityVisible,
+    // Journey shows a secondary CTA; home rejected card also uses tap-to-open.
+    autoRedirect: false,
+  });
 
   // Log flow state changes including pass flags, user stage, and component name
   useEffect(() => {
@@ -269,7 +281,6 @@ export function LoanWizard() {
               <ProgressStepper {...stepperProps} />
             )
           )}
-          {showSelectedOffer && <SelectedOfferCard />}
         </View>
       </SafeAreaView>
 
@@ -286,7 +297,11 @@ export function LoanWizard() {
 
       {/* Only the step content slides on transition — the header above stays fixed. */}
       <Animated.View style={[styles.stepContainer, { transform: [{ translateX: slideAnim }] }]}>
-        <StepComponent onNext={handleNext} onPrev={prev} />
+        <StepComponent
+          onNext={handleNext}
+          onPrev={prev}
+          header={showSelectedOffer ? <SelectedOfferCard /> : undefined}
+        />
       </Animated.View>
 
       {/* Rendered outside the step Animated.View so it is not subject to the
@@ -294,9 +309,15 @@ export function LoanWizard() {
           navigation occurs the entire screen (including this overlay) transitions
           away as one unit — preventing any flash of the underlying form. */}
       <IneligibilityModal
-        visible={ineligibilityMessage !== null}
+        visible={isIneligibilityVisible}
         message={ineligibilityMessage ?? ''}
         onCtaPress={handleGoHome}
+        secondaryCtaLabel={
+          rejectionRedirectUrl ? rejectionRedirectCtaLabel : undefined
+        }
+        onSecondaryCtaPress={
+          rejectionRedirectUrl ? openPartnerRedirect : undefined
+        }
       />
       <OfferStatusModal
         visible={showOfferStatusModal}
