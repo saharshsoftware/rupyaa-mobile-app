@@ -115,7 +115,9 @@ export function CreditScoreForm() {
 
   return <FormLayout
     ref={scrollRef}
-    safeAreaEdges={['bottom']}
+    safeAreaEdges={['top', 'bottom']}
+    showBackButton
+    onBack={() => router.back()}
     keyboardAwareFooter
     header={
       <>
