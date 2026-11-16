@@ -1,12 +1,16 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Screen } from '@/src/components';
-import { useLocaleStore } from '@/src/store/useLocaleStore';
-import { colors, radius, spacing, typography } from '@/src/theme';
-import { OnboardingLanguageOptionRow } from './onboarding-language';
+import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
+import { Button, Screen } from '@/src/components';
 import { LANGUAGE_OPTIONS } from '@/src/constants/data';
+import { useLocaleStore } from '@/src/store/useLocaleStore';
+import { colors, radius, spacing } from '@/src/theme';
+import { OnboardingLanguageOptionRow } from './onboarding-language';
 
 export default function LanguageSelectionScreen() {
+  const router = useRouter();
+  const { t } = useTranslation();
   const language = useLocaleStore((state) => state.language);
   const setLanguage = useLocaleStore((state) => state.setLanguage);
 
@@ -18,10 +22,28 @@ export default function LanguageSelectionScreen() {
       onSelect={setLanguage}
     />
   ));
+
   return (
-    <Screen edges={[]} contentContainerStyle={styles.content} style={styles.screen}>
-      <View style={styles.section}>
-        {languageOptionRows}
+    <Screen
+      scroll={false}
+      edges={['bottom']}
+      contentContainerStyle={styles.content}
+      style={styles.screen}
+    >
+      <View style={styles.section}>{languageOptionRows}</View>
+
+      <View style={styles.footer}>
+        <Button
+          variant="primary"
+          size="medium"
+          fullWidth
+          onPress={() => router.back()}
+          style={styles.doneButton}
+          textStyle={styles.doneButtonText}
+          textSize="sm"
+        >
+          {t('Done')}
+        </Button>
       </View>
     </Screen>
   );
@@ -32,41 +54,24 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.secondary,
   },
   content: {
+    flex: 1,
     paddingHorizontal: spacing.base,
     paddingTop: spacing.lg,
-    paddingBottom: spacing['3xl'],
+    paddingBottom: spacing.lg,
   },
   section: {
     gap: spacing.base,
   },
-  row: {
-    minHeight: 56,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.border.light,
-    backgroundColor: colors.background.primary,
-    paddingHorizontal: spacing.base,
+  footer: {
+    marginTop: 'auto',
+  },
+  doneButton: {
+    minHeight: 44,
+    borderRadius: radius.sm,
+    backgroundColor: colors.warning.light,
     paddingVertical: spacing.sm,
   },
-  rowActive: {
-    borderColor: colors.primary.main,
-    backgroundColor: colors.primary.lightest_3,
-  },
-  iconWrap: {
-    width: 36,
-    height: 36,
-    borderRadius: radius.lg,
-    backgroundColor: colors.primary.lightest,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: spacing.base,
-  },
-  title: {
-    flex: 1,
-    minWidth: 0,
-    fontFamily: typography.fontFamily.semiBold,
-    color: colors.text.primary,
+  doneButtonText: {
+    color: colors.text.black,
   },
 });
