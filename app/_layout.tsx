@@ -137,8 +137,11 @@ function AppBootstrap({ shouldEnableFreeRasp }: { shouldEnableFreeRasp: boolean 
                 <Stack.Screen
                   name="credit-score"
                   options={{
-                    headerShown: false,
+                    headerShown: true,
                     title: t('Credit Score'),
+                    headerTitleAlign: 'left',
+                    headerStyle: { backgroundColor: colors.background.primary },
+                    headerShadowVisible: false,
                     contentStyle: { backgroundColor: colors.background.primary },
                   }}
                 />

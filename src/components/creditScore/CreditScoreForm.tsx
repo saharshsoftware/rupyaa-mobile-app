@@ -1,9 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useRouter } from 'expo-router';
+import { useNavigation, useRouter } from 'expo-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslation } from 'react-i18next';
+import { ArrowLeft } from 'lucide-react-native';
 import { AppText, Button, ControlledDateInput, ControlledInput, FormLayout, PhoneInput } from '@/src/components';
 import ErrorContainer from '@/src/components/ErrorContainer';
 import { CreditReportLoading, CreditScoreReport, CreditScoreUnavailable } from '@/src/components/creditScore';
@@ -22,6 +24,8 @@ const FIELD_ORDER = ['fullName', 'panNumber', 'dob', 'email', 'monthlyIncome'] a
 
 export function CreditScoreForm() {
   const router = useRouter();
+  const navigation = useNavigation();
+  const { t } = useTranslation();
   const [report, setReport] = useState<CreditReportData | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState('');
@@ -46,6 +50,35 @@ export function CreditScoreForm() {
   const formError = submitError || pull.error?.message || existing.error?.message || '';
   const isCheckingExisting =
     existing.isPending || (!existing.isFetched && existing.fetchStatus !== 'paused');
+  const showingReport = isRenderableCreditReport(report) && !isCreditScoreUnavailable(report.creditScore);
+
+  // Report has its own header; form/unavailable/loading use the stack header for back.
+  useLayoutEffect(() => {
+    const parent = navigation.getParent();
+    parent?.setOptions({
+      headerShown: !showingReport,
+      headerTitle: () => null,
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={styles.headerLeft}
+          activeOpacity={0.7}
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
+        >
+          <ArrowLeft size={24} color={colors.text.black} />
+          <AppText variant="bodyLarge" weight="bold" color="black">
+            {t('Credit Score')}
+          </AppText>
+        </TouchableOpacity>
+      ),
+      headerStyle: { backgroundColor: colors.background.primary },
+      headerShadowVisible: false,
+    });
+    return () => {
+      parent?.setOptions({ headerShown: false });
+    };
+  }, [navigation, router, showingReport, t]);
 
   useEffect(() => {
     void resolveVerifiedPhoneNumber().then(setSessionPhone);
@@ -89,7 +122,6 @@ export function CreditScoreForm() {
     return (
       <CreditScoreUnavailable
         onRetry={retry}
-        onBack={() => router.back()}
         loading={pull.isPending || existing.isFetching}
       />
     );
@@ -115,9 +147,7 @@ export function CreditScoreForm() {
 
   return <FormLayout
     ref={scrollRef}
-    safeAreaEdges={['top', 'bottom']}
-    showBackButton
-    onBack={() => router.back()}
+    safeAreaEdges={['bottom']}
     keyboardAwareFooter
     header={
       <>
@@ -140,6 +170,12 @@ export function CreditScoreForm() {
 }
 
 const styles = StyleSheet.create({
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    paddingLeft: spacing.xs,
+  },
   heading: { paddingTop: spacing.md, gap: spacing.sm, paddingHorizontal: spacing.md, paddingBottom: spacing.xl },
   subtitle: { lineHeight: 24, color: colors.text.black },
   form: { gap: spacing.md, paddingHorizontal: spacing.md, paddingBottom: spacing.xl },

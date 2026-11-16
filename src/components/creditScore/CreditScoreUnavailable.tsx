@@ -1,29 +1,18 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ChevronLeft, CircleAlert } from 'lucide-react-native';
-import { AppText, Button, RupyaaLogo } from '@/src/components';
+import { CircleAlert } from 'lucide-react-native';
+import { AppText, Button } from '@/src/components';
 import { colors, spacing } from '@/src/theme';
 
 interface Props {
   onRetry: () => void;
-  onBack: () => void;
   loading: boolean;
 }
 
-export function CreditScoreUnavailable({ onRetry, onBack, loading }: Props) {
+export function CreditScoreUnavailable({ onRetry, loading }: Props) {
   return (
-    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
-      <RupyaaLogo size="sm" style={styles.logo} />
-      <TouchableOpacity
-        onPress={onBack}
-        style={styles.backButton}
-        activeOpacity={0.7}
-        accessibilityRole="button"
-        accessibilityLabel="Go back"
-      >
-        <ChevronLeft size={24} color={colors.text.primary} />
-      </TouchableOpacity>
+    <SafeAreaView style={styles.screen} edges={['bottom']}>
       <View style={styles.container}>
         <CircleAlert size={64} color={colors.primary.main} />
         <AppText variant="h3" weight="bold" color="primary" align="center" style={styles.title}>
@@ -42,17 +31,6 @@ export function CreditScoreUnavailable({ onRetry, onBack, loading }: Props) {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background.primary },
-  logo: {
-    marginTop: spacing['4xl'],
-    marginLeft: spacing.md + spacing.base,
-    marginBottom: spacing.md,
-  },
-  backButton: {
-    alignSelf: 'flex-start',
-    padding: spacing.xs,
-    marginLeft: spacing.sm + spacing.base,
-    marginBottom: spacing.md,
-  },
   container: {
     flex: 1,
     justifyContent: 'center',
