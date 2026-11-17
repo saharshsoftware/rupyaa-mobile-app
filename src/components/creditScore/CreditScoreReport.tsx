@@ -6,10 +6,11 @@ import { ArrowLeft, Download, Lightbulb } from 'lucide-react-native';
 import { AppText, Button } from '@/src/components';
 import { CreditScoreGauge } from './CreditScoreGauge';
 import { colors, radius, spacing } from '@/src/theme';
-import type { CreditHealthFactor, CreditReportData } from '@/src/types/creditScore';
+import type { RenderableCreditReport } from '@/src/config/creditScore';
+import type { CreditHealthFactor } from '@/src/types/creditScore';
 
 interface Props {
-  report: CreditReportData;
+  report: RenderableCreditReport;
   onBack: () => void;
   onEligibility: () => void;
   onOpenDetailed: () => void;

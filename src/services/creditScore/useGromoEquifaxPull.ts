@@ -1,8 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { isCreditScoreUnavailable } from '@/src/config/creditScore';
 import { pullGromoEquifaxReport } from './gromoEquifaxService';
 import { EXISTING_GROMO_EQUIFAX_REPORT_QUERY_KEY } from './useExistingGromoEquifaxReport';
 import { getApiErrorDisplayMessage } from '@/src/utils/common-helper';
 import type { CreditScorePullRequest, CreditScorePullResponse } from '@/src/types/creditScore';
+
+function shouldCachePullResult(result: CreditScorePullResponse): boolean {
+  if (!result.data) return false;
+  if (isCreditScoreUnavailable(result.data.creditScore)) return true;
+  return result.reportAvailable;
+}
 
 export function useGromoEquifaxPull() {
   const queryClient = useQueryClient();
@@ -18,7 +25,7 @@ export function useGromoEquifaxPull() {
     onSuccess: (result) => {
       queryClient.setQueryData(
         EXISTING_GROMO_EQUIFAX_REPORT_QUERY_KEY,
-        result.reportAvailable && result.data ? result : null
+        shouldCachePullResult(result) ? result : null,
       );
     },
   });

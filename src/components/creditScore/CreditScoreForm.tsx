@@ -194,21 +194,21 @@ export function CreditScoreForm() {
     resolvedExistingRef.current = true;
     const result = existing.data;
 
-    if (result?.reportAvailable && result.data) {
-      if (isCreditScoreUnavailable(result.data.creditScore)) {
-        lastUnavailableReportRef.current = result.data;
-        void prefillFromSources(result.data);
-        openUnavailableScreen(attemptsUsed);
-        return;
-      }
-      if (isRenderableCreditReport(result.data)) {
-        void resetCreditScoreAttempts().then(() => setAttemptsUsed(0));
-        setSubmitError('');
-        setReport(result.data);
-        setPdfUrl(result.pdfUrl?.trim() || null);
-        setScreenMode('report');
-        return;
-      }
+    // Score -1 / 0 / null → not-found UI; reportAvailable T/F does not matter.
+    if (result?.data && isCreditScoreUnavailable(result.data.creditScore)) {
+      lastUnavailableReportRef.current = result.data;
+      void prefillFromSources(result.data);
+      openUnavailableScreen(attemptsUsed);
+      return;
+    }
+
+    if (result?.reportAvailable && isRenderableCreditReport(result.data)) {
+      void resetCreditScoreAttempts().then(() => setAttemptsUsed(0));
+      setSubmitError('');
+      setReport(result.data);
+      setPdfUrl(result.pdfUrl?.trim() || null);
+      setScreenMode('report');
+      return;
     }
 
     if (!hasCreditScoreAttemptsRemaining(attemptsUsed)) {
@@ -229,18 +229,19 @@ export function CreditScoreForm() {
   const applyResult = async (
     result: Awaited<ReturnType<typeof pull.mutateAsync>>,
   ) => {
-    if (!result.reportAvailable || !result.data) {
-      setSubmitError(result.message || 'Your credit report is unavailable. Please try again.');
-      setScreenMode('form');
-      return;
-    }
-
-    if (isCreditScoreUnavailable(result.data.creditScore)) {
+    // Score -1 / 0 / null → not-found UI; reportAvailable T/F does not matter.
+    if (result.data && isCreditScoreUnavailable(result.data.creditScore)) {
       lastUnavailableReportRef.current = result.data;
       const used = await incrementCreditScoreAttempts();
       setAttemptsUsed(used);
       await prefillFromSources(result.data);
       openUnavailableScreen(used);
+      return;
+    }
+
+    if (!result.reportAvailable || !result.data) {
+      setSubmitError(result.message || 'Your credit report is unavailable. Please try again.');
+      setScreenMode('form');
       return;
     }
 
