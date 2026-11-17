@@ -96,7 +96,7 @@
       "typedRoutes": true
     },
     "extra": {
-      "otaUpdateNumberDev": "13",
+      "otaUpdateNumberDev": "14",
       "otaUpdateNumberProd": "2",
       "versionDev": "1.0.5",
       "versionProd": "1.0.3",
