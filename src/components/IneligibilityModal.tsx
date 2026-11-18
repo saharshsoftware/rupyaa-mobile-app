@@ -166,8 +166,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacing['3xl'],
   },
   image: {
-    width: 200,
-    height: 200,
+    width: 260,
+    height: 260,
     marginBottom: spacing.xl,
   },
   body: {
