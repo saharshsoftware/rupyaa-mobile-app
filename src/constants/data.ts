@@ -40,6 +40,10 @@ export const STORAGE_KEYS = {
   freeRaspNativeStartedAt: `${STRING_DATA.APP_NAME}_FREERASP_NATIVE_STARTED_AT`,
   /** User's selected UI language (see useLocaleStore); falls back to device locale when unset. */
   languagePreference: `${STRING_DATA.APP_NAME}_LANGUAGE_PREFERENCE`,
+  /** Count of credit-score pull attempts that returned score -1 / counted toward the retry limit. */
+  creditScorePullAttempts: `${STRING_DATA.APP_NAME}_CREDIT_SCORE_PULL_ATTEMPTS`,
+  /** Last credit-score form draft for retry prefill (JSON). */
+  creditScoreFormDraft: `${STRING_DATA.APP_NAME}_CREDIT_SCORE_FORM_DRAFT`,
 };
 
 

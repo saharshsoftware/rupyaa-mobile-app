@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import { Platform } from 'react-native';
+import { colors } from '@/src/theme';
 
 export default function CreditScoreLayout() {
   return (
@@ -9,7 +10,7 @@ export default function CreditScoreLayout() {
         animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
         presentation: 'card',
         gestureEnabled: true,
-        contentStyle: { backgroundColor: 'transparent' },
+        contentStyle: { backgroundColor: colors.background.primary },
       }}
     >
       <Stack.Screen name="index" />

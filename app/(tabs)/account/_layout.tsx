@@ -1,12 +1,22 @@
 import { useCallback } from 'react';
-import { BackHandler, Platform } from 'react-native';
+import { BackHandler, Platform, StyleSheet, TouchableOpacity } from 'react-native';
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { colors } from '@/src/theme';
+import { ArrowLeft } from 'lucide-react-native';
+import { AppText } from '@/src/components';
+import { colors, spacing } from '@/src/theme';
 
 export default function AccountTabStackLayout() {
   const { t } = useTranslation();
   const router = useRouter();
+
+  const handleAccountBack = useCallback(() => {
+    if (router.canGoBack()) {
+      router.back();
+      return;
+    }
+    router.replace('/(tabs)/home');
+  }, [router]);
 
   useFocusEffect(
     useCallback(() => {
@@ -44,6 +54,21 @@ export default function AccountTabStackLayout() {
         options={{
           title: t('Account'),
           headerShown: true,
+          headerTitle: () => null,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={handleAccountBack}
+              style={styles.headerLeft}
+              activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel="Go back"
+            >
+              <ArrowLeft size={24} color={colors.text.primary} strokeWidth={2} />
+              <AppText variant="h4" weight="semiBold" color="textprimary">
+                {t('Account')}
+              </AppText>
+            </TouchableOpacity>
+          ),
         }}
       />
       {/* <Stack.Screen name="my-profile" options={{ title: 'My Profile' }} /> */}
@@ -56,3 +81,12 @@ export default function AccountTabStackLayout() {
     </Stack>
   );
 }
+
+const styles = StyleSheet.create({
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    paddingLeft: spacing.xs,
+  },
+});

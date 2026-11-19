@@ -134,7 +134,17 @@ function AppBootstrap({ shouldEnableFreeRasp }: { shouldEnableFreeRasp: boolean 
                 <Stack.Screen name="grievance-redressal-policy" options={{ headerShown: true, title: t('Grievance Redressal Policy') }} />
                 <Stack.Screen name="user-permissions" options={{ headerShown: true, title: t('Permissions') }} />
                 <Stack.Screen name="contacts" options={{ headerShown: true, title: t('Refer') }} />
-                <Stack.Screen name="credit-score" options={{ headerShown: true }} />
+                <Stack.Screen
+                  name="credit-score"
+                  options={{
+                    headerShown: true,
+                    title: t('Credit Score'),
+                    headerTitleAlign: 'left',
+                    headerStyle: { backgroundColor: colors.background.primary },
+                    headerShadowVisible: false,
+                    contentStyle: { backgroundColor: colors.background.primary },
+                  }}
+                />
                 <Stack.Screen name="+not-found" />
               </Stack>
             </ThemeProvider>

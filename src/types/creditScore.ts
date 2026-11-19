@@ -38,7 +38,7 @@ export interface CreditPaymentMonth {
 }
 
 export interface CreditReportData {
-  creditScore: number;
+  creditScore: number | null;
   consumer: CreditConsumer;
   creditHealthBreakdown: Record<string, CreditHealthFactor>;
   creditSummary: {

@@ -7,9 +7,11 @@ import {
   Image,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { colors, spacing } from '@/src/theme';
 import { AppText } from './AppText';
 import { Button } from './Button';
+import { RupyaaLogo } from './RupyaaLogo';
 import { IMAGES } from '../constants/images';
 
 export interface IneligibilityModalProps {
@@ -91,6 +93,20 @@ export function IneligibilityModal({
         { paddingTop: insets.top, opacity: fadeAnim },
       ]}
     >
+      <LinearGradient
+        pointerEvents="none"
+        colors={[
+          colors.primary.main,
+          'rgba(254, 202, 66, 0.12)',
+          'rgba(254, 202, 66, 0.03)',
+          colors.background.primary,
+        ]}
+        locations={[0, 0.18, 0.36, 0.55]}
+        style={StyleSheet.absoluteFill}
+      />
+      <View style={styles.header}>
+        <RupyaaLogo size="sm" />
+      </View>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -158,6 +174,10 @@ const styles = StyleSheet.create({
     // Ensure this renders above the step form content within the same screen.
     zIndex: OVERLAY_Z_INDEX,
     elevation: OVERLAY_Z_INDEX,
+  },
+  header: {
+    paddingHorizontal: spacing.xl,
+    paddingTop: spacing.md,
   },
   scrollContent: {
     flexGrow: 1,
