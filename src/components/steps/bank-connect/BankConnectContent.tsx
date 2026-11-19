@@ -35,6 +35,7 @@ export type ActionCardConfig = {
   title: string;
   subtext: string | React.ReactNode;
   onPress: () => void;
+  highlighted?: boolean;
 };
 
 type MobileContentProps = {
@@ -182,6 +183,7 @@ export function BankConnectMobileContent({
             subtext={actionCard.subtext}
             onPress={actionCard.onPress}
             isBankStatementStep={true}
+            highlighted={actionCard.highlighted}
             containerStyle={
               alignPrimaryCtaWithActionCard
                 ? styles.actionCardMatchedPair
@@ -196,6 +198,7 @@ export function BankConnectMobileContent({
           subtext={secondaryActionCard.subtext}
           onPress={secondaryActionCard.onPress}
           isBankStatementStep={true}
+          highlighted={secondaryActionCard.highlighted}
         />
       )}
     </>
