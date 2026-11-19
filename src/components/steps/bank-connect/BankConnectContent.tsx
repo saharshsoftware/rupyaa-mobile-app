@@ -172,7 +172,16 @@ export function BankConnectMobileContent({
           </View>
         ))}
       </View>
-      {primaryCta != null && <View style={styles.primaryCtaContainer}>{primaryCta}</View>}
+      {primaryCta != null && (
+        <View
+          style={[
+            styles.primaryCtaContainer,
+            actionCard != null && styles.primaryCtaContainerBeforeDivider,
+          ]}
+        >
+          {primaryCta}
+        </View>
+      )}
       {actionCard != null && (
         <>
           <AppText style={styles.manualDividerLabel} variant="caption" weight="medium">
@@ -184,11 +193,12 @@ export function BankConnectMobileContent({
             onPress={actionCard.onPress}
             isBankStatementStep={true}
             highlighted={actionCard.highlighted}
-            containerStyle={
+            containerStyle={[
+              styles.actionCardAfterDivider,
               alignPrimaryCtaWithActionCard
                 ? styles.actionCardMatchedPair
-                : undefined
-            }
+                : undefined,
+            ]}
           />
         </>
       )}
@@ -447,16 +457,24 @@ const styles = StyleSheet.create({
   primaryCtaContainer: {
     marginBottom: spacing.lg,
   },
+  /** Drop CTA bottom margin when "— or —" follows so spacing isn't stacked. */
+  primaryCtaContainerBeforeDivider: {
+    marginBottom: 0,
+  },
   /** Same min-height as primary button when paired (see BankConnectContinueSecurelyButton). */
   actionCardMatchedPair: {
     minHeight: BANK_CONNECT_MANUAL_PAIR_MIN_HEIGHT,
     justifyContent: 'center',
   },
-  /** Label between AA section and "Upload Manually" card in aa-with-manual flow. */
+  /** Label between AA section and "Upload Manually" / keep-offer card. */
   manualDividerLabel: {
     color: colors.text.secondary,
     textAlign: 'center',
-    marginVertical: spacing.xl,
+    marginVertical: spacing.sm,
+  },
+  /** ActionCard default marginTop stacks with divider; keep only bottom margin. */
+  actionCardAfterDivider: {
+    marginTop: 0,
   },
   safetyRow: {
     flexDirection: 'row',
