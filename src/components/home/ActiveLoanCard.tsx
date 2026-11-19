@@ -1,21 +1,9 @@
-/**
- * ActiveLoanCard - Card for ACTIVE_LOAN_DASHBOARD stage.
- *
- * Handles three visual states via `statusPill`:
- *  - 'Active'   → standard active loan (Disbursed, on-track)
- *  - 'Overdue'  → loan past due date
- *
- * Both states display `dueAmount` (Total Payable) and `dueDate`.
- * `dueAmount` is optional — the API field is not yet live; falls back to
- * `amount` (full loan amount) until it is available.
- */
-
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet } from 'react-native';
 import { colors, spacing, radius, typography } from '@/src/theme';
 import { AppText } from '../AppText';
-import { consoleLogDev, formatCurrency } from '@/src/utils/common-helper';
+import { formatCurrency } from '@/src/utils/common-helper';
 import { formatLoanDueDate } from '@/src/utils/loan-helpers';
 import { Button } from '../Button';
 import { CancelLoanEntryLink } from '../loan-cancellation/CancelLoanEntryLink';
@@ -23,6 +11,7 @@ import { CancelLoanEntryLink } from '../loan-cancellation/CancelLoanEntryLink';
 export interface ActiveLoanCardProps {
   /** Full loan amount disbursed (e.g. ₹50,000) — kept for context/future use */
   amount: number;
+  isPendingPayment?: boolean;
   /**
    * Amount currently due for repayment (Total Payable).
    * Optional — `dueAmount` API field is not yet available; shows ₹0 until live.
@@ -44,6 +33,12 @@ export interface ActiveLoanCardProps {
 }
 
 const STATUS_CONFIG = {
+  Processing: {
+    message: 'Money transfer initiated to your bank account.',
+    description: 'It can take up to 6–8 hours to reflect.',
+    pillLabel: 'PROCESSING',
+    showDot: true,
+  },
   Active: {
     message: 'Your loan is active.',
     description: 'Close on time to avoid late fees and save on interest.',
@@ -61,6 +56,7 @@ const STATUS_CONFIG = {
 export function ActiveLoanCard({
   amount,
   amountDue,
+  isPendingPayment = false,
   dueDate,
   statusPill,
   actionLabel,
@@ -72,13 +68,19 @@ export function ActiveLoanCard({
 }: ActiveLoanCardProps) {
   const { t } = useTranslation();
   const isOverdue = statusPill === 'Overdue';
-  const isInteractive = typeof onActionPress === 'function' && !disableAction;
+  const isInteractive = typeof onActionPress === 'function' && !disableAction && !isPendingPayment;
   const dueDateFormatted = formatLoanDueDate(dueDate);
-  const { message, description, pillLabel, showDot } = STATUS_CONFIG[statusPill];
+  const { message, description, pillLabel, showDot } = STATUS_CONFIG[isPendingPayment ? 'Processing' : statusPill];
 
   // dueAmount API field not yet live — show 0 until the field is available from API
   const totalPayable = typeof amountDue === 'number' && amountDue > 0 ? amountDue : 0;
-  consoleLogDev('totalPayable', totalPayable + ' ' + amountDue + ' ' + amount);
+  const amountLabel = isPendingPayment ? 'Loan Amount' : 'Total Amount Due';
+  const displayAmount = isPendingPayment ? amount : totalPayable;
+  const dateLabel = isPendingPayment ? 'Transfer Status' : 'Due Date';
+  const dateValue = isPendingPayment ? t('Sent to your bank account') : dueDateFormatted || '--';
+  const buttonLabel = isPendingPayment ? t('Transfer in progress') : actionLabel;
+  const pillStyle = isOverdue ? styles.statusPillOverdue : styles.statusPillActive;
+  const pillTextStyle = isOverdue ? styles.statusPillTextOverdue : styles.statusPillTextActive;
   return (
     <View style={styles.cardWrapper}>
       <View style={styles.card}>
@@ -86,44 +88,44 @@ export function ActiveLoanCard({
           <View
             style={[
               styles.statusPill,
-              isOverdue ? styles.statusPillOverdue : styles.statusPillActive,
+              isPendingPayment ? styles.statusPillProcessing : pillStyle,
             ]}
           >
-            {showDot ? <View style={styles.statusDotActive} /> : null}
+            {showDot ? <View style={[styles.statusDotActive, isPendingPayment && styles.statusDotProcessing]} /> : null}
             <AppText
               variant="captionExtraSmall"
               weight="semiBold"
-              style={isOverdue ? styles.statusPillTextOverdue : styles.statusPillTextActive}
+              style={isPendingPayment ? styles.statusPillTextProcessing : pillTextStyle}
             >
-              {pillLabel}
+              {t(pillLabel)}
             </AppText>
           </View>
 
           <AppText variant="h3" weight="bold" style={styles.loanStatusTitle}>
-            Loan Status
+            {t('Loan Status')}
           </AppText>
           <AppText variant="captionExtraSmall" style={styles.statusMessage}>
-            {message}
+            {t(message)}
           </AppText>
           <AppText variant="captionExtraSmall" style={styles.description}>
-            {description}
+            {t(description)}
           </AppText>
 
           <View style={styles.infoRow}>
             <View style={styles.infoCard}>
               <AppText variant="captionExtraSmall" style={styles.infoLabel}>
-                {t('Total Amount Due')}
+                {t(amountLabel)}
               </AppText>
-              <AppText variant="captionSmall" weight="semiBold" style={styles.infoValue}>
-                {formatCurrency(totalPayable)}
+              <AppText variant="captionSmall" weight="semiBold" style={[styles.infoValue, isPendingPayment && styles.processingInfoValue]}>
+                {formatCurrency(displayAmount)}
               </AppText>
             </View>
             <View style={styles.infoCard}>
               <AppText variant="captionExtraSmall" style={styles.infoLabel}>
-                {t('Due Date')}
+                {t(dateLabel)}
               </AppText>
-              <AppText variant="captionSmall" weight="semiBold" style={styles.infoValue}>
-                {dueDateFormatted || '--'}
+              <AppText variant="captionSmall" weight="semiBold" style={[styles.infoValue, isPendingPayment && styles.processingInfoValue]}>
+                {dateValue}
               </AppText>
             </View>
           </View>
@@ -132,7 +134,7 @@ export function ActiveLoanCard({
             variant="primary"
             size="medium"
             fullWidth={true}
-            title={actionLabel}
+            title={buttonLabel}
             onPress={onActionPress}
             disabled={!isInteractive}
             style={styles.ctaButton}
@@ -186,6 +188,21 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: radius.sm,
     borderBottomRightRadius: radius.sm,
     justifyContent: 'center',
+  },
+  statusPillProcessing: {
+    backgroundColor: colors.warning.bg,
+    borderWidth: 1,
+    borderColor: colors.warning.dark,
+  },
+  statusPillTextProcessing: {
+    color: colors.warning.dark,
+    fontSize: typography.fontSize.xxs,
+  },
+  statusDotProcessing: {
+    backgroundColor: colors.warning.dark,
+  },
+  processingInfoValue: {
+    color: colors.text.primary,
   },
   statusPillActive: {
     backgroundColor: colors.text.black,

@@ -157,7 +157,7 @@ const contactsMenuItem = {
 
 export default function AccountHome() {
   const router = useRouter();
-  const { personalDetails } = usePersonalDetails();
+  const { personalDetails } = usePersonalDetails(true);
   // Subscribe to app config so Contacts menu appears when config loads
   useAppConfigStore((s) => s.config);
   const showGoogleContacts = getShowContacts();

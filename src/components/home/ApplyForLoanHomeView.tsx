@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Image, StyleSheet, TouchableOpacity, View, type StyleProp, type ViewStyle } from 'react-native';
 import { ArrowRight } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -76,10 +77,11 @@ export function ApplyForLoanHomeView({
   onCreditScorePress,
   onContactPress,
 }: ApplyForLoanHomeViewProps) {
+  const { t } = useTranslation();
   const phaseIndex = useFlowStore((state) => state.phaseIndex);
   const passedPhases = useFlowStore((state) => state.passedPhases);
   const journeySteps = useMemo(() => getMainStepLabels(), []);
-  const journeyTitle = `Loan in ${journeySteps.length} Easy Steps`;
+  const journeyTitle = t('Loan in {{count}} Easy Steps', { count: journeySteps.length });
   const journeyActionLabel = heroContent ? actionLabel : 'Complete Your Details';
   const showJourneyAction = typeof onApplyPress === 'function';
   const journeyIcon = journeyIcons[phaseIndex] ?? journeyDetailsIcon;
@@ -141,11 +143,12 @@ export function ApplyForLoanHomeView({
             Need Help?
           </AppText>
           <AppText style={styles.helpDescription} variant="captionSmall">
-            Our support team is available{'\n'}
-            <AppText style={styles.helpDescriptionStrong} variant="captionSmall" weight="semiBold">
-              24/7
-            </AppText>
-            .
+            <Trans
+              i18nKey="Our support team is available <1>24/7</1>."
+              components={{
+                1: <AppText style={styles.helpDescriptionStrong} variant="captionSmall" weight="semiBold" children="" />,
+              }}
+            />
           </AppText>
           <TouchableOpacity style={styles.contactButton} onPress={onContactPress} activeOpacity={0.85}>
             <AppText style={styles.contactButtonText} variant="captionSmall" weight="semiBold">
@@ -163,16 +166,18 @@ export function ApplyForLoanHomeView({
             source={IMAGES.HOME_CREDIT_SCORE}
             style={styles.creditImage}
             resizeMode="contain"
-            accessibilityLabel="Check credit score"
+            accessibilityLabel={t('Check credit score')}
           />
           <AppText style={styles.whiteText} variant="caption" weight="semiBold">
             Check Credit Score
           </AppText>
           <AppText style={styles.creditDescription} variant="captionExtraSmall">
-            Know your credit health, For{' '}
-            <AppText style={styles.freeText} variant="captionSmall" weight="semiBold">
-              FREE
-            </AppText>
+            <Trans
+              i18nKey="Know your credit health, For <1>FREE</1>"
+              components={{
+                1: <AppText style={styles.freeText} variant="captionSmall" weight="semiBold" children="" />,
+              }}
+            />
           </AppText>
         </TouchableOpacity>
       </View>

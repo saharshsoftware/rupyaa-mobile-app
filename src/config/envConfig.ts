@@ -54,6 +54,7 @@ function resolveNgrokApiUrl(): string {
 export const envConfig = {
   apiUrl: resolveApiUrl(),
   ngrokApiUrl: resolveNgrokApiUrl(),
+  adityaNgrokApiUrl: 'https://commotion-disrupt-clamshell.ngrok-free.dev',
   amanNgrokApiUrl: 'https://grimy-victoria-uninduced.ngrok-free.dev',
   staging2ApiUrl:'https://api-staging.rupyaa.com',
   stagingApiUrl: 'https://api-staging.rupyaa.com',

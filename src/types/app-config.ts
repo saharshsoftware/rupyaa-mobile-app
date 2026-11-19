@@ -25,7 +25,7 @@ export interface ExternalAppConfigData {
   /** CredEau device-sync API base URL */
   credeauServerUrl?: string;
   /** Web OAuth client ID for Google Sign-In */
-  googleClientIdRupyaa?: string;
+  googleClientId?: string;
   /** Android OAuth client ID for Google Sign-In */
   androidGoogleClientIdRupyaa?: string;
   /** iOS OAuth client ID for Google Sign-In */

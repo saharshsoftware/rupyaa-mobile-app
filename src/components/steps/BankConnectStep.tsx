@@ -108,6 +108,7 @@ export function BankConnectStep({ onNext, onPrev }: StepProps) {
       title: 'Keep My Current Offer',
       subtext: bankConnectActionCardSubtext,
       onPress: handleContinueWithExistingOffer,
+      highlighted: true,
     }),
     [bankConnectActionCardSubtext, handleContinueWithExistingOffer]
   );
@@ -285,14 +286,13 @@ export function BankConnectStep({ onNext, onPrev }: StepProps) {
             bankConnectChecklistItems={bankConnectChecklistItems}
             pollingTimedOut={pollingTimedOut}
             actionCard={
-              mobileManualUploadCard ??
-              (shouldShowOfferingContinueAction
+              shouldShowOfferingContinueAction
                 ? bankConnectActionCard
-                : undefined)
+                : mobileManualUploadCard
             }
             secondaryActionCard={
-              mobileManualUploadCard != null && shouldShowOfferingContinueAction
-                ? bankConnectActionCard
+              shouldShowOfferingContinueAction && mobileManualUploadCard != null
+                ? mobileManualUploadCard
                 : undefined
             }
             mobilePrimaryCta={

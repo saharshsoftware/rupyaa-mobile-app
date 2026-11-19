@@ -67,7 +67,7 @@ const submitFamilyDetails = createRegistrationSubmit<
  * Family Details step — collects one family member's name, relation, and mobile.
  * Required for KYC verification.
  */
-export function FamilyDetailsStep({ onNext, onPrev }: StepProps) {
+export function FamilyDetailsStep({ onNext, onPrev, header }: StepProps) {
   const currentStage: UserStage = UserStagesInBackend.FAMILY_REFERENCE;
   const syncFromUserStage = useFlowStore((s) => s.syncFromUserStage);
   const { handleFailedResponse } = useIneligibilityModal();
@@ -123,6 +123,7 @@ export function FamilyDetailsStep({ onNext, onPrev }: StepProps) {
   return (
     <>
       <FormLayout
+        header={header}
         showContactSupport
         ref={scrollViewRef}
         safeAreaEdges={['bottom']}

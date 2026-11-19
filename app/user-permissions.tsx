@@ -1,3 +1,4 @@
+import { useAppConfigStore } from '@/src/store/useAppConfigStore';
 import React, { useCallback, useMemo } from 'react';
 import { View, StyleSheet, Linking, Platform } from 'react-native';
 import { useFocusEffect } from 'expo-router';
@@ -9,8 +10,8 @@ import { getAvailablePermissions, getPermissionIcon } from '@/src/services/permi
 import type { PermissionType } from '@/src/types/permissions';
 
 export default function PermissionsScreen() {
-  // Get permissions available on current platform
-  const availablePermissions = useMemo(() => getAvailablePermissions(), []);
+  const config = useAppConfigStore((state) => state.config);
+  const availablePermissions = useMemo(() => getAvailablePermissions(), [config]);
   const permissionTypes = useMemo(
     () => availablePermissions.map((p) => p.id),
     [availablePermissions]

@@ -38,7 +38,7 @@ export interface CreditPaymentMonth {
 }
 
 export interface CreditReportData {
-  creditScore: number;
+  creditScore: number | null;
   consumer: CreditConsumer;
   creditHealthBreakdown: Record<string, CreditHealthFactor>;
   creditSummary: {
@@ -46,7 +46,7 @@ export interface CreditReportData {
     totalAccounts: number;
     onTimePaymentPercentage: number;
     totalEnquiries: number;
-    totalCreditLimit: number;
+    totalCreditLimit: number | null;
   };
   accounts: CreditAccount[];
   paymentHistory12Months: CreditPaymentMonth[];

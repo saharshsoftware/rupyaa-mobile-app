@@ -28,6 +28,10 @@ export const setStagingApiOverride = (value: StagingApiOverride): void => {
 
 const resolveApiBaseUrl = (): string => {
   // Keep ngrok as highest priority for local backend testing.
+  if (appConfig.useAdityaNgrokApiBaseUrl) {
+    return envConfig.adityaNgrokApiUrl;
+  }
+
   if (appConfig.useAmanNgrokApiBaseUrl) {
     return envConfig.amanNgrokApiUrl;
   }

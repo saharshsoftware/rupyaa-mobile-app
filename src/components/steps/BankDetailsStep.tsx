@@ -95,7 +95,7 @@ const submitBankDetails = createRegistrationSubmit<
  * Bank Details step — collects account holder name, IFSC, bank/branch and account info.
  * Required for bank verification. API integration ready for POST /user/post-bank-details.
  */
-export function BankDetailsStep({ onNext, onPrev }: StepProps) {
+export function BankDetailsStep({ onNext, onPrev, header }: StepProps) {
   const currentStage: UserStage = UserStagesInBackend.BANK_DETAILS;
   const syncFromUserStage = useFlowStore((s) => s.syncFromUserStage);
   const { handleFailedResponse } = useIneligibilityModal();
@@ -316,6 +316,7 @@ export function BankDetailsStep({ onNext, onPrev }: StepProps) {
   return (
     <>
       <FormLayout
+        header={header}
         showContactSupport
         ref={scrollViewRef}
         safeAreaEdges={['bottom']}

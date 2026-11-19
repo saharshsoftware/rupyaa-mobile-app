@@ -206,3 +206,5 @@ export type {
 } from './support';
 
 export type { CreditScorePullRequest, CreditScorePullResponse } from './creditScore';
+
+export type { RejectionRedirectUrl, RejectionRedirectResponse } from './dsa';

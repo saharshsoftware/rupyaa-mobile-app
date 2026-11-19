@@ -70,7 +70,7 @@ const submitReferenceDetails = createRegistrationSubmit<
  * Reference Details step — collects two personal references
  * with name, mobile, and relationship. Required by lenders for KYC / loan verification.
  */
-export function ReferenceDetailsStep({ onNext, onPrev }: StepProps) {
+export function ReferenceDetailsStep({ onNext, onPrev, header }: StepProps) {
   const currentStage: UserStage = UserStagesInBackend.FAMILY_REFERENCE;
   const syncFromUserStage = useFlowStore((s) => s.syncFromUserStage);
   const { handleFailedResponse } = useIneligibilityModal();
@@ -142,6 +142,7 @@ export function ReferenceDetailsStep({ onNext, onPrev }: StepProps) {
   return (
     <>
       <FormLayout
+        header={header}
         showContactSupport
         ref={scrollViewRef}
         safeAreaEdges={['bottom']}
