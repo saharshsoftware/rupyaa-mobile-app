@@ -8,6 +8,7 @@ const path = require('path');
 
 const root = path.join(__dirname, '..');
 const androidDir = path.join(root, 'android');
+const rootBuildGradlePath = path.join(androidDir, 'build.gradle');
 
 const checks = [
   {
@@ -67,6 +68,18 @@ function main() {
     process.exit(1);
   }
   const failures = [];
+  const rootBuildGradle = readAndroidFile(rootBuildGradlePath);
+  if (rootBuildGradle) {
+    const r8PinIndex = rootBuildGradle.indexOf('com.android.tools:r8:8.13.25');
+    const agpIndex = rootBuildGradle.indexOf('com.android.tools.build:gradle');
+    const r8PinnedBeforeAgp =
+      r8PinIndex >= 0 && agpIndex >= 0 && r8PinIndex < agpIndex;
+    if (!r8PinnedBeforeAgp) {
+      failures.push(
+        'Root buildscript pins R8 8.13.25 (before AGP) (android/build.gradle)'
+      );
+    }
+  }
   for (const check of checks) {
     const contents = readAndroidFile(check.file);
     if (contents == null || !contents.includes(check.includes)) {

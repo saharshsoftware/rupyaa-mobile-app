@@ -1,7 +1,7 @@
 import { paymentService } from '@/src/services/payment/paymentService';
 import type { PaymentOrderStatus } from '@/src/types/payment';
 
-/** Poll interval while order is PENDING (awaiting Cashfree / UPI settlement). */
+/** Poll interval while order is PENDING (awaiting gateway / UPI settlement). */
 const POLL_INTERVAL_MS = 3000;
 
 /** Keep polling for up to 5 minutes for PENDING. */
@@ -39,13 +39,13 @@ function delay(ms: number, signal: AbortSignal): Promise<void> {
 }
 
 /**
- * Polls order status until Cashfree reports a terminal state or max attempts.
- * - ACTIVE: keep polling (payment may still settle after returning from GPay).
- * - PAID / EXPIRED / TERMINATED / TERMINATION_REQUESTED: stop and return that status.
+ * Polls order status until backend reports a terminal state or max duration.
+ * - PENDING: keep polling (payment may still settle after returning from UPI).
+ * - SUCCESS / FAILED: stop and return that status.
  * - Aborts cleanly when `signal` is aborted (e.g. screen unmount).
  */
 export async function pollPaymentStatus(
-  cashfreeOrderId: string,
+  orderId: string,
   signal: AbortSignal
 ): Promise<PaymentOrderStatus> {
   const startTime = Date.now();
@@ -55,7 +55,7 @@ export async function pollPaymentStatus(
       throw createAbortError();
     }
 
-    const result = await paymentService.getPaymentOrderStatus(cashfreeOrderId);
+    const result = await paymentService.getPaymentOrderStatus(orderId);
     if (!result.success || result.data == null) {
       const message =
         result.success === false ? result.error.message : 'Failed to fetch order status';

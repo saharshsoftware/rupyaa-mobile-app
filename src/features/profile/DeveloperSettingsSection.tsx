@@ -65,6 +65,7 @@ export const DeveloperSettingsSection = () => {
     handleToggleBankStatementUploader,
     handleToggleStaging2ApiBaseUrl,
     handleToggleStagingApiV1BaseUrl,
+    handleToggleEmiApiBaseUrl,
   } = useDeveloperSettingsToggles();
 
   if (!envConfig.isDevelopment) {
@@ -101,6 +102,11 @@ export const DeveloperSettingsSection = () => {
             label="Use staging API base URL (/api/v1)"
             value={stagingApiOverride === STAGING_API_OVERRIDE.staging}
             onValueChange={handleToggleStagingApiV1BaseUrl}
+          />
+          <DevToggleRow
+            label="Use EMI API base URL"
+            value={stagingApiOverride === STAGING_API_OVERRIDE.emi}
+            onValueChange={handleToggleEmiApiBaseUrl}
           />
           <DevToggleRow
             label="Use manual bank statement upload"

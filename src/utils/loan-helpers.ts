@@ -44,6 +44,19 @@ export function isLoanStatusPending(loanStatus: string | null | undefined): bool
   return loanStatus.trim().toLowerCase() === 'pending';
 }
 
+/** User-facing copy when repayment screens load GET /loans/active without a `loan` object. */
+export function getActiveLoanRepaymentEmptyMessage(
+  data: GetExistingActiveLoanResponse | null | undefined
+): string {
+  if (isLoanStatusPending(data?.loanStatus)) {
+    return 'Your loan application is under review. You can pay once it is disbursed.';
+  }
+  if (data?.hasActiveLoan === false) {
+    return 'You do not have an active loan right now.';
+  }
+  return 'No active loan found.';
+}
+
 export type OfferStatusModalVariant = 'Verified' | 'Pending' | 'Rejected';
 
 /** Safely extracts eligibility error details only from failed API responses. */

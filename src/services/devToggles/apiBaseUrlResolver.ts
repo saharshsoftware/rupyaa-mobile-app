@@ -5,6 +5,7 @@ export const STAGING_API_OVERRIDE = {
   none: 'none',
   staging2: 'staging2',
   staging: 'staging',
+  emi: 'emi',
 } as const;
 
 export type StagingApiOverride =
@@ -13,7 +14,8 @@ export type StagingApiOverride =
 export const isStagingApiOverride = (value: string): value is StagingApiOverride =>
   value === STAGING_API_OVERRIDE.none ||
   value === STAGING_API_OVERRIDE.staging2 ||
-  value === STAGING_API_OVERRIDE.staging;
+  value === STAGING_API_OVERRIDE.staging ||
+  value === STAGING_API_OVERRIDE.emi;
 
 const getStagingApiOverride = (): StagingApiOverride => {
   const overrideValue = (appConfig as { stagingApiOverride?: string }).stagingApiOverride;
@@ -48,6 +50,10 @@ const resolveApiBaseUrl = (): string => {
 
   if (stagingApiOverride === STAGING_API_OVERRIDE.staging) {
     return `${envConfig.stagingApiUrl}/api/v1`;
+  }
+
+  if (stagingApiOverride === STAGING_API_OVERRIDE.emi) {
+    return envConfig.emiApiUrl;
   }
 
   return envConfig.isDevelopment ? envConfig.apiUrl : `${envConfig.apiUrl}/api/v1`;

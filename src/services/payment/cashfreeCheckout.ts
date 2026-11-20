@@ -1,6 +1,6 @@
 // TODO (iOS): Verify Cashfree iOS SDK setup before enabling payments on iOS:
 //   1. Confirm `react-native-cashfree-pg-sdk` Podspec links correctly (run `pod install` after prebuild).
-//   2. Add UPI redirect URL schemes to app.config.js ios.infoPlist LSApplicationQueriesSchemes
+//   2. UPI redirect URL schemes live in app.json ios.infoPlist LSApplicationQueriesSchemes
 //      (e.g. "gpay", "phonepe", "paytm") so the SDK can detect which UPI apps are installed.
 //   3. The withCashfreeSubscription plugin (plugins/withCashfreeSubscription.js) is Android-only —
 //      check Cashfree iOS docs for any equivalent Info.plist / entitlement requirements.

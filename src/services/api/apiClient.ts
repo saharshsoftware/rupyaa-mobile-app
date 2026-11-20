@@ -20,6 +20,7 @@ import {
 } from './apiHelpers';
 import { handleUnauthorizedResponse } from './handleUnauthorizedResponse';
 import { getEnableEncryption } from '@/src/config/resolvedAppConfig';
+import { fetchAndStoreEncryptionStatus } from '../startup/startupService';
 
 export type { ApiMethod };
 
@@ -131,6 +132,7 @@ export const apiRequest = async <T>(options: ApiRequestOptions): Promise<ApiResp
     const payload = transformResponse<T>(rawBody, response);
 
     if (response.status === 401) {
+      await fetchAndStoreEncryptionStatus();
       await handleUnauthorizedResponse(method, options.path, options.skipAuth ?? false);
     }
 

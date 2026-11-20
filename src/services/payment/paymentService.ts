@@ -63,8 +63,8 @@ function mapOrderStatusResponseData(raw: unknown): OrderStatusResponseData | nul
  */
 export const paymentService = {
   /**
-   * Create a payment order (POST /payment/create-payment-order).
-   * Returns order_id and payment_session_id for Cashfree checkout.
+   * Create a payment order (POST /payment/transactions).
+   * Cashfree: order_id + payment_session_id. Razorpay: order_id + key_id.
    */
   async createPaymentOrder(
     body: CreatePaymentOrderRequest
@@ -77,13 +77,13 @@ export const paymentService = {
   },
 
   /**
-   * GET /payment/order-status/:cashfreeOrderId — Cashfree order status (response may be encrypted; apiClient decrypts).
+   * GET /payment/order-status/:orderId — payment order status (response may be encrypted; apiClient decrypts).
    * Maps snake_case API fields to camelCase OrderStatusResponseData.
    */
   async getPaymentOrderStatus(
-    cashfreeOrderId: string
+    orderId: string
   ): Promise<ApiResponse<OrderStatusResponseData>> {
-    const path = `${API_ENDPOINTS.payment.orderStatus}/${encodeURIComponent(cashfreeOrderId)}`;
+    const path = `${API_ENDPOINTS.payment.orderStatus}/${encodeURIComponent(orderId)}`;
     const response = await apiClient.get<unknown>(path);
 
     if (!response.success) {

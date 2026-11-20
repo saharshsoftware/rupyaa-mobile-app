@@ -18,8 +18,8 @@ import { classifyLoans } from '@/src/utils/loan-helpers';
 import { commonStyles } from '@/src/utils/common-styles';
 import { IMAGES } from '@/src/constants/images';
 import type { Loan } from '@/src/types/loans';
-import { router, useFocusEffect } from 'expo-router';
-import { resolveActiveLoanScreenType } from '@/src/utils/loan-helpers';
+import { useFocusEffect } from 'expo-router';
+import { navigateToActiveLoanRepayment } from '@/src/services/navigation';
 
 export default function AllLoansScreen() {
   const { data, isLoading, error, isError, refetch } = useAllUserLoans();
@@ -188,16 +188,7 @@ export default function AllLoansScreen() {
   }
 
   const handlePayNow = (loan: Loan) => {
-    const screenType = resolveActiveLoanScreenType(loan);
-    if (screenType === 'payment') {
-      router.push('/payment');
-      return;
-    }
-    if (screenType === 'foreclosure') {
-      router.push('/offercard/foreclosuer');
-      return;
-    }
-    router.push('/payment');
+    navigateToActiveLoanRepayment(loan);
   };
 
   return (

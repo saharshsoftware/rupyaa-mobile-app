@@ -41,7 +41,7 @@ const initializeDevToggles = async (): Promise<void> => {
  * Fetches encryption status from public API GET /external/encryption-status (no auth).
  * Stores result so getEnableEncryption() reflects backend setting.
  */
-const fetchAndStoreEncryptionStatus = async (): Promise<void> => {
+export const fetchAndStoreEncryptionStatus = async (): Promise<void> => {
   if (apiConfig.apiDisabled) return;
   try {
     const url = `${apiConfig.baseUrl}${API_ENDPOINTS.external.encryptionStatus}`;

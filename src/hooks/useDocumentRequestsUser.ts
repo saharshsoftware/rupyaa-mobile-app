@@ -1,14 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { GetDocumentRequestsResponse } from "../services/user/userService";
 import { API_ENDPOINTS } from "../config/api";
-import { api } from "../services/api/legacyFetcherApi";
 import { REACT_QUERY_KEYS } from "../constants/data";
 import { useAuthStore, selectIsAuthenticated } from "../store/useAuthStore";
+import { apiClient } from "../services/api/apiClient";
 
 const fetchDocumentRequestsUser = async (): Promise<GetDocumentRequestsResponse> => {
   try {
-    const response = await api.request<GetDocumentRequestsResponse>(API_ENDPOINTS.user.getDocumentRequests);
-    return response;
+    const response = await apiClient.get<GetDocumentRequestsResponse>(API_ENDPOINTS.user.getDocumentRequests);
+    if (!response.success) {
+      throw new Error(response.error?.message || 'Failed to fetch document requests');
+    }
+    return response.data as GetDocumentRequestsResponse;
   } catch (error) {
     console.error('Error fetching document requests', error);
     throw error;

@@ -31,6 +31,31 @@
           }
         ],
         "ITSAppUsesNonExemptEncryption": false,
+        "LSApplicationQueriesSchemes": [
+          "tez",
+          "phonepe",
+          "paytmmp",
+          "credpay",
+          "mobikwik",
+          "in.fampay.app",
+          "bhim",
+          "amazonpay",
+          "navi",
+          "kiwi",
+          "payzapp",
+          "jupiter",
+          "omnicard",
+          "icici",
+          "popclubapp",
+          "sbiyono",
+          "myjio",
+          "slice-upi",
+          "bobupi",
+          "shriramone",
+          "indusmobile",
+          "whatsapp",
+          "kotakbank"
+        ],
         "CFBundleURLTypes": [
           {
             "CFBundleURLSchemes": [
@@ -96,9 +121,9 @@
       "typedRoutes": true
     },
     "extra": {
-      "otaUpdateNumberDev": "17",
+      "otaUpdateNumberDev": "18",
       "otaUpdateNumberProd": "2",
-      "versionDev": "1.0.5",
+      "versionDev": "1.0.6",
       "versionProd": "1.0.3",
       "versionProdIos": "1.0.0",
       "isDevelopment": true,
