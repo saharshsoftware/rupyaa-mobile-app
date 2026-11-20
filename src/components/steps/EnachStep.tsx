@@ -13,7 +13,11 @@ import {
   getMandateDetails,
   type MandateDetailsData,
 } from '@/src/services/registration/mandateApi';
-import { openCashfreeSubscriptionCheckout } from '@/src/services/payment';
+import {
+  openCashfreeSubscriptionCheckout,
+  openRazorpayMandateCheckout,
+} from '@/src/services/payment';
+import { resolvePaymentSdkProvider } from '@/src/config/paymentCheckout';
 import { handleRegistrationStepSuccess } from '@/src/services/registration/handleStepSuccess';
 import {
   pushLoanJourneyApiError,
@@ -132,35 +136,62 @@ export function EnachStep({ onNext, onPrev, header }: StepProps): React.JSX.Elem
       return;
     }
 
-    const { sessionId, subscriptionId } = response.data;
+    const {
+      sessionId,
+      subscriptionId,
+      paymentGateway,
+      keyId,
+      customerId,
+      orderId,
+    } = response.data;
 
-    // Second funnel moment after intro: user enters Cashfree mandate registration.
     void logAnalyticsEvent(ANALYTICS_EVENT.EMANDATE_REGISTRATION_PAGE_LAND);
 
+    const gateway = resolvePaymentSdkProvider(paymentGateway ?? 'CASHFREE');
+
+    const onMandateVerify = (verifiedOrderId: string) => {
+      if (!isMountedRef.current) return;
+      if (devConfig.enableDebugLogs) {
+        console.log('[EnachStep] mandate onVerify — orderID:', verifiedOrderId);
+      }
+      setIsSubmitting(false);
+      setErrorMessage(null);
+      void fetchMandateDetailsAndShow();
+    };
+
+    const onMandateError = (message: string, logLabel: string) => {
+      if (!isMountedRef.current) return;
+      setIsSubmitting(false);
+      pushLoanJourneyUnknownError(
+        logLabel,
+        new Error(message || 'Mandate checkout failed')
+      );
+      if (devConfig.enableDebugLogs) {
+        console.log(`[EnachStep] ${logLabel} — message:`, message);
+      }
+    };
+
+    if (gateway === 'RAZORPAY') {
+      if (!keyId || !customerId || !orderId) {
+        setIsSubmitting(false);
+        setErrorMessage('Invalid mandate response. Please try again.');
+        return;
+      }
+      openRazorpayMandateCheckout({
+        keyId,
+        customerId,
+        orderId,
+        callbacks: {
+          onVerify: onMandateVerify,
+          onError: (message) => onMandateError(message, 'enach razorpay checkout'),
+        },
+      });
+      return;
+    }
+
     openCashfreeSubscriptionCheckout(sessionId, subscriptionId, {
-      onVerify: (orderID: string) => {
-        if (!isMountedRef.current) return;
-        if (devConfig.enableDebugLogs) {
-          console.log('[EnachStep] Cashfree onVerify — orderID:', orderID);
-        }
-        setIsSubmitting(false);
-        setErrorMessage(null);
-        void fetchMandateDetailsAndShow();
-      },
-      onError: (message: string) => {
-        if (!isMountedRef.current) return;
-        setIsSubmitting(false);
-        pushLoanJourneyUnknownError(
-          'enach cashfree checkout',
-          new Error(message || 'Cashfree checkout failed')
-        );
-        if (devConfig.enableDebugLogs) {
-          console.log('[EnachStep] Cashfree onError — message:', message);
-        }
-        console.log('[EnachStep] Cashfree onError — message:', message);
-        // Cashfree checkout failed - show error and don't proceed
-        // setErrorMessage(message);
-      },
+      onVerify: onMandateVerify,
+      onError: (message) => onMandateError(message, 'enach cashfree checkout'),
     });
   }, [isSubmitting, fetchMandateDetailsAndShow]);
 

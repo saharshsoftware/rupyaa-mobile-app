@@ -6,6 +6,7 @@ import type React from 'react';
 import { logBureauPolicyResponseApp } from "../services/analytics/analyticsService";
 import { ApiResponse } from "./api";
 import { CurrentOfferOffer } from "./offer";
+import type { PaymentSdkProvider } from "./payment";
 import { UserEligibilityExperianResponse } from "./user";
 
 export type LoanStatus = 'Sanctioned' | 'Disbursed' | 'Completed' | 'Foreclosed' | 'Overdue' | string;
@@ -217,6 +218,8 @@ export interface GetExistingActiveLoanResponse {
   loan: Loan | null;
   loanStatus: string;
   loanType?: LoanType;
+  /** Which payment SDK to open for repayment checkout. */
+  paymentGateway?: PaymentSdkProvider;
 }
 
 export interface EmiPaymentContentProps {

@@ -6,11 +6,20 @@ import { getGeoLocationForEsignOrMandate } from '../location/geoLocation';
 import { buildCreateMandateFailureMessage } from '@/src/utils/mandateErrors';
 import { extractApiUserMessage } from '@/src/utils/common-helper';
 import { pushLoanJourneyUnknownError } from '../logging';
+import type { PaymentSdkProvider } from '@/src/types/payment';
 
 export interface CreateMandateResponse {
   subscriptionId: string;
   sessionId: string;
   message: string;
+  /** Which mandate SDK to open. Falls back via resolvePaymentSdkProvider when omitted. */
+  paymentGateway?: PaymentSdkProvider;
+  /** Razorpay Key Id (rzp_test_* / rzp_live_*) — never a secret */
+  keyId?: string;
+  /** Razorpay customer id for e-mandate auth */
+  customerId?: string;
+  /** Razorpay order id for e-mandate auth */
+  orderId?: string;
 }
 
 export interface MandateRegistrationDetails {

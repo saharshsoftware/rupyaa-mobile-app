@@ -109,6 +109,7 @@
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-network-logger": "^3.0.0",
     "react-native-play-install-referrer": "^1.1.9",
+    "react-native-razorpay": "^3.0.0",
     "react-native-reanimated": "4.5.1",
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "~4.26.0",
@@ -127,7 +128,8 @@
     "install": {
       "exclude": [
         "react-native-cashfree-pg-sdk",
-        "cashfree-pg-api-contract"
+        "cashfree-pg-api-contract",
+        "react-native-razorpay"
       ]
     },
     "doctor": {
@@ -139,6 +141,7 @@
           "react-native-cashfree-pg-sdk",
           "react-native-collect-data",
           "react-native-keyboard-aware-scroll-view",
+          "react-native-razorpay",
           "react-native-step-indicator"
         ],
         "listUnknownPackages": false

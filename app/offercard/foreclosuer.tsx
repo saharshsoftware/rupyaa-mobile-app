@@ -7,7 +7,7 @@ import { PaymentSuccessModal } from '@/src/components/PaymentSuccessModal';
 import { ForeclosureCard } from '@/src/components/loans';
 import { colors, spacing } from '@/src/theme';
 import { useGetExistingActiveLoanWithPaidRedirect } from '@/src/services/loans';
-import { useCreatePaymentOrder, openCashfreePaymentCheckout } from '@/src/services/payment';
+import { useCreatePaymentOrder, openSdkPaymentCheckout } from '@/src/services/payment';
 import { resolveForeclosureTotalPayable } from '@/src/utils/loan-helpers';
 import { fetchAndStoreAppConfig } from '@/src/hooks/useExternalAppConfig';
 import { pollPaymentStatus } from '@/src/utils/pollPaymentStatus';
@@ -15,7 +15,8 @@ import { VERIFY_PAYMENT_MESSAGE } from '@/src/constants/data';
 
 /**
  * Full-screen foreclosure: thin wrapper around ForeclosureCard.
- * Data from Get Existing Active Loan; CTA creates payment order and opens Cashfree checkout.
+ * Data from Get Existing Active Loan; CTA creates payment order and opens SDK checkout
+ * (Cashfree or Razorpay).
  * On success, shows a modal with remaining balance (if any).
  */
 export default function OfferForeclosuerScreen() {
@@ -66,11 +67,14 @@ export default function OfferForeclosuerScreen() {
       const data = await createPaymentOrderMutation.mutateAsync({
         loanId: loan._id,
         amount: foreclosureAmount,
+        paymentGateway: activeLoanQuery.data?.paymentGateway,
       });
-      openCashfreePaymentCheckout(
-        data.payment_session_id,
-        data.order_id,
-        {
+      openSdkPaymentCheckout({
+        data,
+        amountRupees: foreclosureAmount,
+        description: 'Loan foreclosure',
+        paymentGateway: activeLoanQuery.data?.paymentGateway,
+        callbacks: {
           onVerify: async (orderId: string) => {
             const controller = new AbortController();
             verifyAbortRef.current = controller;
@@ -99,14 +103,19 @@ export default function OfferForeclosuerScreen() {
           onError: (message: string) => {
             setPaymentError(message);
           },
-        }
-      );
+        },
+      });
     } catch (e) {
       const message =
         e instanceof Error ? e.message : 'Something went wrong. Please try again.';
       setPaymentError(message);
     }
-  }, [loan?._id, foreclosureAmount, createPaymentOrderMutation.mutateAsync]);
+  }, [
+    loan?._id,
+    foreclosureAmount,
+    activeLoanQuery.data?.paymentGateway,
+    createPaymentOrderMutation.mutateAsync,
+  ]);
 
   const error = activeLoanQuery.error;
 

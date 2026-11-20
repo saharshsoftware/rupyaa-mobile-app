@@ -8,7 +8,7 @@ import { PaymentSuccessModal } from '@/src/components/PaymentSuccessModal';
 import { EmiPaymentContent, PaymentCard } from '@/src/components/loans';
 import { colors, spacing } from '@/src/theme';
 import { useGetExistingActiveLoanWithPaidRedirect } from '@/src/services/loans';
-import { useCreatePaymentOrder, openCashfreePaymentCheckout } from '@/src/services/payment';
+import { useCreatePaymentOrder, openSdkPaymentCheckout } from '@/src/services/payment';
 import { fetchAndStoreAppConfig } from '@/src/hooks/useExternalAppConfig';
 import { pollPaymentStatus } from '@/src/utils/pollPaymentStatus';
 import { getEmiRemainingAmount, isEmiLoan } from '@/src/utils/loan-helpers';
@@ -16,7 +16,8 @@ import { VERIFY_PAYMENT_MESSAGE } from '@/src/constants/data';
 
 /**
  * Dedicated Make Payment screen. Fetches active loan and shows PaymentCard.
- * CTA creates payment order and opens Cashfree checkout. On success, shows a modal with remaining balance (if any).
+ * CTA creates payment order and opens SDK checkout (Cashfree or Razorpay).
+ * On success, shows a modal with remaining balance (if any).
  */
 export default function PaymentScreen() {
   const { t } = useTranslation();
@@ -36,7 +37,7 @@ export default function PaymentScreen() {
     };
   }, []);
 
-  // Reset custom amount input when user comes back to the payment screen (e.g. after Cashfree or navigation)
+  // Reset custom amount input when user comes back to the payment screen (e.g. after checkout or navigation)
   useFocusEffect(
     useCallback(() => {
       setCustomAmountResetKey((k) => k + 1);
@@ -67,16 +68,17 @@ export default function PaymentScreen() {
     if (!loan?._id) return;
     setPaymentError(null);
     try {
-      // Wait for GET /external/config so Cashfree env + playStorePhoneNumbers are loaded before opening SDK.
       await fetchAndStoreAppConfig();
       const data = await createPaymentOrderMutation.mutateAsync({
         loanId: loan._id,
         amount,
+        paymentGateway: activeLoanQuery.data?.paymentGateway,
       });
-      openCashfreePaymentCheckout(
-        data.payment_session_id,
-        data.order_id,
-        {
+      openSdkPaymentCheckout({
+        data,
+        amountRupees: amount,
+        paymentGateway: activeLoanQuery.data?.paymentGateway,
+        callbacks: {
           onVerify: async (orderId: string) => {
             const controller = new AbortController();
             verifyAbortRef.current = controller;
@@ -90,7 +92,6 @@ export default function PaymentScreen() {
                 setPaymentError('Payment failed. Please try again.');
               }
             } catch (e) {
-              // RN may not expose DOMException; any AbortError means unmount/navigation.
               if (e instanceof Error && e.name === 'AbortError') {
                 return;
               }
@@ -106,14 +107,18 @@ export default function PaymentScreen() {
           onError: (message: string) => {
             setPaymentError(message);
           },
-        }
-      );
+        },
+      });
     } catch (e) {
       const message =
         e instanceof Error ? e.message : 'Something went wrong. Please try again.';
       setPaymentError(message);
     }
-  }, [loan?._id, createPaymentOrderMutation.mutateAsync]);
+  }, [
+    loan?._id,
+    activeLoanQuery.data?.paymentGateway,
+    createPaymentOrderMutation.mutateAsync,
+  ]);
 
   if (isLoading) {
     return (

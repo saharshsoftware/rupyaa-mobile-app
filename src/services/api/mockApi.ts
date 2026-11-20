@@ -429,11 +429,14 @@ const handlers: MockHandler[] = [
   },
   {
     matches: (method, path) =>
-      method === 'POST' && normalizePath(path) === '/payment/create-payment-order',
+      method === 'POST' &&
+      (normalizePath(path) === '/payment/create-payment-order' ||
+        normalizePath(path) === '/payment/transactions'),
     handler: () =>
       buildSuccess({
         order_id: 'order_payment_123',
         payment_session_id: 'session_payment_123',
+        key_id: 'rzp_test_mock_key',
       }),
   },
   {
