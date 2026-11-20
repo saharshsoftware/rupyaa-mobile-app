@@ -28,11 +28,11 @@ import {
   buildActiveLoanCardContent,
   getAmountDue,
   isLoanStatusPending,
-  resolveActiveLoanScreenType,
   resolveActiveLoanStatusPill,
   resolveCardDisplayAmount,
   statusPillToVariant,
 } from '@/src/utils/loan-helpers';
+import { navigateToActiveLoanRepayment } from '@/src/services/navigation';
 import { useFlowStore } from '@/src/store';
 import { getApplicationNumberFromCurrentOffer, getOfferAmount, isCurrentOfferSuccess } from '@/src/types/offer';
 import { consoleLogDev, formatCurrency } from '@/src/utils/common-helper';
@@ -160,16 +160,7 @@ export default function HomeTab() {
   /** Navigate to Payment or Foreclosure screen based on active loan; fallback to My Loan tab. */
   const handlePaymentFromHome = useCallback(() => {
     const loan = activeLoanQuery.data?.loan ?? null;
-    // debugger;
-    const screenType = resolveActiveLoanScreenType(loan);
-    // const screenType = 'payment';
-    if (screenType === 'payment' || screenType === 'payment-emi') {
-      router.push('/payment');
-    } else if (screenType === 'foreclosure') {
-      router.push('/offercard/foreclosuer');
-    } else {
-      router.replace('/(tabs)/my-loan');
-    }
+    navigateToActiveLoanRepayment(loan);
   }, [activeLoanQuery.data?.loan]);
 
   const handleTrackStatus = useCallback(() => {

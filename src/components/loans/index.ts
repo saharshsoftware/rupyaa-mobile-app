@@ -12,3 +12,7 @@ export { LoanTabBar, type LoanTabBarProps, type LoanTabKey } from './LoanTabBar'
 export { EmiRepaymentAccordion } from './EmiRepaymentAccordion';
 
 export { EmiPaymentContent } from './EmiPaymentContent';
+export {
+  ActiveLoanRepaymentEmptyState,
+  type ActiveLoanRepaymentEmptyStateProps,
+} from './ActiveLoanRepaymentEmptyState';

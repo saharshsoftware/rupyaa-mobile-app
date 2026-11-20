@@ -5,7 +5,11 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Screen, Header, AppText, ZapcashLoading } from '@/src/components';
 import { PaymentSuccessModal } from '@/src/components/PaymentSuccessModal';
-import { EmiPaymentContent, PaymentCard } from '@/src/components/loans';
+import {
+  ActiveLoanRepaymentEmptyState,
+  EmiPaymentContent,
+  PaymentCard,
+} from '@/src/components/loans';
 import { colors, spacing } from '@/src/theme';
 import { useGetExistingActiveLoanWithPaidRedirect } from '@/src/services/loans';
 import { useCreatePaymentOrder, openSdkPaymentCheckout } from '@/src/services/payment';
@@ -151,11 +155,7 @@ export default function PaymentScreen() {
     return (
       <Screen scroll={false} edges={['top', 'bottom']}>
         <Header title={t(isEmi ? 'Payment Option' : 'Make Payment')} showBack onBackPress={() => router.back()} />
-        <View style={styles.centered}>
-          <AppText variant="body" style={styles.message}>
-            No active loan found.
-          </AppText>
-        </View>
+        <ActiveLoanRepaymentEmptyState activeLoanData={activeLoanQuery.data} />
       </Screen>
     );
   }
