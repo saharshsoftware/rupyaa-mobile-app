@@ -123,7 +123,7 @@
     "extra": {
       "otaUpdateNumberDev": "17",
       "otaUpdateNumberProd": "2",
-      "versionDev": "1.0.5",
+      "versionDev": "1.0.6",
       "versionProd": "1.0.3",
       "versionProdIos": "1.0.0",
       "isDevelopment": true,
