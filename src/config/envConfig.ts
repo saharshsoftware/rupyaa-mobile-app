@@ -58,6 +58,7 @@ export const envConfig = {
   amanNgrokApiUrl: 'https://grimy-victoria-uninduced.ngrok-free.dev',
   staging2ApiUrl:'https://api-staging.rupyaa.com',
   stagingApiUrl: 'https://api-staging.rupyaa.com',
+  emiApiUrl: 'https://emi-api.zapcash.in',
   isDevelopment: resolveIsDevelopment(),
   adjustAppToken: process.env.EXPO_PUBLIC_ADJUST_APP_TOKEN ?? '',
   fbAppId: process.env.EXPO_PUBLIC_FB_APP_ID ?? '',

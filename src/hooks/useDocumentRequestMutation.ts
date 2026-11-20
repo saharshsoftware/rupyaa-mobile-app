@@ -8,6 +8,7 @@ import {
 import type { ApiResponse } from '@/src/types/api';
 import { API_ENDPOINTS } from '@/src/config/api';
 import { api } from '@/src/services/api/legacyFetcherApi';
+import { apiClient } from '../services/api/apiClient';
 
 export type UploadDocumentRequestVariables = {
   documentRequest: DocumentRequest;
@@ -54,11 +55,11 @@ async function uploadDocumentRequest(
   const path = `${API_ENDPOINTS.user.uploadDocumentRequest}/${documentRequest._id}/attachments`;
 
   try {
-    const data = await api.request<UploadDocumentRequestResponse>(path, {
-      method: 'POST',
-      body: formData,
-    });
-    return { success: true, data: data as UploadDocumentRequestResponse };
+    const data = await apiClient.post<UploadDocumentRequestResponse>(path, formData);
+    if (!data.success) {
+      throw new Error(data.error?.message || 'Failed to upload document request');
+    }
+    return { success: true, data: data.data as UploadDocumentRequestResponse };
   } catch (err: unknown) {
     const thrown = err as { message?: string; data?: Record<string, unknown> };
     const details = thrown.data ?? {};

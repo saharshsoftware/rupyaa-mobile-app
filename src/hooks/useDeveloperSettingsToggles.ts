@@ -96,6 +96,15 @@ export const useDeveloperSettingsToggles = () => {
     void setStagingApiOverrideToggle(nextValue);
   };
 
+  const handleToggleEmiApiBaseUrl = (value: boolean) => {
+    const nextValue = value ? STAGING_API_OVERRIDE.emi : STAGING_API_OVERRIDE.none;
+    if (value) {
+      clearNgrokToggles();
+    }
+
+    void setStagingApiOverrideToggle(nextValue);
+  };
+
   return {
     useNgrokApiBaseUrl,
     useAmanNgrokApiBaseUrl,
@@ -108,5 +117,6 @@ export const useDeveloperSettingsToggles = () => {
     handleToggleBankStatementUploader,
     handleToggleStaging2ApiBaseUrl,
     handleToggleStagingApiV1BaseUrl,
+    handleToggleEmiApiBaseUrl,
   };
 };
