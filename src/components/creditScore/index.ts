@@ -1,5 +1,6 @@
 export { CreditScoreForm } from './CreditScoreForm';
 export { CreditScoreReport } from './CreditScoreReport';
-export { CreditScoreUnavailable } from './CreditScoreUnavailable';
+export { CreditScoreNotFound } from './CreditScoreNotFound';
+export { CreditScoreAttemptsExhausted } from './CreditScoreAttemptsExhausted';
 export { CreditReportLoading } from './CreditReportLoading';
 export { DetailedCreditReport } from './DetailedCreditReport';

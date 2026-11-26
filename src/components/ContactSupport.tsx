@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Alert, Linking, Pressable, StyleSheet, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import { usePathname, useRouter } from 'expo-router';
 import { appConfig } from '@/src/config/appConfig';
 import { colors, spacing } from '@/src/theme';
-import { resolveWhatsAppUrl } from '@/src/utils/common-helper';
 import { prepareLoanJourneySupport } from '@/src/services/support';
 import { AppText } from './AppText';
 
@@ -20,6 +19,10 @@ function ContactSupport() {
 
   const handlePress = () => {
     if (openingRef.current) return;
+    if (pathname !== '/loan-journey') {
+      router.push('/need-help');
+      return;
+    }
     openingRef.current = true;
     setIsOpening(true);
     if (pathname === '/loan-journey') {
@@ -35,12 +38,6 @@ function ContactSupport() {
       });
       return;
     }
-    void Linking.openURL(resolveWhatsAppUrl() ?? appConfig.supportUrl).catch(() => {
-      if (isMounted.current) Alert.alert('Contact Support', appConfig.contactSupportTeamEmail);
-    }).finally(() => {
-      openingRef.current = false;
-      if (isMounted.current) setIsOpening(false);
-    });
   };
 
   return (

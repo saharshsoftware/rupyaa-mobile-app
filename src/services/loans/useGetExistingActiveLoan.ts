@@ -6,6 +6,7 @@ import { REACT_QUERY_KEYS } from '@/src/constants/data';
 
 type UseGetExistingActiveLoanOptions = {
   enabled?: boolean;
+  refetchInterval?: number | false;
 };
 
 /**
@@ -33,7 +34,8 @@ export function useGetExistingActiveLoan(options?: UseGetExistingActiveLoanOptio
     staleTime: 0,
     refetchOnMount: true,
     refetchOnReconnect: true,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
+    refetchInterval: options?.refetchInterval ?? false,
     retry: 1,
   });
 

@@ -15,6 +15,8 @@ export interface ActionCardProps {
   accessibilityLabel?: string;
   /** Whether the card is part of the bank statement step */
   isBankStatementStep?: boolean;
+  /** Emphasize the card (stronger fill + primary border) for preferred actions */
+  highlighted?: boolean;
   /** Merged onto the outer card root (e.g. minHeight when aligning with another control). */
   containerStyle?: StyleProp<ViewStyle>;
 }
@@ -28,12 +30,18 @@ export function ActionCard({
   subtext,
   onPress,
   isBankStatementStep = false,
+  highlighted = false,
   containerStyle,
   accessibilityLabel = title,
 }: ActionCardProps): React.JSX.Element {
   return (
     <TouchableOpacity
-      style={[styles.card, isBankStatementStep && styles.bankStatementStepCard, containerStyle]}
+      style={[
+        styles.card,
+        isBankStatementStep && styles.bankStatementStepCard,
+        highlighted && styles.highlightedCard,
+        containerStyle,
+      ]}
       onPress={onPress}
       activeOpacity={0.75}
       accessibilityLabel={accessibilityLabel}
@@ -41,7 +49,7 @@ export function ActionCard({
     >
       <View style={styles.content}>
         <View style={styles.textBlock}>
-          <AppText style={styles.title} variant="caption" color='black' weight="semiBold">
+          <AppText style={styles.title} variant="caption" color="black" weight="semiBold">
             {title}
           </AppText>
           <AppText style={styles.subtext} variant="captionSmall">
@@ -65,7 +73,12 @@ const styles = StyleSheet.create({
     borderColor: colors.primary.lightest,
   },
   bankStatementStepCard: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
+  },
+  highlightedCard: {
+    backgroundColor: colors.primary.lightest,
+    borderColor: colors.primary.main,
+    borderWidth: 1.5,
   },
   content: {
     flexDirection: 'row',
@@ -77,7 +90,6 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   title: {
-    // color: colors.primary.main,
     marginBottom: spacing.xs,
   },
   subtext: {

@@ -1,3 +1,4 @@
+import { useResolvedAppConfigValue } from '@/src/hooks/useResolvedAppConfigValue';
 import React, { useEffect, useRef } from 'react';
 import { Animated, Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -31,7 +32,8 @@ export function LocationPermissionModal({
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(SLIDE_OFFSET)).current;
 
-  const smsRequired = Platform.OS === 'android' && !getByPassSmsPermission();
+  const bypassSmsPermission = useResolvedAppConfigValue(getByPassSmsPermission);
+  const smsRequired = Platform.OS === 'android' && !bypassSmsPermission;
 
   useEffect(() => {
     if (!visible) return;

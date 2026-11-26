@@ -4,9 +4,10 @@ import { ArrowLeft, Download } from 'lucide-react-native';
 import { AppText, Button, FormLayout } from '@/src/components';
 import { CreditScoreGauge } from './CreditScoreGauge';
 import { colors, radius, spacing, typography } from '@/src/theme';
-import type { CreditAccount, CreditReportData } from '@/src/types/creditScore';
+import type { RenderableCreditReport } from '@/src/config/creditScore';
+import type { CreditAccount } from '@/src/types/creditScore';
 
-interface Props { report: CreditReportData; onBack: () => void; onDownload: () => void; downloading: boolean }
+interface Props { report: RenderableCreditReport; onBack: () => void; onDownload: () => void; downloading: boolean }
 const money = (value: number | null) => `₹${Number.isFinite(value) ? (value ?? 0).toLocaleString('en-IN') : '0'}`;
 
 function AccountCard({ account }: { account: CreditAccount }) {

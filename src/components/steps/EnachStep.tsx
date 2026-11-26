@@ -44,7 +44,7 @@ const CTA_LABEL = 'Set Up Auto-Payment';
 
 type EnachScreen = 'form' | 'fetching_details' | 'success';
 
-export function EnachStep({ onNext, onPrev }: StepProps): React.JSX.Element {
+export function EnachStep({ onNext, onPrev, header }: StepProps): React.JSX.Element {
   const { isSimulating, simulatedState } = useStepSimulation();
   const [screen, setScreen] = useState<EnachScreen>('form');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -217,7 +217,7 @@ export function EnachStep({ onNext, onPrev }: StepProps): React.JSX.Element {
   if (isSimulating) {
     if (simulatedState === 'loading') {
       return (
-        <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+        <FormLayout header={header} showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
           <View style={styles.loaderWrapper}>
             <ActivityIndicator size="large" color={colors.primary.main} />
             <AppText style={styles.loaderText} variant="body">
@@ -230,7 +230,7 @@ export function EnachStep({ onNext, onPrev }: StepProps): React.JSX.Element {
     if (simulatedState === 'success') {
       return (
         <View style={styles.stepWrapper}>
-          <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+          <FormLayout header={header} showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
             <View style={styles.content} />
           </FormLayout>
           <SuccessModal
@@ -247,7 +247,7 @@ export function EnachStep({ onNext, onPrev }: StepProps): React.JSX.Element {
     if (simulatedState === 'error') {
       return (
         <View style={styles.stepWrapper}>
-          <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+          <FormLayout header={header} showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
             <View style={styles.content} />
           </FormLayout>
           <ErrorModal
@@ -266,7 +266,7 @@ export function EnachStep({ onNext, onPrev }: StepProps): React.JSX.Element {
 
   if (screen === 'fetching_details') {
     return (
-      <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+      <FormLayout header={header} showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
         <View style={styles.loaderWrapper}>
           <ActivityIndicator size="large" color={colors.primary.main} />
           <AppText style={styles.loaderText} variant="body">
@@ -280,7 +280,7 @@ export function EnachStep({ onNext, onPrev }: StepProps): React.JSX.Element {
   if (screen === 'success') {
     return (
       <View style={styles.stepWrapper}>
-        <FormLayout showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
+        <FormLayout header={header} showContactSupport safeAreaEdges={['bottom']} onBack={onPrev} footer={<View />}>
           <View style={styles.content} />
         </FormLayout>
         <SuccessModal
@@ -297,6 +297,7 @@ export function EnachStep({ onNext, onPrev }: StepProps): React.JSX.Element {
 
   return (
     <FormLayout
+      header={header}
       showContactSupport
       safeAreaEdges={['bottom']}
       onBack={onPrev}

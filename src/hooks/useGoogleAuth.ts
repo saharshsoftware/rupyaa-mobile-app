@@ -1,3 +1,4 @@
+import { useResolvedAppConfigValue } from '@/src/hooks/useResolvedAppConfigValue';
 import { useEffect, useRef } from 'react';
 import { Platform } from "react-native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
@@ -16,12 +17,14 @@ function sanitizeClientId(value: string | null | undefined): string | null {
 }
 
 export function useGoogleAuth() {
+  const webClientIdValue = useResolvedAppConfigValue(getGoogleClientId);
+  const iosClientIdValue = useResolvedAppConfigValue(getIosGoogleClientId);
   const googleConfigErrorRef = useRef<Error | null>(null);
 
   useEffect(() => {
     try {
-      const webClientId = sanitizeClientId(getGoogleClientId());
-      const iosClientId = sanitizeClientId(getIosGoogleClientId());
+      const webClientId = sanitizeClientId(webClientIdValue);
+      const iosClientId = sanitizeClientId(iosClientIdValue);
       const configurePayload = {
         ...(webClientId ? { webClientId } : {}),
         // iOS requires a separate OAuth client ID (iOS type) from Google Cloud Console.
@@ -50,7 +53,7 @@ export function useGoogleAuth() {
         googleConfigErrorRef.current.message
       );
     }
-  }, []);
+  }, [webClientIdValue, iosClientIdValue]);
 
   const promptAsync = async () => {
     if (googleConfigErrorRef.current) {

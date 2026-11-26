@@ -56,10 +56,12 @@ export const DeveloperSettingsSection = () => {
   const {
     useNgrokApiBaseUrl,
     useAmanNgrokApiBaseUrl,
+    useAdityaNgrokApiBaseUrl,
     useBankStatementUploader,
     stagingApiOverride,
     handleToggleNgrokBaseUrl,
     handleToggleAmanNgrokBaseUrl,
+    handleToggleAdityaNgrokBaseUrl,
     handleToggleBankStatementUploader,
     handleToggleStaging2ApiBaseUrl,
     handleToggleStagingApiV1BaseUrl,
@@ -84,6 +86,11 @@ export const DeveloperSettingsSection = () => {
             label="Use Aman ngrok url"
             value={useAmanNgrokApiBaseUrl}
             onValueChange={handleToggleAmanNgrokBaseUrl}
+          />
+          <DevToggleRow
+            label="Use Aditya ngrok URL"
+            value={useAdityaNgrokApiBaseUrl}
+            onValueChange={handleToggleAdityaNgrokBaseUrl}
           />
           <DevToggleRow
             label="Use staging2 API base URL"

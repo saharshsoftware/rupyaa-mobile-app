@@ -1,9 +1,37 @@
 import { colors } from '@/src/theme';
+import type { CreditReportData } from '@/src/types/creditScore';
 
 export const CREDIT_SCORE_UNAVAILABLE = -1;
+export const CREDIT_SCORE_MAX_ATTEMPTS = 5;
 
-export function isCreditScoreUnavailable(score: number): boolean {
-  return score === CREDIT_SCORE_UNAVAILABLE;
+/** Bureau returns -1, 0, or null when no score can be shown. */
+export function isCreditScoreUnavailable(
+  score: number | null | undefined,
+): boolean {
+  return score == null || score === CREDIT_SCORE_UNAVAILABLE || score === 0;
+}
+
+export function getCreditScoreAttemptsLeft(attemptsUsed: number): number {
+  return Math.max(0, CREDIT_SCORE_MAX_ATTEMPTS - Math.max(0, attemptsUsed));
+}
+
+export function hasCreditScoreAttemptsRemaining(attemptsUsed: number): boolean {
+  return getCreditScoreAttemptsLeft(attemptsUsed) > 0;
+}
+
+export type RenderableCreditReport = CreditReportData & { creditScore: number };
+
+/** Guards against incomplete / unavailable bureau payloads that would crash the report UI. */
+export function isRenderableCreditReport(
+  report: CreditReportData | null | undefined
+): report is RenderableCreditReport {
+  return (
+    !!report &&
+    typeof report.creditScore === 'number' &&
+    !isCreditScoreUnavailable(report.creditScore) &&
+    !!report.creditSummary &&
+    typeof report.creditSummary === 'object'
+  );
 }
 
 export function getCreditScorePresentation(score: number): { rating: string; color: string } {

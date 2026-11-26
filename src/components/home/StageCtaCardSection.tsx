@@ -64,6 +64,7 @@ export interface StageCtaCardSectionProps {
   totalPayable?: number;
   /** Active EMI dashboard card. Payday loans keep ActiveLoanCard. */
   loan?: Loan | null;
+  isPendingPayment?: boolean;
   /** ActiveLoanCard only: amount due for repayment */
   amountDue?: number;
   /** ActiveLoanCard only: due date string */
@@ -112,6 +113,7 @@ export function StageCtaCardSection({
   applicationNumber,
   amount,
   loan = null,
+  isPendingPayment = loan?.isPendingPayment === true,
   tenure,
   totalPayable,
   amountDue,
@@ -142,9 +144,10 @@ export function StageCtaCardSection({
 
   const isPreOffer = isPreOfferStage(userStage);
   const isActiveLoanDashboard = userStage === UserStagesInBackend.ACTIVE_LOAN_DASHBOARD;
-  /** Same card as APPLICATION_STATUS when API reports pending (e.g. stage not yet synced). */
+  // Use loan status only until the authoritative backend stage is available.
   const showUnderReviewCard =
-    userStage === UserStagesInBackend.APPLICATION_STATUS || isLoanStatusPending(loanStatus);
+    userStage === UserStagesInBackend.APPLICATION_STATUS ||
+    (userStage == null && isLoanStatusPending(loanStatus));
   const showCblRejectedCard = isCblOrRejectedStage(userStage);
 
   const stepperAndMessage = (
@@ -176,17 +179,18 @@ export function StageCtaCardSection({
     </>
   );
 
-  if (isActiveLoanDashboard && loan != null && isEmiLoan(loan)) {
+  if (isActiveLoanDashboard && !isPendingPayment && loan != null && isEmiLoan(loan)) {
     return <EmiHomePlanCard loan={loan} onPayPress={onActionPress} disabled={disableAction} />;
   }
 
   // dueAmount API field is not yet live — amountDue is optional; card handles the fallback internally
-  if (isActiveLoanDashboard && amount != null && dueDate && statusPill) {
+  if (isActiveLoanDashboard && amount != null && (dueDate || isPendingPayment) && statusPill) {
     return (
       <ActiveLoanCard
         amount={amount}
         amountDue={amountDue}
-        dueDate={dueDate}
+        dueDate={dueDate ?? ''}
+        isPendingPayment={isPendingPayment}
         statusPill={statusPill as 'Active' | 'Overdue'}
         actionLabel={actionLabel}
         onActionPress={onActionPress}

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useCurrentOfferStore } from '@/src/store/useCurrentOfferStore';
 import { useUserDetailsStore } from '@/src/store/useUserDetailsStore';
@@ -80,7 +80,6 @@ export function useApprovedOfferStep({
   const [acceptError, setAcceptError] = useState<string | null>(null);
   const [refreshError, setRefreshError] = useState<string | null>(null);
   const [isHydratingLatestOffer, setIsHydratingLatestOffer] = useState(true);
-  const hasTriggeredInitialOfferFetchRef = useRef(false);
 
   const offer = getOfferFromStore(lastResponse);
   const emiOffer =
@@ -131,20 +130,16 @@ export function useApprovedOfferStep({
   });
 
   useEffect(() => {
-    if (hasTriggeredInitialOfferFetchRef.current) return;
-
-    hasTriggeredInitialOfferFetchRef.current = true;
-    if (useCurrentOfferStore.getState().lastResponse != null) {
-      setIsHydratingLatestOffer(false);
-      return;
-    }
-
-    void fetchCurrentOfferForBankStatement()
+    let isActive = true;
+    void fetchCurrentOfferForBankStatement({ force: true })
       .catch((error) => {
         pushLoanJourneyUnknownError('refresh offer', error);
-        setRefreshError(DEFAULT_REFRESH_ERROR);
+        if (isActive) setRefreshError(DEFAULT_REFRESH_ERROR);
       })
-      .finally(() => setIsHydratingLatestOffer(false));
+      .finally(() => {
+        if (isActive) setIsHydratingLatestOffer(false);
+      });
+    return () => { isActive = false; };
   }, []);
 
   const clearRefreshError = useCallback(() => setRefreshError(null), []);

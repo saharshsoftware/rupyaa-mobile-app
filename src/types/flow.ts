@@ -19,10 +19,6 @@ export interface FlowPhaseConfig {
 export interface StepProps {
   onNext: () => void;
   onPrev: () => void;
-  /**
-   * @deprecated The wizard header is now rendered at the LoanWizard level and no
-   * longer passed down. This field is kept optional so existing step destructuring
-   * does not break during the migration, but it will always be undefined.
-   */
+  /** Optional content rendered at the top of the step scroll area. */
   header?: React.ReactNode;
 }
