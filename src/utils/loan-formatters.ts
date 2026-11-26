@@ -45,7 +45,7 @@ export function getDisbursedDateString(loan: Loan): string {
 export function getLoanTypeDisplayName(type: string): string {
   const normalizedType = type.trim().toUpperCase();
   if (normalizedType === LOAN_TYPE.payDay || normalizedType === LOAN_TYPE.bullet) {
-    return 'Pay Day Loan';
+    return 'Bullet Loan';
   }
 
   switch (type) {
