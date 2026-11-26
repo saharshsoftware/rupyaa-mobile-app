@@ -10,6 +10,7 @@ import {
   mapPayDayLoanDetailsAccordionItem,
   mapPayDayUnlockAccordionItems,
 } from '../../utils/offer-helpers';
+import { isBulletLoanTypeValue } from '@/src/utils/loan-helpers';
 import { isStarterTierVerifiedOffer } from '../offer-status/verifiedOfferStatus.logic';
 
 export function PayDayApprovedOfferContent({
@@ -20,7 +21,7 @@ export function PayDayApprovedOfferContent({
   const isStarterTier = isStarterTierVerifiedOffer(offerAmount);
   const loanDetailsItem = mapPayDayLoanDetailsAccordionItem(offer, loanType);
   const unlockItems = mapPayDayUnlockAccordionItems();
-  const rateSuffix = loanType === 'PAY_DAY' ? 'P.D' : 'P.A';
+  const rateSuffix = isBulletLoanTypeValue(loanType) ? 'P.D' : 'P.A';
 
   if (isStarterTier) {
     return (

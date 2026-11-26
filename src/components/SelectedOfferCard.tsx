@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { ChevronDown, ChevronUp } from 'lucide-react-native';
 import { useCurrentOfferStore } from '@/src/store';
 import { getCurrentEmiOffer, isCurrentOfferSuccess } from '@/src/types/offer';
-import { isEmiLoanType, mapEmiApprovedOfferDisplay } from '@/src/utils';
+import { isBulletLoanTypeValue, isEmiLoanType, mapEmiApprovedOfferDisplay } from '@/src/utils';
 import { formatCurrency } from '@/src/utils/common-helper';
 import { colors, radius, spacing } from '@/src/theme';
 import { AppText } from './AppText';
@@ -22,7 +22,7 @@ export function SelectedOfferCard() {
   const emiDisplay = isEmi ? mapEmiApprovedOfferDisplay(offer, emiOffer) : null;
   const amount = emiDisplay?.summaryLoanAmount ?? formatAmount(offer.offerAmount);
   const tenure = emiDisplay?.summaryTenure ?? (Number.isFinite(offer.loanTenure) ? `${offer.loanTenure} days` : '—');
-  const rateSuffix = loanType === 'PAY_DAY' ? 'p.d.' : 'p.a.';
+  const rateSuffix = isBulletLoanTypeValue(loanType) ? 'p.d.' : 'p.a.';
   const interest = emiDisplay?.interestRate ?? (Number.isFinite(offer.interestRate) ? `${offer.interestRate}% ${rateSuffix}` : '—');
   const totalRepayable = emiDisplay?.totalPayable ?? formatAmount(offer.payableAmount);
   const toggleLabel = expanded ? 'Hide' : 'Show Details';

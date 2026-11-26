@@ -173,7 +173,7 @@ export type {
   LoanType,
   EmiRepaymentState,
 } from './loans';
-export { EMI_BLOCK_STATUS } from './loans';
+export { EMI_BLOCK_STATUS, LOAN_TYPE } from './loans';
 
 export type {
   PaymentOrderStatus,
