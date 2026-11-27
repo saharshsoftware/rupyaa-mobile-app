@@ -56,6 +56,18 @@ const pickBoolean = (records: Array<Record<string, unknown> | undefined>, keys: 
   return undefined;
 };
 
+const pickNumber = (records: Array<Record<string, unknown> | undefined>, keys: string[]) => {
+  for (const record of records) {
+    if (!record) continue;
+    for (const key of keys) {
+      const value = record[key];
+      if (typeof value === 'number' && Number.isInteger(value) && value > 0) return value;
+      if (typeof value === 'string' && /^\d+$/.test(value)) return Number.parseInt(value, 10);
+    }
+  }
+  return undefined;
+};
+
 const normalizeOtpResponse = (data: unknown): OtpRequestResult => {
   if (!isRecord(data)) return { raw: data };
   const records = [data, ...collectNestedRecords(data)];
@@ -67,7 +79,8 @@ const normalizeOtpResponse = (data: unknown): OtpRequestResult => {
     'referenceId',
   ]);
   const message = pickString(records, ['message', 'status']);
-  return { requestId, message, raw: data };
+  const otpLength = pickNumber(records, ['otpLength']);
+  return { requestId, message, otpLength, raw: data };
 };
 
 const normalizeAuthSession = (data: unknown): AuthSession => {

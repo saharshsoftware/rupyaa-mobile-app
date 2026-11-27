@@ -18,6 +18,8 @@ export interface OtpRequestPayload {
 export interface OtpRequestResult {
   requestId?: string;
   message?: string;
+  /** From POST /otp response (`otpLength`) when provided. */
+  otpLength?: number;
   raw?: unknown;
 }
 

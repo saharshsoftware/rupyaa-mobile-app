@@ -24,7 +24,7 @@ import { executeCredeauSyncOnAppOpen } from '@/src/services/credeau/credeau-sync
 import { ANALYTICS_EVENT, logAnalyticsEvent } from '@/src/services/analytics';
 import { useAndroidSmsOtpAutofill } from '@/src/services/otp';
 
-const OTP_LENGTH = 4;
+const DEFAULT_OTP_LENGTH = 4;
 
 export default function OTPVerificationScreen() {
   const router = useRouter();
@@ -33,10 +33,16 @@ export default function OTPVerificationScreen() {
   const phoneNumber = params.phoneNumber as string;
   const displayPhoneNumber = phoneNumber?.startsWith('+91') ? phoneNumber : `+91 ${phoneNumber ?? ''}`;
   const initialRequestId = typeof params.requestId === 'string' ? params.requestId : undefined;
+  const otpLengthParam = params.otpLength;
+  const initialOtpLength =
+    typeof otpLengthParam === 'string' && /^\d+$/.test(otpLengthParam)
+      ? Number(otpLengthParam)
+      : DEFAULT_OTP_LENGTH;
 
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
   const [requestId, setRequestId] = useState(initialRequestId);
+  const [otpLength, setOtpLength] = useState(initialOtpLength);
 
   const { mutate: verifyOtp, isPending: isVerifying } = useMutation({
     mutationFn: authService.verifyOtp,
@@ -85,6 +91,9 @@ export default function OTPVerificationScreen() {
       if (response.data.requestId) {
         setRequestId(response.data.requestId);
       }
+      if (response.data.otpLength !== undefined) {
+        setOtpLength(response.data.otpLength);
+      }
     },
     onError: () => {
       setError('Unable to resend OTP. Please try again.');
@@ -92,23 +101,24 @@ export default function OTPVerificationScreen() {
   });
 
   useEffect(() => {
-    if (otp.length === OTP_LENGTH) {
+    if (otp.length === otpLength) {
       handleVerifyOTP();
     }
-  }, [otp]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- auto-submit when OTP is complete only
+  }, [otp, otpLength]);
 
   // Android-only: listens for the login OTP SMS via Google's SMS Retriever
   // API and auto-fills the field. No-op on iOS / when the native module is
   // unavailable — manual entry + QuickType remain the fallback.
   useAndroidSmsOtpAutofill({
-    length: OTP_LENGTH,
+    length: otpLength,
     onOtp: setOtp,
     enabled: !isVerifying,
     logAppHashInDev: true,
   });
 
   const handleVerifyOTP = () => {
-    if (isVerifying || otp.length !== OTP_LENGTH || !phoneNumber) return;
+    if (isVerifying || otp.length !== otpLength || !phoneNumber) return;
     setError('');
     void logAnalyticsEvent(ANALYTICS_EVENT.VERIFY_OTP_CLICK);
 
@@ -147,7 +157,7 @@ export default function OTPVerificationScreen() {
             <Button
               size="large"
               fullWidth
-              disabled={otp.length !== OTP_LENGTH || isVerifying}
+              disabled={otp.length !== otpLength || isVerifying}
               loading={isVerifying}
               onPress={handleVerifyOTP}
               style={styles.continueButton}
@@ -166,7 +176,7 @@ export default function OTPVerificationScreen() {
             <View style={styles.phoneNumberContainer}>
               <TouchableOpacity onPress={handleChangePhoneNumber} style={styles.changeButton}>
                 <AppText style={styles.phoneNumber} variant="caption" weight="regular">
-                  We&apos;ve sent a 4-digit OTP to {displayPhoneNumber}
+                  We&apos;ve sent a {otpLength}-digit OTP to {displayPhoneNumber}
                 </AppText>
               </TouchableOpacity>
             </View>
@@ -174,7 +184,7 @@ export default function OTPVerificationScreen() {
 
           <View style={styles.otpContainer}>
             <OTPInput
-              length={OTP_LENGTH}
+              length={otpLength}
               value={otp}
               onChange={handleOTPChange}
               disabled={isVerifying}
