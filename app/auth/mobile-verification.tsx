@@ -105,6 +105,9 @@ export default function MobileVerificationScreen() {
       if (response.data.requestId) {
         params.requestId = response.data.requestId;
       }
+      if (response.data.otpLength != null) {
+        params.otpLength = String(response.data.otpLength);
+      }
 
       router.push({
         pathname: '/auth/otp-verification',
