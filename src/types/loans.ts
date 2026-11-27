@@ -10,7 +10,16 @@ import { UserEligibilityExperianResponse } from "./user";
 
 export type LoanStatus = 'Sanctioned' | 'Disbursed' | 'Completed' | 'Foreclosed' | 'Overdue' | string;
 export type PaymentStatus = 'Pending' | 'Paid' | 'Overdue' | string;
-export type LoanType = 'PAY_DAY' | 'CREDIT_BUILDER' | 'EMI' | string;
+/** API `loanType` / loan `type` values. BULLET replaces PAY_DAY on newer backends. */
+export const LOAN_TYPE = {
+  payDay: 'PAY_DAY',
+  bullet: 'BULLET',
+  creditBuilder: 'CREDIT_BUILDER',
+  emi: 'EMI',
+} as const;
+
+export type KnownLoanType = (typeof LOAN_TYPE)[keyof typeof LOAN_TYPE];
+export type LoanType = KnownLoanType | string;
 
 export const EMI_BLOCK_STATUS = {
   due: 'DUE',

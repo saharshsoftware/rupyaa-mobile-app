@@ -14,6 +14,7 @@ import type {
   OfferTypeContentProps,
   StepProps,
 } from '@/src/types';
+import { LOAN_TYPE } from '@/src/types';
 import { colors, spacing } from '@/src/theme';
 import { consoleLogDev } from '@/src/utils/common-helper';
 import { isEmiLoanType } from '../../utils/offer-helpers';
@@ -33,7 +34,7 @@ const SIM_OFFER: CurrentOfferOffer = {
   emiDeductionDay: 5,
   status: 'active',
 };
-const SIM_LOAN_TYPE: LoanType = 'EMI';
+const SIM_LOAN_TYPE: LoanType = LOAN_TYPE.emi;
 
 const GET_HIGHER_LOAN_TITLE = 'Get a Higher Loan Amount';
 const GET_HIGHER_LOAN_SUBTEXT =

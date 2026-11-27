@@ -1,4 +1,5 @@
 import type { Loan } from '@/src/types/loans';
+import { LOAN_TYPE } from '@/src/types/loans';
 
 /**
  * Loan-related formatting utilities.
@@ -42,11 +43,17 @@ export function getDisbursedDateString(loan: Loan): string {
  * Get loan type display name.
  */
 export function getLoanTypeDisplayName(type: string): string {
+  const normalizedType = type.trim().toUpperCase();
+  if (normalizedType === LOAN_TYPE.payDay || normalizedType === LOAN_TYPE.bullet) {
+    return 'Bullet Loan';
+  }
+
   switch (type) {
-    case 'PAY_DAY':
-      return 'Pay Day Loan';
-    case 'CREDIT_BUILDER':
+    case LOAN_TYPE.creditBuilder:
       return 'Credit Builder Loan';
+    case LOAN_TYPE.emi:
+    case 'emi':
+      return 'EMI Loan';
     default:
       return type.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
   }

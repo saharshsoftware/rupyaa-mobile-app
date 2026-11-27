@@ -6,7 +6,7 @@ import type { CurrentEmiOffer, CurrentOfferOffer } from '@/src/types/offer';
 import type { EmiRepaymentAccordionItem, LoanType } from '@/src/types/loans';
 import { VERIFIED_OFFER_STATUS } from '@/src/config/verifiedOfferStatus';
 import { formatCurrency } from '@/src/utils/common-helper';
-import { isEmiLoanTypeValue } from '@/src/utils/loan-helpers';
+import { isBulletLoanTypeValue, isEmiLoanTypeValue } from '@/src/utils/loan-helpers';
 
 const MISSING_VALUE = '—';
 const CURRENCY_NO_FRACTION = {
@@ -177,7 +177,7 @@ export function mapPayDayLoanDetailsAccordionItem(
   offer: CurrentOfferOffer,
   loanType?: LoanType
 ): EmiRepaymentAccordionItem {
-  const rateSuffix = loanType === 'PAY_DAY' ? 'P.D' : 'P.A';
+  const rateSuffix = isBulletLoanTypeValue(loanType) ? 'P.D' : 'P.A';
 
   return {
     id: 'payday-loan-details',

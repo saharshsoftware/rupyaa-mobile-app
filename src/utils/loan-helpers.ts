@@ -12,7 +12,7 @@ import type {
   GetExistingActiveLoanResponse,
   Loan,
 } from '@/src/types/loans';
-import { EMI_BLOCK_STATUS } from '@/src/types/loans';
+import { EMI_BLOCK_STATUS, LOAN_TYPE } from '@/src/types/loans';
 import type { ApiResponse } from '@/src/types/api';
 import type { CurrentOfferResponse, OfferLoanStatus } from '@/src/types/offer';
 import type { UserEligibilityExperianResponse } from '@/src/types/user';
@@ -184,7 +184,14 @@ export function isDueDateInFuture(dueDate: string): boolean {
 export type ActiveLoanScreenType = 'foreclosure' | 'payment' | 'payment-emi';
 
 export function isEmiLoanTypeValue(value: unknown): boolean {
-  return typeof value === 'string' && value.trim().toUpperCase() === 'EMI';
+  return typeof value === 'string' && value.trim().toUpperCase() === LOAN_TYPE.emi;
+}
+
+/** Short-tenure (payday) product. Backend sends BULLET; PAY_DAY is legacy. */
+export function isBulletLoanTypeValue(value: unknown): boolean {
+  if (typeof value !== 'string') return false;
+  const normalized = value.trim().toUpperCase();
+  return normalized === LOAN_TYPE.payDay || normalized === LOAN_TYPE.bullet;
 }
 
 export function isEmiLoan(loan: Loan | null | undefined): boolean {
